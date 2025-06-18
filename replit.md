@@ -1,0 +1,106 @@
+# PropTrace - Property Search & Analysis Platform
+
+## Overview
+
+PropTrace is a full-stack web application designed for real estate property search and analysis. The application provides comprehensive property information including comparable sales, market metrics, and export capabilities. Built with a modern tech stack including React, Express, and PostgreSQL with Drizzle ORM.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript
+- **Routing**: Wouter for client-side routing
+- **State Management**: TanStack Query for server state management
+- **UI Framework**: Shadcn/ui components with Radix UI primitives
+- **Styling**: Tailwind CSS with CSS variables for theming
+- **Build Tool**: Vite for development and production builds
+
+### Backend Architecture
+- **Runtime**: Node.js with Express.js framework
+- **Language**: TypeScript with ES modules
+- **Database ORM**: Drizzle ORM with PostgreSQL dialect
+- **Database Provider**: Neon Database (serverless PostgreSQL)
+- **API Design**: RESTful API with JSON responses
+
+### Key Components
+
+#### Database Schema
+The application uses three main database tables:
+- **Properties**: Core property information including address, specifications, pricing, and listing details
+- **Comparable Sales**: Related property sales data for market analysis
+- **Market Metrics**: Aggregated neighborhood statistics and trends
+
+#### API Endpoints
+- `POST /api/properties/search` - Search for properties by address/location
+- `GET /api/properties/:id` - Retrieve detailed property information
+- `GET /api/properties/:id/export` - Export property data as JSON
+
+#### Frontend Components
+- **Dashboard**: Main application interface with property search and display
+- **Property Search Form**: Form for searching properties with validation
+- **Property Dashboard**: Comprehensive property information display
+- **Comparable Sales**: Table showing recent similar property sales
+- **Market Analysis**: Visual representation of market trends and metrics
+- **Export Actions**: Tools for exporting property reports
+
+## Data Flow
+
+1. **Property Search**: User enters property details in search form
+2. **API Request**: Form data is validated and sent to backend search endpoint
+3. **Database Query**: Backend queries property database using Drizzle ORM
+4. **Data Aggregation**: System fetches related comparables and market metrics
+5. **Response Assembly**: Complete property data package is assembled
+6. **UI Rendering**: Frontend displays comprehensive property analysis
+7. **Export Options**: Users can export data in various formats
+
+## External Dependencies
+
+### Frontend Libraries
+- React ecosystem (React, React DOM, React Hook Form)
+- TanStack Query for data fetching and caching
+- Radix UI for accessible component primitives
+- Lucide React for icons
+- Wouter for routing
+- Tailwind CSS and class-variance-authority for styling
+
+### Backend Libraries
+- Express.js for HTTP server
+- Drizzle ORM and Drizzle Kit for database operations
+- Neon Database serverless driver
+- Zod for schema validation
+- Connect-pg-simple for session management
+
+### Development Tools
+- TypeScript for type safety
+- Vite for frontend build tooling
+- ESBuild for backend bundling
+- PostCSS and Autoprefixer for CSS processing
+
+## Deployment Strategy
+
+The application is configured for deployment on Replit with the following setup:
+
+### Development Environment
+- Node.js 20 runtime
+- PostgreSQL 16 database
+- Hot reload with Vite development server
+- Port 5000 for local development
+
+### Production Build
+- Frontend: Vite builds optimized static assets
+- Backend: ESBuild bundles server code with external dependencies
+- Database: Drizzle migrations for schema management
+- Deployment: Autoscale deployment target on port 80
+
+### Environment Configuration
+- DATABASE_URL for PostgreSQL connection
+- NODE_ENV for environment detection
+- Build and start scripts for production deployment
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## Changelog
+
+Changelog:
+- June 18, 2025. Initial setup
