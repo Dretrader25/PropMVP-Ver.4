@@ -4,40 +4,59 @@ import { UserCircle, Lock, Phone, Mail, MapPin, Unlock } from "lucide-react";
 
 export default function SkipTracingPlaceholder() {
   return (
-    <Card className="card-bg border-slate-700/50">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between text-slate-100">
-          Owner Information
-          <UserCircle className="h-5 w-5 text-primary" />
+    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-purple-800/30 to-purple-700/30 pb-4">
+        <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+          Owner Intelligence
+          <div className="p-2 bg-purple-500/20 rounded-xl">
+            <UserCircle className="h-6 w-6 text-purple-400" />
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="text-center py-8">
-          <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="text-slate-400 h-6 w-6" />
-          </div>
-          <h4 className="text-lg font-semibold text-slate-200 mb-2">Skip Tracing Available</h4>
-          <p className="text-slate-400 text-sm mb-4">Upgrade to access owner contact information</p>
-          
-          <div className="space-y-2 text-left mb-6">
-            <div className="flex items-center text-slate-400 text-sm">
-              <Phone className="mr-2 h-4 w-4" />
-              <span>Phone Numbers</span>
+      <CardContent className="p-6">
+        <div className="text-center py-4">
+          <div className="relative mb-6">
+            <div className="w-20 h-20 bg-gradient-to-r from-purple-600/20 to-amber-600/20 rounded-full flex items-center justify-center mx-auto mb-4 float-animation">
+              <Lock className="text-amber-400 h-8 w-8" />
             </div>
-            <div className="flex items-center text-slate-400 text-sm">
-              <Mail className="mr-2 h-4 w-4" />
-              <span>Email Addresses</span>
-            </div>
-            <div className="flex items-center text-slate-400 text-sm">
-              <MapPin className="mr-2 h-4 w-4" />
-              <span>Mailing Address</span>
+            <div className="absolute -top-1 -right-1 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center mx-auto">
+              <span className="text-white text-xs font-bold">Pro</span>
             </div>
           </div>
           
-          <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-4 hover:scale-105 transition-transform">
-            <Unlock className="mr-2 h-4 w-4" />
-            Unlock Contact Info
+          <h4 className="text-xl font-bold text-gradient mb-2">Premium Skip Tracing</h4>
+          <p className="text-slate-400 mb-6">Unlock comprehensive owner contact data</p>
+          
+          <div className="space-y-4 mb-8">
+            <div className="flex items-center justify-between p-4 bg-slate-700/20 rounded-xl border border-slate-600/30">
+              <div className="flex items-center">
+                <Phone className="mr-3 h-5 w-5 text-emerald-400" />
+                <span className="text-slate-300 font-medium">Phone Numbers</span>
+              </div>
+              <div className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">Multiple</div>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-slate-700/20 rounded-xl border border-slate-600/30">
+              <div className="flex items-center">
+                <Mail className="mr-3 h-5 w-5 text-blue-400" />
+                <span className="text-slate-300 font-medium">Email Addresses</span>
+              </div>
+              <div className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">Verified</div>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-slate-700/20 rounded-xl border border-slate-600/30">
+              <div className="flex items-center">
+                <MapPin className="mr-3 h-5 w-5 text-purple-400" />
+                <span className="text-slate-300 font-medium">Mailing Address</span>
+              </div>
+              <div className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded-full">Current</div>
+            </div>
+          </div>
+          
+          <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-amber-500/25">
+            <Unlock className="mr-2 h-5 w-5" />
+            Upgrade to Premium
           </Button>
+          
+          <p className="text-xs text-slate-500 mt-4">30-day money-back guarantee</p>
         </div>
       </CardContent>
     </Card>

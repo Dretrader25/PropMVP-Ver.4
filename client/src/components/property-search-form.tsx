@@ -76,91 +76,124 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
   };
 
   return (
-    <Card className="card-bg border-slate-700/50 mb-8">
-      <CardContent className="p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-slate-100 mb-2">Property Lead Enrichment</h2>
-          <p className="text-slate-400">Enter a property address to get comprehensive property details, market analysis, and owner information</p>
+    <Card className="premium-card rounded-3xl shadow-2xl">
+      <CardContent className="p-10">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl mb-4 float-animation">
+            <Search className="h-8 w-8 text-white" />
+          </div>
+          <h2 className="text-4xl font-bold text-gradient mb-3">Property Intelligence Engine</h2>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            Unlock comprehensive property insights with our advanced data enrichment platform
+          </p>
         </div>
         
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label className="text-slate-300 mb-2">Street Address</Label>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">Street Address</Label>
               <Input
                 {...form.register("address")}
                 placeholder="123 Main Street"
-                className="bg-slate-700/50 border-slate-600/50 text-slate-200 placeholder-slate-400"
+                className="modern-input h-12 text-slate-200 placeholder-slate-400 rounded-xl"
               />
               {form.formState.errors.address && (
-                <p className="text-red-400 text-sm mt-1">{form.formState.errors.address.message}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <X className="h-3 w-3 mr-1" />
+                  {form.formState.errors.address.message}
+                </p>
               )}
             </div>
             
-            <div>
-              <Label className="text-slate-300 mb-2">City</Label>
+            <div className="space-y-3">
+              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">City</Label>
               <Input
                 {...form.register("city")}
                 placeholder="Los Angeles"
-                className="bg-slate-700/50 border-slate-600/50 text-slate-200 placeholder-slate-400"
+                className="modern-input h-12 text-slate-200 placeholder-slate-400 rounded-xl"
               />
               {form.formState.errors.city && (
-                <p className="text-red-400 text-sm mt-1">{form.formState.errors.city.message}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <X className="h-3 w-3 mr-1" />
+                  {form.formState.errors.city.message}
+                </p>
               )}
             </div>
             
-            <div>
-              <Label className="text-slate-300 mb-2">State</Label>
+            <div className="space-y-3">
+              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">State</Label>
               <Select onValueChange={(value) => form.setValue("state", value)}>
-                <SelectTrigger className="bg-slate-700/50 border-slate-600/50 text-slate-200">
+                <SelectTrigger className="modern-input h-12 text-slate-200 rounded-xl">
                   <SelectValue placeholder="Select State" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-800 border-slate-600">
                   {states.map((state) => (
-                    <SelectItem key={state.value} value={state.value}>
+                    <SelectItem key={state.value} value={state.value} className="text-slate-200 focus:bg-slate-700">
                       {state.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {form.formState.errors.state && (
-                <p className="text-red-400 text-sm mt-1">{form.formState.errors.state.message}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <X className="h-3 w-3 mr-1" />
+                  {form.formState.errors.state.message}
+                </p>
               )}
             </div>
             
-            <div>
-              <Label className="text-slate-300 mb-2">ZIP Code</Label>
+            <div className="space-y-3">
+              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">ZIP Code</Label>
               <Input
                 {...form.register("zipCode")}
                 placeholder="90210"
-                className="bg-slate-700/50 border-slate-600/50 text-slate-200 placeholder-slate-400"
+                className="modern-input h-12 text-slate-200 placeholder-slate-400 rounded-xl"
               />
               {form.formState.errors.zipCode && (
-                <p className="text-red-400 text-sm mt-1">{form.formState.errors.zipCode.message}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <X className="h-3 w-3 mr-1" />
+                  {form.formState.errors.zipCode.message}
+                </p>
               )}
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
             <Button
               type="submit"
               disabled={searchMutation.isPending}
-              className="flex-1 btn-primary-gradient text-white font-semibold py-4 px-6 hover:scale-105 transition-transform"
+              className="flex-1 btn-primary-gradient text-white font-bold py-4 px-8 rounded-xl h-14 text-lg transition-all duration-300"
             >
-              <Search className="mr-2 h-4 w-4" />
-              {searchMutation.isPending ? "Searching..." : "Search Property"}
+              <Search className="mr-3 h-5 w-5" />
+              {searchMutation.isPending ? "Analyzing Property..." : "Analyze Property"}
             </Button>
             <Button
               type="button"
-              variant="outline"
               onClick={handleClear}
-              className="bg-slate-700/50 border-slate-600/50 text-slate-300 py-4 px-6"
+              className="btn-secondary-gradient text-slate-300 font-medium py-4 px-8 rounded-xl h-14 transition-all duration-300"
             >
               <X className="mr-2 h-4 w-4" />
-              Clear
+              Clear Form
             </Button>
           </div>
         </form>
+        
+        <div className="mt-8 pt-8 border-t border-slate-700/30">
+          <div className="flex items-center justify-center space-x-8 text-slate-400 text-sm">
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
+              Property Details
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+              Market Analysis
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+              Comparable Sales
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

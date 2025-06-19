@@ -59,52 +59,87 @@ export default function ExportActions({ property }: ExportActionsProps) {
   };
 
   return (
-    <Card className="card-bg border-slate-700/50">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between text-slate-100">
-          Export & Reports
-          <Download className="h-5 w-5 text-primary" />
+    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-purple-800/30 to-purple-700/30 pb-6">
+        <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+          Export & Reporting Suite
+          <div className="p-2 bg-purple-500/20 rounded-xl">
+            <Download className="h-6 w-6 text-purple-400" />
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Button
             onClick={handleExportJSON}
-            variant="outline"
-            className="flex items-center justify-center space-x-3 bg-slate-700/50 border-slate-600/50 text-slate-300 py-4 px-6 hover:bg-slate-700 hover:border-slate-500"
+            className="btn-secondary-gradient flex flex-col items-center space-y-3 py-6 px-4 h-auto rounded-2xl group hover:scale-105 transition-all duration-300"
           >
-            <FileCode className="h-4 w-4 text-primary" />
-            <span>Export JSON</span>
+            <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+              <FileCode className="h-6 w-6 text-blue-400" />
+            </div>
+            <div className="text-center">
+              <div className="font-semibold text-slate-200">JSON Export</div>
+              <div className="text-xs text-slate-400 mt-1">Raw data format</div>
+            </div>
           </Button>
           
           <Button
             onClick={handleExportPDF}
-            variant="outline"
-            className="flex items-center justify-center space-x-3 bg-slate-700/50 border-slate-600/50 text-slate-300 py-4 px-6 hover:bg-slate-700 hover:border-slate-500"
+            className="btn-secondary-gradient flex flex-col items-center space-y-3 py-6 px-4 h-auto rounded-2xl group hover:scale-105 transition-all duration-300"
           >
-            <FileText className="h-4 w-4 text-red-400" />
-            <span>Download PDF</span>
+            <div className="p-3 bg-red-500/20 rounded-xl group-hover:bg-red-500/30 transition-colors">
+              <FileText className="h-6 w-6 text-red-400" />
+            </div>
+            <div className="text-center">
+              <div className="font-semibold text-slate-200">PDF Report</div>
+              <div className="text-xs text-slate-400 mt-1">Professional format</div>
+            </div>
           </Button>
           
           <Button
             onClick={handleExportExcel}
-            variant="outline"
-            className="flex items-center justify-center space-x-3 bg-slate-700/50 border-slate-600/50 text-slate-300 py-4 px-6 hover:bg-slate-700 hover:border-slate-500"
+            className="btn-secondary-gradient flex flex-col items-center space-y-3 py-6 px-4 h-auto rounded-2xl group hover:scale-105 transition-all duration-300"
           >
-            <FileSpreadsheet className="h-4 w-4 text-emerald-400" />
-            <span>Export Excel</span>
+            <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
+              <FileSpreadsheet className="h-6 w-6 text-emerald-400" />
+            </div>
+            <div className="text-center">
+              <div className="font-semibold text-slate-200">Excel Export</div>
+              <div className="text-xs text-slate-400 mt-1">Spreadsheet format</div>
+            </div>
           </Button>
         </div>
         
-        <div className="mt-6 p-4 bg-slate-700/20 rounded-lg border border-slate-600/30">
-          <div className="flex items-start space-x-3">
-            <Info className="h-5 w-5 text-primary mt-0.5" />
-            <div>
-              <p className="text-slate-300 font-medium">Report Contents</p>
-              <p className="text-slate-400 text-sm mt-1">
-                Includes property details, comparable sales, market analysis, and all enriched data points. 
-                Skip tracing data included with premium subscription.
+        <div className="mt-8 p-6 glass-card rounded-2xl border border-slate-600/30">
+          <div className="flex items-start space-x-4">
+            <div className="p-2 bg-blue-500/20 rounded-xl">
+              <Info className="h-5 w-5 text-blue-400" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-slate-200 font-semibold mb-2">Comprehensive Report Contents</h4>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                All exports include property specifications, financial analysis, comparable sales data, 
+                market insights, and neighborhood statistics. Premium subscribers receive additional 
+                owner contact information and investment analysis.
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                  <span className="text-slate-400 text-sm">Property Details</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-slate-400 text-sm">Market Analysis</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-slate-400 text-sm">Comparable Sales</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <span className="text-slate-400 text-sm">Contact Data (Pro)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

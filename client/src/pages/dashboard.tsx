@@ -31,63 +31,78 @@ export default function Dashboard() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main content */}
-      <div className="lg:pl-64">
-        {/* Top bar */}
-        <header className="h-16 bg-slate-800/30 backdrop-blur-xl border-b border-slate-700/50 flex items-center justify-between px-6">
+      <div className="lg:pl-64 relative z-10">
+        {/* Modern top bar */}
+        <header className="h-18 glass-card border-b border-slate-700/30 flex items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-slate-400 hover:text-white"
+              className="lg:hidden text-slate-400 hover:text-white transition-colors"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <h1 className="text-xl font-semibold text-slate-200">Property Search & Analysis</h1>
+            <div>
+              <h1 className="text-xl font-bold text-gradient">PropTrace Analytics</h1>
+              <p className="text-xs text-slate-400 mt-0.5">Professional Property Intelligence</p>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             <div className="relative">
               <Input
                 type="search"
-                placeholder="Quick search..."
-                className="bg-slate-700/50 border-slate-600/50 text-slate-200 placeholder-slate-400 w-64 pl-10"
+                placeholder="Quick search properties..."
+                className="modern-input text-slate-200 placeholder-slate-400 w-72 pl-10 h-10"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
             </div>
-            <div className="w-8 h-8 bg-gradient-to-r from-primary to-emerald-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-semibold">JD</span>
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full flex items-center justify-center float-animation">
+              <span className="text-white text-sm font-bold">JD</span>
             </div>
           </div>
         </header>
 
-        {/* Content */}
-        <div className="p-6">
-          <div className="max-w-4xl mx-auto">
-            <PropertySearchForm 
-              onPropertySelect={handlePropertySelect}
-              onLoadingChange={handleLoadingChange}
-            />
+        {/* Enhanced content area */}
+        <div className="p-8">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <div className="fade-in">
+              <PropertySearchForm 
+                onPropertySelect={handlePropertySelect}
+                onLoadingChange={handleLoadingChange}
+              />
+            </div>
             
             {isLoading && (
-              <div className="card-bg border border-slate-700/50 rounded-2xl p-8 mb-8">
-                <div className="flex items-center justify-center space-x-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <div className="text-center">
-                    <p className="text-lg font-semibold text-slate-200">Enriching Property Data...</p>
-                    <p className="text-slate-400 text-sm mt-1">Fetching property details, comps, and market analysis</p>
+              <div className="glass-card rounded-3xl p-10 mb-8 slide-up">
+                <div className="flex flex-col items-center space-y-6">
+                  <div className="relative">
+                    <div className="animate-spin rounded-full h-12 w-12 border-2 border-transparent border-t-blue-500 border-r-emerald-500"></div>
+                    <div className="absolute inset-0 rounded-full border-2 border-slate-700/20"></div>
                   </div>
-                </div>
-                <div className="mt-6">
-                  <div className="bg-slate-700/30 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-primary to-emerald-500 h-2 rounded-full pulse-slow" style={{width: "65%"}}></div>
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-slate-100 mb-2">Enriching Property Data</h3>
+                    <p className="text-slate-400 max-w-md">Analyzing property details, market comparables, and neighborhood insights</p>
+                  </div>
+                  <div className="w-full max-w-md">
+                    <div className="bg-slate-700/20 rounded-full h-2 overflow-hidden">
+                      <div className="bg-gradient-to-r from-blue-500 to-emerald-500 h-2 rounded-full pulse-slow animate-pulse" style={{width: "75%"}}></div>
+                    </div>
+                    <div className="flex justify-between text-xs text-slate-500 mt-2">
+                      <span>Property Details</span>
+                      <span>Market Analysis</span>
+                      <span>Comparables</span>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
             {selectedProperty && !isLoading && (
-              <PropertyDashboard property={selectedProperty} />
+              <div className="slide-up">
+                <PropertyDashboard property={selectedProperty} />
+              </div>
             )}
           </div>
         </div>
