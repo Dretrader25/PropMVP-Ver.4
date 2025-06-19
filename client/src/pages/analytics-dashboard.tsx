@@ -195,7 +195,7 @@ export default function AnalyticsDashboard() {
             </div>
 
             {/* Featured Property Analysis */}
-            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+            <Card className="gradient-border-card shadow-lg overflow-hidden neon-glow">
               <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
                 <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
                   Featured Property Analysis
@@ -208,7 +208,7 @@ export default function AnalyticsDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
                   
                   {/* Location & Property Basics */}
-                  <div className="glass-card rounded-2xl p-6">
+                  <div className="floating-card rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <MapPin className="h-5 w-5 text-blue-400 mr-2" />
                       <h3 className="text-lg font-semibold text-slate-200">Location & Property Basics</h3>
@@ -248,7 +248,7 @@ export default function AnalyticsDashboard() {
                   </div>
 
                   {/* Motivation & Distress Indicators */}
-                  <div className="glass-card rounded-2xl p-6">
+                  <div className="glass-card-enhanced rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <Zap className="h-5 w-5 text-amber-400 mr-2" />
                       <h3 className="text-lg font-semibold text-slate-200">Motivation & Distress</h3>
@@ -298,7 +298,7 @@ export default function AnalyticsDashboard() {
                   </div>
 
                   {/* Valuation & Deal Analysis */}
-                  <div className="glass-card rounded-2xl p-6">
+                  <div className="holographic-card rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <DollarSign className="h-5 w-5 text-emerald-400 mr-2" />
                       <h3 className="text-lg font-semibold text-slate-200">Valuation & Deal Analysis</h3>
@@ -331,7 +331,7 @@ export default function AnalyticsDashboard() {
                   </div>
 
                   {/* Market Data for Dispo */}
-                  <div className="glass-card rounded-2xl p-6">
+                  <div className="floating-card rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <TrendingUp className="h-5 w-5 text-purple-400 mr-2" />
                       <h3 className="text-lg font-semibold text-slate-200">Market Data for Dispo</h3>
@@ -366,7 +366,7 @@ export default function AnalyticsDashboard() {
                 {/* Comparable Sales & Active Listings */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
                   {/* Recent Sold Comps */}
-                  <div className="glass-card rounded-2xl p-6">
+                  <div className="glass-card-enhanced rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <BarChart3 className="h-5 w-5 text-blue-400 mr-2" />
                       <h3 className="text-lg font-semibold text-slate-200">Recent Sold Comps</h3>
@@ -388,7 +388,7 @@ export default function AnalyticsDashboard() {
                   </div>
 
                   {/* Active Competition */}
-                  <div className="glass-card rounded-2xl p-6">
+                  <div className="holographic-card rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <Eye className="h-5 w-5 text-amber-400 mr-2" />
                       <h3 className="text-lg font-semibold text-slate-200">Active Competition</h3>
@@ -421,7 +421,7 @@ export default function AnalyticsDashboard() {
 
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-            <Card className="premium-card rounded-2xl overflow-hidden">
+            <Card className="floating-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -440,7 +440,7 @@ export default function AnalyticsDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="premium-card rounded-2xl overflow-hidden">
+            <Card className="glass-card-enhanced rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -459,7 +459,7 @@ export default function AnalyticsDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="premium-card rounded-2xl overflow-hidden">
+            <Card className="holographic-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -478,7 +478,7 @@ export default function AnalyticsDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="premium-card rounded-2xl overflow-hidden">
+            <Card className="floating-card rounded-2xl overflow-hidden neon-glow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -497,7 +497,7 @@ export default function AnalyticsDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="premium-card rounded-2xl overflow-hidden">
+            <Card className="glass-card-enhanced rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -516,7 +516,7 @@ export default function AnalyticsDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="premium-card rounded-2xl overflow-hidden">
+            <Card className="holographic-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -540,7 +540,7 @@ export default function AnalyticsDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* Deal Pipeline */}
-            <Card className="lg:col-span-2 glass-card rounded-3xl shadow-2xl overflow-hidden">
+            <Card className="lg:col-span-2 gradient-border-card shadow-2xl overflow-hidden neon-glow">
               <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
                 <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
                   Deal Pipeline Analysis
@@ -552,7 +552,7 @@ export default function AnalyticsDashboard() {
               <CardContent className="p-6">
                 <div className="space-y-6">
                   {mockDashboardData.pipeline.map((stage, index) => (
-                    <div key={stage.stage} className="glass-card rounded-2xl p-5">
+                    <div key={stage.stage} className="floating-card rounded-2xl p-5">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h4 className="text-slate-200 font-semibold text-lg">{stage.stage}</h4>
