@@ -225,7 +225,8 @@ export default function LeadManagement() {
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
-      <div className="max-w-7xl mx-auto space-y-8 p-8">
+      <div className="lg:pl-16 relative z-10">
+        <div className="max-w-7xl mx-auto space-y-8 p-8">
         
         {/* Header */}
         <div className="text-center">
@@ -608,6 +609,7 @@ export default function LeadManagement() {
           </TabsContent>
         </Tabs>
 
+        </div>
       </div>
     </div>
   );

@@ -147,7 +147,7 @@ export default function AnalyticsDashboard() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main content */}
-      <div className="lg:pl-64 relative z-10">
+      <div className="lg:pl-16 relative z-10">
         {/* Top bar */}
         <header className="h-18 glass-card border-b border-slate-700/30 flex items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-4">
