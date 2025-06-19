@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLocation } from "wouter";
 import Sidebar from "@/components/sidebar";
+import NavigationBar from "@/components/navigation-bar";
 import AIAnalysis from "@/components/ai-analysis";
 import { 
   TrendingUp, 
@@ -139,6 +140,9 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="min-h-screen gradient-bg">
+      {/* Navigation Bar */}
+      <NavigationBar onMenuClick={() => setSidebarOpen(true)} />
+      
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

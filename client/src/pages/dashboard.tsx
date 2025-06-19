@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
+import NavigationBar from "@/components/navigation-bar";
 import PropertySearchForm from "@/components/property-search-form";
 import PropertyDashboard from "@/components/property-dashboard";
 import { PropertyWithDetails } from "@shared/schema";
@@ -29,6 +30,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen gradient-bg">
+      {/* Navigation Bar */}
+      <NavigationBar onMenuClick={() => setSidebarOpen(true)} />
+      
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

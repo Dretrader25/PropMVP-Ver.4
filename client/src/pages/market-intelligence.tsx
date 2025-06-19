@@ -2,6 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useState } from "react";
+import NavigationBar from "@/components/navigation-bar";
+import Sidebar from "@/components/sidebar";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -139,6 +142,8 @@ const marketIntelligenceData = {
 };
 
 export default function MarketIntelligence() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -171,8 +176,14 @@ export default function MarketIntelligence() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      {/* Navigation Bar */}
+      <NavigationBar onMenuClick={() => setSidebarOpen(true)} />
+      
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      
+      <div className="max-w-7xl mx-auto space-y-8 p-8">
         
         {/* Header */}
         <div className="text-center">
