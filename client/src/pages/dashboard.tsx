@@ -3,6 +3,7 @@ import Sidebar from "@/components/sidebar";
 import NavigationBar from "@/components/navigation-bar";
 import PropertySearchForm from "@/components/property-search-form";
 import PropertyDashboard from "@/components/property-dashboard";
+import PropertyHeatmap from "@/components/property-heatmap";
 import { PropertyWithDetails } from "@shared/schema";
 import { Search, Menu, X, BarChart3, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -79,6 +80,13 @@ export default function Dashboard() {
                 onLoadingChange={handleLoadingChange}
               />
             </div>
+
+            {/* Interactive Property Heatmap */}
+            {!selectedProperty && !isLoading && (
+              <div className="space-y-8">
+                <PropertyHeatmap />
+              </div>
+            )}
 
             {/* Analytics Dashboard CTA */}
             {!selectedProperty && !isLoading && (
