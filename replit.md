@@ -42,6 +42,9 @@ The application uses three main database tables:
 - **Comparable Sales**: Table showing recent similar property sales
 - **Market Analysis**: Visual representation of market trends and metrics
 - **Export Actions**: Tools for exporting property reports
+- **Analytics Dashboard**: Comprehensive wholesaling analysis with property basics, distress indicators, valuation analysis, and AI-powered insights
+- **Market Intelligence**: Real-time market data, hot markets analysis, distressed properties tracking, and investor activity metrics
+- **Lead Management**: Complete lead pipeline management with source tracking, activity monitoring, and conversion optimization
 
 ## Data Flow
 
@@ -139,6 +142,20 @@ Preferred communication style: Simple, everyday language.
   - Color-coded grade indicators and urgency badges for quick decision making
   - Error handling and loading states for optimal user experience
   - Full integration with existing property database and analytics dashboard
+
+- June 19, 2025: Added Market Intelligence and Lead Management Pages
+  - Created comprehensive Market Intelligence page with real-time market analysis
+  - Hot markets tracking with hotness scoring, price trends, and investor activity metrics
+  - Market segments analysis for different property types with volume and pricing data
+  - Distressed properties dashboard showing foreclosures, pre-foreclosures, and bank-owned properties
+  - Price range analysis with days on market metrics across different price segments
+  - Investor activity tracking including cash buyers, flippers, and institutional purchasing
+  - Created full-featured Lead Management system with pipeline visualization
+  - Lead source performance tracking with cost analysis and conversion metrics
+  - Recent activity feed with communication history and next action tracking
+  - Notifications and alerts system for urgent follow-ups and opportunities
+  - Comprehensive lead data including contact information, motivation, and equity calculations
+  - Updated navigation to include new pages with proper routing and active states
 
 ## Changelog
 
