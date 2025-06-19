@@ -108,7 +108,7 @@ export default function Dashboard() {
                   <div className="flex flex-col space-y-4">
                     <Button
                       onClick={() => setLocation("/analytics")}
-                      className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-blue-500/25"
+                      className="btn-primary-gradient text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg"
                     >
                       <Zap className="mr-3 h-5 w-5" />
                       Launch Analytics Dashboard
