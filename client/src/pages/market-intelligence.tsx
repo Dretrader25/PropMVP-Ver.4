@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
+import MarketHeatmap from "@/components/market-heatmap";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -277,6 +278,9 @@ export default function MarketIntelligence() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Market Activity Heatmap */}
+        <MarketHeatmap />
 
         {/* Hot Markets Table */}
         <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
