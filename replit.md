@@ -17,9 +17,10 @@ PropTrace is a full-stack web application designed for real estate property sear
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js framework
 - **Language**: TypeScript with ES modules
-- **Database ORM**: Drizzle ORM with PostgreSQL dialect
+- **Database**: PostgreSQL with Drizzle ORM
 - **Database Provider**: Neon Database (serverless PostgreSQL)
 - **API Design**: RESTful API with JSON responses
+- **Data Storage**: DatabaseStorage class with persistent PostgreSQL storage
 
 ### Key Components
 
@@ -102,7 +103,7 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-- June 19, 2025: Complete modern UI transformation
+- June 19, 2025: Complete modern UI transformation with PostgreSQL database integration
   - Implemented glass morphism design with advanced backdrop blur effects
   - Added gradient text animations and floating elements
   - Enhanced color system with status indicators and improved visual hierarchy
@@ -112,6 +113,9 @@ Preferred communication style: Simple, everyday language.
   - Improved sidebar with modern navigation and premium upgrade section
   - Added hover animations and micro-interactions throughout the interface
   - Implemented responsive design improvements for better mobile experience
+  - Integrated PostgreSQL database with Drizzle ORM for persistent data storage
+  - Replaced in-memory storage with DatabaseStorage class
+  - All property searches and data now persist between sessions
 
 ## Changelog
 
