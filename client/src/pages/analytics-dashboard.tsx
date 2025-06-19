@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLocation } from "wouter";
 import Sidebar from "@/components/sidebar";
+import AIAnalysis from "@/components/ai-analysis";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -414,6 +415,9 @@ export default function AnalyticsDashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* AI Property Analysis */}
+            <AIAnalysis />
 
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">

@@ -6,6 +6,7 @@ export interface IStorage {
   searchProperty(searchData: PropertySearch): Promise<PropertyWithDetails | null>;
   getPropertyById(id: number): Promise<PropertyWithDetails | null>;
   createProperty(propertyData: PropertySearch): Promise<PropertyWithDetails>;
+  getAllProperties(): Promise<PropertyWithDetails[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -35,6 +36,27 @@ export class DatabaseStorage implements IStorage {
 
     // Create new property if not found
     return this.createProperty(searchData);
+  }
+
+  async getAllProperties(): Promise<PropertyWithDetails[]> {
+    const allProperties = await db.select().from(properties);
+    
+    const result = await Promise.all(
+      allProperties.map(async (property) => {
+        const [comps, metrics] = await Promise.all([
+          db.select().from(comparableSales).where(eq(comparableSales.propertyId, property.id)),
+          db.select().from(marketMetrics).where(eq(marketMetrics.propertyId, property.id))
+        ]);
+        
+        return {
+          ...property,
+          comparables: comps,
+          marketMetrics: metrics[0] || null
+        };
+      })
+    );
+    
+    return result;
   }
 
   async createProperty(propertyData: PropertySearch): Promise<PropertyWithDetails> {

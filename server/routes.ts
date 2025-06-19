@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { propertySearchSchema } from "@shared/schema";
 import { z } from "zod";
+import { analyzePropertyWithAI } from "./ai-analysis";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Property search endpoint
@@ -61,6 +62,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Content-Disposition', 'attachment; filename="property-report.json"');
       res.json(property);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // AI Analysis endpoint
+  app.post("/api/properties/:id/analyze", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid property ID" });
+      }
+      
+      const property = await storage.getPropertyById(id);
+      
+      if (!property) {
+        return res.status(404).json({ message: "Property not found" });
+      }
+      
+      const analysis = await analyzePropertyWithAI(property);
+      res.json(analysis);
+    } catch (error) {
+      console.error('AI Analysis error:', error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to analyze property" 
+      });
+    }
+  });
+
+  // Get all properties for selection
+  app.get("/api/properties", async (req, res) => {
+    try {
+      const properties = await storage.getAllProperties();
+      res.json(properties);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }
