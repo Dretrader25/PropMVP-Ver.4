@@ -1,8 +1,8 @@
-# PropTrace - Property Search & Analysis Platform
+# PropAnalyzed - Property Search & Analysis Platform
 
 ## Overview
 
-PropTrace is a full-stack web application designed for real estate property search and analysis. The application provides comprehensive property information including comparable sales, market metrics, and export capabilities. Built with a modern tech stack including React, Express, and PostgreSQL with Drizzle ORM.
+PropAnalyzed is a full-stack web application designed for real estate property search and analysis. The application provides comprehensive property information including comparable sales, market metrics, and export capabilities. Built with a modern tech stack including React, Express, and PostgreSQL with Drizzle ORM.
 
 ## System Architecture
 

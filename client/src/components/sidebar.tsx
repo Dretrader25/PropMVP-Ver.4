@@ -46,7 +46,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
             <div>
               <span className="text-xl font-bold text-gradient">
-                PropTrace
+                PropAnalyzed
               </span>
               <div className="text-xs text-slate-400 mt-0.5">Professional</div>
             </div>

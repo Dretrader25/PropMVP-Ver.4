@@ -46,7 +46,7 @@ export default function Dashboard() {
               <Menu className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold text-gradient">PropTrace Analytics</h1>
+              <h1 className="text-xl font-bold text-gradient">PropAnalyzed Analytics</h1>
               <p className="text-xs text-slate-400 mt-0.5">Professional Property Intelligence</p>
             </div>
           </div>
