@@ -1,6 +1,7 @@
-import { Home, Search, TrendingUp, Users, FileText, Settings, LogOut, X } from "lucide-react";
+import { Home, Search, TrendingUp, Users, FileText, Settings, LogOut, X, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -8,11 +9,14 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const [location, setLocation] = useLocation();
+  
   const menuItems = [
-    { icon: Search, label: "Property Search", active: true },
-    { icon: TrendingUp, label: "Market Analytics", active: false },
-    { icon: Users, label: "Lead Management", active: false },
-    { icon: FileText, label: "Export Reports", active: false },
+    { icon: Search, label: "Property Search", path: "/", active: location === "/" },
+    { icon: BarChart3, label: "Analytics Dashboard", path: "/analytics", active: location === "/analytics" },
+    { icon: TrendingUp, label: "Market Intelligence", path: "/market", active: false },
+    { icon: Users, label: "Lead Management", path: "/leads", active: false },
+    { icon: FileText, label: "Export Reports", path: "/reports", active: false },
   ];
 
   const accountItems = [
@@ -62,6 +66,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             {menuItems.map((item) => (
               <button
                 key={item.label}
+                onClick={() => {
+                  if (item.path) {
+                    setLocation(item.path);
+                    onClose();
+                  }
+                }}
                 className={cn(
                   "flex items-center w-full px-5 py-4 text-left rounded-2xl transition-all duration-300 group",
                   item.active 
