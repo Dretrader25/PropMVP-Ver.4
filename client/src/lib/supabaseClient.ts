@@ -1,15 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://ctbyylprhvjcmhkgmptm.supabase.co'
-// The user provided this, it is the anon key.
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0Ynl5bHByaHZqY21oa2dtcHRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NDIxNzMsImV4cCI6MjA2NjMxODE3M30.kkX169CAUl_bDkzuc5TCkWmTlNpWS4St5A3VhFBlXFs'
+// For Vite projects, environment variables exposed to the client must start with VITE_
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl) {
-  throw new Error("Supabase URL is required.");
+  console.error("Missing environment variable: VITE_SUPABASE_URL. Please ensure it's set in your .env file in the 'client' directory.");
+  throw new Error("Supabase URL is required. Make sure VITE_SUPABASE_URL is set in client/.env");
 }
 
 if (!supabaseAnonKey) {
-  throw new Error("Supabase anon key is required.");
+  console.error("Missing environment variable: VITE_SUPABASE_ANON_KEY. Please ensure it's set in your .env file in the 'client' directory.");
+  throw new Error("Supabase anon key is required. Make sure VITE_SUPABASE_ANON_KEY is set in client/.env");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
