@@ -10,16 +10,18 @@ import {
   TrendingUp, 
   AlertTriangle, 
   CheckCircle, 
-  DollarSign, 
+  DollarSign,
   Clock,
   Target,
-  Zap
+  Zap,
+  Image as ImageIcon, // For placeholder
 } from "lucide-react";
 import { PropertyWithDetails } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient"; // Not used directly in this component for mutation
 import { formatCurrency } from "@/lib/utils";
 
-interface AIAnalysis {
+// This is the AI analysis part of the backend response
+interface AIAnalysisResult {
   grade: string;
   score: number;
   summary: string;
@@ -32,19 +34,40 @@ interface AIAnalysis {
   urgency: string;
 }
 
-export default function AIAnalysis() {
+// This is the augmented property part of the backend response
+export type AnalyzedProperty = PropertyWithDetails & {
+  externalImageURL?: string;
+  // Potentially other augmented fields if we decide to add more
+};
+
+// The full response structure from /api/properties/:id/analyze
+interface AnalysisApiResponse {
+  aiAnalysis: AIAnalysisResult;
+  property: AnalyzedProperty;
+  dataSource: string;
+  externalImageURL?: string; // Explicitly part of the root for easier access initially
+}
+
+interface AIAnalysisComponentProps {
+  onAnalysisComplete: (data: AnalysisApiResponse) => void;
+}
+
+
+export default function AIAnalysisComponent({ onAnalysisComplete }: AIAnalysisComponentProps) {
   const [selectedPropertyId, setSelectedPropertyId] = useState<string>("");
-  const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
+  // The 'analysis' state will now store the AI part of the response
+  const [aiAnalysisResult, setAiAnalysisResult] = useState<AIAnalysisResult | null>(null);
 
   // Fetch all properties for selection
   const { data: properties = [], isLoading: propertiesLoading } = useQuery<PropertyWithDetails[]>({
-    queryKey: ["/api/properties"],
+    queryKey: ["/api/properties"], // StandardTanstack Query key, not a direct fetch URL
+    queryFn: () => apiRequest<PropertyWithDetails[]>("/api/properties"), // Using apiRequest
     enabled: true
   });
 
   // AI Analysis mutation
-  const analysisMutation = useMutation({
-    mutationFn: async (propertyId: string) => {
+  const analysisMutation = useMutation<AnalysisApiResponse, Error, string>({
+    mutationFn: async (propertyId: string): Promise<AnalysisApiResponse> => {
       const response = await fetch(`/api/properties/${propertyId}/analyze`, {
         method: "POST",
         headers: {
@@ -53,23 +76,30 @@ export default function AIAnalysis() {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to analyze property');
+        const errorData = await response.json().catch(() => ({ message: 'Failed to analyze property and parse error' }));
+        throw new Error(errorData.message || 'Failed to analyze property');
       }
       
-      return await response.json() as AIAnalysis;
+      return await response.json() as AnalysisApiResponse;
     },
     onSuccess: (data) => {
-      setAnalysis(data);
+      setAiAnalysisResult(data.aiAnalysis);
+      onAnalysisComplete(data); // Pass the full data to the parent
+    },
+    onError: (error) => {
+      console.error("Analysis mutation error:", error);
+      // Error is handled by isError and error properties of useMutation
     }
   });
 
   const handleAnalyze = () => {
     if (selectedPropertyId) {
+      setAiAnalysisResult(null); // Clear previous results
       analysisMutation.mutate(selectedPropertyId);
     }
   };
 
-  const getGradeColor = (grade: string) => {
+  const getGradeColor = (grade: string = "") => {
     const gradeMap: { [key: string]: string } = {
       'A+': 'text-emerald-400 bg-emerald-500/20',
       'A': 'text-emerald-400 bg-emerald-500/20',
@@ -88,7 +118,7 @@ export default function AIAnalysis() {
     return gradeMap[grade] || 'text-slate-400 bg-slate-500/20';
   };
 
-  const getUrgencyColor = (urgency: string) => {
+  const getUrgencyColor = (urgency: string = "") => {
     const urgencyMap: { [key: string]: string } = {
       'Buy ASAP': 'text-emerald-400 bg-emerald-500/20',
       'Strong Consider': 'text-blue-400 bg-blue-500/20',
@@ -105,14 +135,14 @@ export default function AIAnalysis() {
         <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
           <div className="flex items-center">
             <Brain className="h-6 w-6 text-purple-400 mr-3" />
-            AI Property Analysis
+            AI Property Analysis Engine
           </div>
           <div className="p-2 bg-purple-500/20 rounded-xl">
             <Zap className="h-6 w-6 text-purple-400" />
           </div>
         </CardTitle>
         <p className="text-slate-400 mt-2">
-          Get AI-powered investment grades and detailed analysis for any property in your portfolio
+          Select a property to fetch the latest data and generate an AI-powered investment analysis.
         </p>
       </CardHeader>
       
@@ -120,23 +150,23 @@ export default function AIAnalysis() {
         {/* Property Selection */}
         <div className="space-y-4 mb-6">
           <div>
-            <label className="text-slate-300 text-sm font-medium mb-2 block">
+            <label htmlFor="property-select" className="text-slate-300 text-sm font-medium mb-2 block">
               Select Property to Analyze
             </label>
             <div className="flex gap-4">
               <Select value={selectedPropertyId} onValueChange={setSelectedPropertyId}>
-                <SelectTrigger className="flex-1 modern-input bg-slate-800/50 border-slate-600">
+                <SelectTrigger id="property-select" className="flex-1 modern-input bg-slate-800/50 border-slate-600">
                   <SelectValue placeholder="Choose a property from your searches..." />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-600">
                   {propertiesLoading ? (
-                    <SelectItem value="loading">Loading properties...</SelectItem>
-                  ) : properties.length === 0 ? (
-                    <SelectItem value="none">No properties found. Search for properties first.</SelectItem>
+                    <SelectItem value="loading" disabled>Loading properties...</SelectItem>
+                  ) : (properties && properties.length === 0) ? (
+                    <SelectItem value="none" disabled>No properties found. Search first.</SelectItem>
                   ) : (
-                    properties.map((property) => (
+                    properties?.map((property) => (
                       <SelectItem key={property.id} value={property.id.toString()}>
-                        {property.address}, {property.city}, {property.state} - ${property.listPrice || 'Price TBD'}
+                        {property.address}, {property.city}, {property.state} - {property.listPrice ? formatCurrency(Number(property.listPrice)) : 'Price TBD'}
                       </SelectItem>
                     ))
                   )}
@@ -145,7 +175,7 @@ export default function AIAnalysis() {
               
               <Button 
                 onClick={handleAnalyze}
-                disabled={!selectedPropertyId || analysisMutation.isPending}
+                disabled={!selectedPropertyId || analysisMutation.isPending || propertiesLoading}
                 className="btn-primary-gradient min-w-[120px]"
               >
                 {analysisMutation.isPending ? (
@@ -165,34 +195,34 @@ export default function AIAnalysis() {
         </div>
 
         {/* Analysis Results */}
-        {analysis && (
+        {aiAnalysisResult && (
           <div className="space-y-6">
             {/* Grade and Score Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="glass-card rounded-2xl p-4 text-center">
                 <div className="mb-2">
-                  <span className={`text-4xl font-bold px-4 py-2 rounded-xl ${getGradeColor(analysis.grade)}`}>
-                    {analysis.grade}
+                  <span className={`text-4xl font-bold px-4 py-2 rounded-xl ${getGradeColor(aiAnalysisResult.grade)}`}>
+                    {aiAnalysisResult.grade}
                   </span>
                 </div>
                 <p className="text-slate-400 text-sm">Investment Grade</p>
               </div>
               
               <div className="glass-card rounded-2xl p-4 text-center">
-                <div className="text-3xl font-bold text-gradient mb-2">{analysis.score}</div>
+                <div className="text-3xl font-bold text-gradient mb-2">{aiAnalysisResult.score}</div>
                 <p className="text-slate-400 text-sm">Score (0-100)</p>
-                <Progress value={analysis.score} className="mt-2 h-2" />
+                <Progress value={aiAnalysisResult.score} className="mt-2 h-2" />
               </div>
               
               <div className="glass-card rounded-2xl p-4 text-center">
                 <div className="text-2xl font-bold text-emerald-400 mb-2">
-                  {formatCurrency(analysis.estimatedProfit)}
+                  {formatCurrency(aiAnalysisResult.estimatedProfit)}
                 </div>
                 <p className="text-slate-400 text-sm">Est. Profit</p>
               </div>
               
               <div className="glass-card rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-blue-400 mb-2">{analysis.confidenceLevel}%</div>
+                <div className="text-2xl font-bold text-blue-400 mb-2">{aiAnalysisResult.confidenceLevel}%</div>
                 <p className="text-slate-400 text-sm">Confidence</p>
               </div>
             </div>
@@ -203,15 +233,15 @@ export default function AIAnalysis() {
                 <Target className="h-5 w-5 text-blue-400 mr-2" />
                 Executive Summary
               </h3>
-              <p className="text-slate-300 leading-relaxed">{analysis.summary}</p>
+              <p className="text-slate-300 leading-relaxed">{aiAnalysisResult.summary}</p>
               
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-600">
                 <div>
                   <span className="text-slate-400 text-sm">Market Position: </span>
-                  <span className="text-slate-200 font-medium">{analysis.marketPosition}</span>
+                  <span className="text-slate-200 font-medium">{aiAnalysisResult.marketPosition}</span>
                 </div>
-                <Badge className={`${getUrgencyColor(analysis.urgency)} border-none`}>
-                  {analysis.urgency}
+                <Badge className={`${getUrgencyColor(aiAnalysisResult.urgency)} border-none`}>
+                  {aiAnalysisResult.urgency}
                 </Badge>
               </div>
             </div>
@@ -225,7 +255,7 @@ export default function AIAnalysis() {
                   Key Strengths
                 </h3>
                 <div className="space-y-3">
-                  {analysis.keyStrengths.map((strength, index) => (
+                  {aiAnalysisResult.keyStrengths.map((strength, index) => (
                     <div key={index} className="flex items-start">
                       <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <p className="text-slate-300 text-sm">{strength}</p>
@@ -241,7 +271,7 @@ export default function AIAnalysis() {
                   Risk Factors
                 </h3>
                 <div className="space-y-3">
-                  {analysis.riskFactors.map((risk, index) => (
+                  {aiAnalysisResult.riskFactors.map((risk, index) => (
                     <div key={index} className="flex items-start">
                       <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <p className="text-slate-300 text-sm">{risk}</p>
@@ -257,7 +287,7 @@ export default function AIAnalysis() {
                 <TrendingUp className="h-5 w-5 text-purple-400 mr-2" />
                 Investment Recommendation
               </h3>
-              <p className="text-slate-300 leading-relaxed">{analysis.recommendation}</p>
+              <p className="text-slate-300 leading-relaxed">{aiAnalysisResult.recommendation}</p>
             </div>
           </div>
         )}
@@ -285,7 +315,7 @@ export default function AIAnalysis() {
         )}
 
         {/* Getting Started */}
-        {!analysis && !analysisMutation.isPending && (
+        {!aiAnalysisResult && !analysisMutation.isPending && (
           <div className="text-center py-8">
             <Brain className="h-16 w-16 text-slate-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-300 mb-2">Ready for AI Analysis</h3>

@@ -1,9 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { propertySearchSchema } from "@shared/schema";
+import { PropertyWithDetails, propertySearchSchema } from "@shared/schema";
 import { z } from "zod";
-import { analyzePropertyWithAI } from "./ai-analysis";
+import { analyzePropertyWithAI, AIPropertyAnalysis } from "./ai-analysis";
+import { fetchZillowData, fetchRentcastData, ExternalPropertyData } from "./external-property-apis";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Property search endpoint
@@ -75,18 +76,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid property ID" });
       }
       
-      const property = await storage.getPropertyById(id);
+      let property = await storage.getPropertyById(id);
       
       if (!property) {
         return res.status(404).json({ message: "Property not found" });
       }
+
+      let externalData: ExternalPropertyData | null = null;
+      let augmentedProperty: PropertyWithDetails = { ...property }; // Create a mutable copy
+
+      // Attempt to fetch data from Zillow
+      if (property) { // Ensure property is not null before trying to fetch
+        externalData = await fetchZillowData(property);
+      }
+
+      // If Zillow fails or doesn't provide an image, try Rentcast
+      if (property && (!externalData || !externalData.externalImageURL)) {
+        const rentcastData = await fetchRentcastData(property);
+        if (rentcastData && rentcastData.externalImageURL) { // Prioritize Rentcast if it has an image and Zillow didn't
+          externalData = rentcastData;
+        } else if (rentcastData && !externalData) { // If Zillow failed completely, use Rentcast data
+          externalData = rentcastData;
+        }
+      }
       
-      const analysis = await analyzePropertyWithAI(property);
-      res.json(analysis);
+      let dataSource = "local";
+      if (externalData) {
+        dataSource = externalData.source;
+        // Augment property data
+        augmentedProperty.address = externalData.fullAddress || augmentedProperty.address;
+        augmentedProperty.propertyType = externalData.propertyType || augmentedProperty.propertyType;
+        augmentedProperty.beds = externalData.beds ?? augmentedProperty.beds;
+        // Ensure baths is handled correctly as it's decimal in schema
+        const bathsValue = externalData.baths !== undefined ? String(externalData.baths) : augmentedProperty.baths;
+        augmentedProperty.baths = bathsValue ? bathsValue : null;
+
+        augmentedProperty.sqft = externalData.sqft ?? augmentedProperty.sqft;
+        augmentedProperty.lotSize = externalData.lotSize || augmentedProperty.lotSize;
+        augmentedProperty.yearBuilt = externalData.yearBuilt ?? augmentedProperty.yearBuilt;
+        // Add externalImageURL to the property object if it's not part of the schema
+        (augmentedProperty as any).externalImageURL = externalData.externalImageURL;
+      }
+
+      const aiAnalysis: AIPropertyAnalysis = await analyzePropertyWithAI(augmentedProperty);
+
+      res.json({
+        aiAnalysis,
+        property: augmentedProperty, // Send the augmented property data
+        dataSource, // Indicate where the primary external data came from
+        externalImageURL: (augmentedProperty as any).externalImageURL // Explicitly include for frontend
+      });
+
     } catch (error) {
-      console.error('AI Analysis error:', error);
+      console.error('AI Analysis or External API error:', error);
       res.status(500).json({ 
-        message: error instanceof Error ? error.message : "Failed to analyze property" 
+        message: error instanceof Error ? error.message : "Failed to analyze property or fetch external data"
       });
     }
   });
