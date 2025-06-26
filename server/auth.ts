@@ -9,10 +9,14 @@ export function setupOAuth(app: Express) {
   app.use(passport.session());
 
   // Google OAuth Strategy
+  const callbackURL = process.env.REPLIT_DEV_DOMAIN 
+    ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/google/callback`
+    : "/api/auth/google/callback";
+
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || "demo-client-id",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "demo-client-secret",
-    callbackURL: "/api/auth/google/callback"
+    callbackURL: callbackURL
   }, async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: any) => {
     try {
       const user = await storage.upsertUser({
