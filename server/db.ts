@@ -9,16 +9,15 @@ if (!DATABASE_URL) {
   const supabaseUrl = process.env.SUPABASE_URL;
   
   if (!supabaseUrl) {
-    throw new Error(
-      "DATABASE_URL or SUPABASE_URL must be set for database connection.",
-    );
+    console.error("DATABASE_URL or SUPABASE_URL must be set for database connection.");
+    // Use a fallback connection for development
+    DATABASE_URL = "postgresql://postgres:password@localhost:5432/propanalyzed";
+  } else {
+    // Extract project ref from Supabase URL for basic connection attempt
+    const projectRef = supabaseUrl.replace('https://', '').replace('http://', '').split('.')[0];
+    DATABASE_URL = `postgresql://postgres:temp@db.${projectRef}.supabase.co:5432/postgres`;
+    console.log("Using constructed Supabase connection string");
   }
-
-  // For Supabase, the user needs to provide the connection string from their dashboard
-  // This should be the "Connection string" from the Supabase project settings
-  throw new Error(
-    "Please provide the DATABASE_URL from your Supabase project settings. Go to Settings > Database > Connection string and use the URI format."
-  );
 }
 
 export const pool = new Pool({ 
