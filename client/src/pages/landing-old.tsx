@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       {/* Navigation */}
@@ -44,19 +45,17 @@ export default function Landing() {
             <Badge className="mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30">
               AI-Powered Real Estate Analytics
             </Badge>
-            
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Smart Property
-              <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Investment Tools
-              </span>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+              Transform Your{" "}
+              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Real Estate
+              </span>{" "}
+              Investment
             </h1>
-            
             <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
               Discover profitable wholesale opportunities with comprehensive market analysis, 
               AI-driven insights, and interactive property visualization tools.
             </p>
-            
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <AuthModal>
                 <Button 
@@ -84,25 +83,25 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Features Grid */}
-      <div className="py-20 bg-gradient-to-r from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
+      {/* Features Section */}
+      <div className="py-20 bg-black/20 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
-              Everything You Need for Success
+              Everything You Need for Successful Wholesaling
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Comprehensive tools designed specifically for real estate wholesaling and investment analysis
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Advanced analytics and market intelligence tools designed specifically for real estate wholesalers
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="glass-card bg-white/5 border-white/20 hover:bg-white/10 transition-all duration-300">
               <CardHeader>
                 <Search className="h-10 w-10 text-blue-400 mb-4" />
-                <CardTitle className="text-white">Property Search</CardTitle>
+                <CardTitle className="text-white">Smart Property Search</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Advanced search with comprehensive property details and market insights
+                  Find profitable properties with advanced filtering and real-time market data
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -110,9 +109,9 @@ export default function Landing() {
             <Card className="glass-card bg-white/5 border-white/20 hover:bg-white/10 transition-all duration-300">
               <CardHeader>
                 <Brain className="h-10 w-10 text-purple-400 mb-4" />
-                <CardTitle className="text-white">AI Analysis</CardTitle>
+                <CardTitle className="text-white">AI Investment Analysis</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Machine learning powered investment scoring and deal recommendations
+                  Get instant property grading and profit estimates powered by artificial intelligence
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -149,30 +148,10 @@ export default function Landing() {
 
             <Card className="glass-card bg-white/5 border-white/20 hover:bg-white/10 transition-all duration-300">
               <CardHeader>
-                <Zap className="h-10 w-10 text-cyan-400 mb-4" />
-                <CardTitle className="text-white">Real-time Updates</CardTitle>
+                <Zap className="h-10 w-10 text-pink-400 mb-4" />
+                <CardTitle className="text-white">Export & Reports</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Live market data and instant notifications for time-sensitive opportunities
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="glass-card bg-white/5 border-white/20 hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <Shield className="h-10 w-10 text-pink-400 mb-4" />
-                <CardTitle className="text-white">Secure & Reliable</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Enterprise-grade security with 99.9% uptime and data protection
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="glass-card bg-white/5 border-white/20 hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <TrendingUp className="h-10 w-10 text-red-400 mb-4" />
-                <CardTitle className="text-white">Performance Tracking</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Monitor your deals, ROI, and portfolio performance with detailed analytics
+                  Generate professional reports and export data for stakeholders
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -190,14 +169,49 @@ export default function Landing() {
           <p className="text-xl text-gray-300 mb-8">
             Join thousands of successful real estate investors who use PropAnalyzed to find and close profitable deals faster.
           </p>
-          <AuthModal>
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-12 py-4 rounded-lg transition-all duration-200 text-lg"
-            >
-              Start Your Free Trial
-            </Button>
-          </AuthModal>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-12 py-4 rounded-lg transition-all duration-200 text-lg"
+              >
+                Start Your Free Trial
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-md border-white/20">
+              <DialogHeader>
+                <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Get Started with PropAnalyzed
+                </DialogTitle>
+                <DialogDescription className="text-center text-gray-600">
+                  Choose your preferred sign-in method to access advanced property analytics
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 mt-6">
+                <Button
+                  onClick={handleGoogleLogin}
+                  className="w-full flex items-center justify-center space-x-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <SiGoogle className="h-5 w-5 text-red-500" />
+                  <span className="font-medium">Continue with Google</span>
+                </Button>
+                
+                <Button
+                  onClick={handleAppleLogin}
+                  className="w-full flex items-center justify-center space-x-3 bg-black hover:bg-gray-900 text-white py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <SiApple className="h-5 w-5" />
+                  <span className="font-medium">Continue with Apple</span>
+                </Button>
+              </div>
+              
+              <div className="mt-6 text-center">
+                <p className="text-xs text-gray-500">
+                  By signing in, you agree to our Terms of Service and Privacy Policy
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
           <p className="text-sm text-gray-400 mt-4">
             No credit card required • Full access to all features
           </p>

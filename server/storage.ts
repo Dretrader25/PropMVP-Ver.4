@@ -4,9 +4,11 @@ import { eq } from "drizzle-orm";
 import { rentcastService } from "./rentcast-service";
 
 export interface IStorage {
-  // User operations for Replit Auth
+  // User operations for OAuth and local authentication
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  createLocalUser(userData: { email: string; passwordHash: string; firstName?: string | null; lastName?: string | null }): Promise<User>;
   
   // Property operations
   searchProperty(searchData: PropertySearch): Promise<PropertyWithDetails | null>;
@@ -22,10 +24,18 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
   async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(userData)
+      .values({
+        ...userData,
+        authProvider: userData.id?.startsWith('google_') ? 'google' : 'local',
+      })
       .onConflictDoUpdate({
         target: users.id,
         set: {
@@ -34,6 +44,24 @@ export class DatabaseStorage implements IStorage {
         },
       })
       .returning();
+    return user;
+  }
+
+  async createLocalUser(userData: { email: string; passwordHash: string; firstName?: string | null; lastName?: string | null }): Promise<User> {
+    const userId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: userId,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        passwordHash: userData.passwordHash,
+        authProvider: 'local',
+      })
+      .returning();
+    
     return user;
   }
 

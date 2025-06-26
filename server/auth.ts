@@ -1,12 +1,35 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile as GoogleProfile } from "passport-google-oauth20";
-import { Strategy as AppleStrategy, Profile as AppleProfile } from "passport-apple";
+import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
+import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 
 export function setupOAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Local Strategy for email/password authentication
+  passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  }, async (email: string, password: string, done: any) => {
+    try {
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return done(null, false, { message: 'Invalid email or password' });
+      }
+
+      const isValidPassword = await bcrypt.compare(password, user.passwordHash || '');
+      if (!isValidPassword) {
+        return done(null, false, { message: 'Invalid email or password' });
+      }
+
+      return done(null, user);
+    } catch (error) {
+      return done(error);
+    }
+  }));
 
   // Google OAuth Strategy
   const callbackURL = process.env.REPLIT_DEV_DOMAIN 
@@ -57,6 +80,53 @@ export function setupOAuth(app: Express) {
       res.redirect("/");
     }
   );
+
+  // Local authentication routes
+  app.post("/api/auth/login", 
+    passport.authenticate("local", { failureRedirect: "/?error=invalid_credentials" }),
+    (req, res) => {
+      res.json({ success: true, user: req.user });
+    }
+  );
+
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists with this email" });
+      }
+
+      // Hash password
+      const saltRounds = 12;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+
+      // Create user
+      const user = await storage.createLocalUser({
+        email,
+        passwordHash,
+        firstName: firstName || null,
+        lastName: lastName || null,
+      });
+
+      // Log user in
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Registration successful but login failed" });
+        }
+        res.json({ success: true, user });
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
 
   // Apple auth placeholder - will be implemented when Apple credentials are provided
   app.get("/api/auth/apple", (req, res) => {
