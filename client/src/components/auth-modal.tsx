@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Mail, Lock, User, AlertCircle } from "lucide-react";
-import { SiGoogle, SiApple } from "react-icons/si";
+import { SiGoogle, SiApple, SiGithub } from "react-icons/si";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -43,7 +43,13 @@ export default function AuthModal({ children }: AuthModalProps) {
   };
 
   const handleAppleLogin = () => {
+    // Apple login is a placeholder, so we might want to show a message or disable it
+    // For now, let's keep the existing behavior which will hit the 501 on the backend.
     window.location.href = "/api/auth/apple";
+  };
+
+  const handleGitHubLogin = () => {
+    window.location.href = "/api/auth/github";
   };
 
   const loginMutation = useMutation({
@@ -282,6 +288,14 @@ export default function AuthModal({ children }: AuthModalProps) {
           >
             <SiApple className="h-5 w-5" />
             <span className="font-medium">Continue with Apple</span>
+          </Button>
+
+          <Button
+            onClick={handleGitHubLogin}
+            className="w-full flex items-center justify-center space-x-3 bg-gray-800 hover:bg-gray-900 text-white py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <SiGithub className="h-5 w-5" />
+            <span className="font-medium">Continue with GitHub</span>
           </Button>
         </div>
         

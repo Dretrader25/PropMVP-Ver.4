@@ -30,16 +30,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    // Determine authProvider based on the structure of userData or a passed parameter
+    let authProvider = userData.authProvider || 'local'; // Default to local
+    if (userData.id?.startsWith('google_')) {
+      authProvider = 'google';
+    } else if (userData.githubId) { // Check if githubId is present
+      authProvider = 'github';
+    }
+
+    // If it's a GitHub user and the ID isn't prefixed, create one.
+    // For GitHub, we might prefer to use email or githubId as the conflict target if the main `id` is generated.
+    // However, the current schema uses `id` as the primary key for upsert.
+    // Let's assume `id` will be `github_${githubId}` for GitHub users, similar to `google_${googleId}`.
+
+    const valuesToInsert: UpsertUser = {
+      ...userData,
+      authProvider: authProvider as typeof users.authProvider.dataType, // Cast to ensure type safety
+    };
+
     const [user] = await db
       .insert(users)
-      .values({
-        ...userData,
-        authProvider: userData.id?.startsWith('google_') ? 'google' : 'local',
-      })
+      .values(valuesToInsert)
       .onConflictDoUpdate({
+        // If using githubId as unique constraint for GitHub users, target would be users.githubId
+        // If primary ID `id` is `github_${profile.id}`, then target is users.id
         target: users.id,
         set: {
-          ...userData,
+          // Ensure we don't overwrite existing passwordHash with null if OAuth user
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: userData.profileImageUrl,
+          githubId: userData.githubId, // Make sure to update githubId if it can change (unlikely)
+          authProvider: authProvider as typeof users.authProvider.dataType,
           updatedAt: new Date(),
         },
       })

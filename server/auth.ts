@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile as GoogleProfile } from "passport-google-oauth20";
+import { Strategy as GitHubStrategy, Profile as GitHubProfile } from "passport-github2";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import bcrypt from "bcryptjs";
@@ -32,22 +33,65 @@ export function setupOAuth(app: Express) {
   }));
 
   // Google OAuth Strategy
-  const callbackURL = process.env.REPLIT_DEV_DOMAIN 
+  const googleCallbackURL = process.env.REPLIT_DEV_DOMAIN
     ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/google/callback`
     : "/api/auth/google/callback";
 
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || "demo-client-id",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "demo-client-secret",
-    callbackURL: callbackURL
+    callbackURL: googleCallbackURL
   }, async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: any) => {
     try {
       const user = await storage.upsertUser({
-        id: `google_${profile.id}`,
+        id: `google_${profile.id}`, // Provider-specific ID
         email: profile.emails?.[0]?.value || null,
         firstName: profile.name?.givenName || null,
         lastName: profile.name?.familyName || null,
         profileImageUrl: profile.photos?.[0]?.value || null,
+        authProvider: 'google',
+      });
+      return done(null, user);
+    } catch (error) {
+      return done(error);
+    }
+  }));
+
+  // GitHub OAuth Strategy
+  const githubCallbackURL = process.env.REPLIT_DEV_DOMAIN
+    ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/github/callback`
+    : "/api/auth/github/callback";
+
+  passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID || "YOUR_GITHUB_CLIENT_ID", // More explicit placeholder
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || "YOUR_GITHUB_CLIENT_SECRET", // More explicit placeholder
+    callbackURL: githubCallbackURL,
+    scope: ['user:email'], // Request email permission
+  }, async (accessToken: string, refreshToken: string, profile: GitHubProfile, done: any) => {
+    try {
+      // GitHub often provides email in a separate private emails API or sometimes not at all publicly
+      // For simplicity, we'll try to get it from the main profile, but it might be null.
+      // A more robust solution might involve another API call if email is strictly required and not available.
+      const email = profile.emails?.[0]?.value || null;
+
+      // GitHub profile might not have separate firstName and lastName
+      const displayName = profile.displayName || profile.username;
+      let firstName = null;
+      let lastName = null;
+      if (displayName) {
+        const nameParts = displayName.split(' ');
+        firstName = nameParts[0];
+        lastName = nameParts.slice(1).join(' ') || null;
+      }
+
+      const user = await storage.upsertUser({
+        id: `github_${profile.id}`, // Provider-specific ID
+        githubId: profile.id, // Store native GitHub ID
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        profileImageUrl: profile.photos?.[0]?.value || null,
+        authProvider: 'github',
       });
       return done(null, user);
     } catch (error) {
@@ -77,7 +121,19 @@ export function setupOAuth(app: Express) {
   app.get("/api/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/?error=google_auth_failed" }),
     (req, res) => {
-      res.redirect("/");
+      res.redirect("/"); // Successful Google auth redirects to homepage
+    }
+  );
+
+  // GitHub auth routes
+  app.get("/api/auth/github",
+    passport.authenticate("github", { scope: ["user:email"] })
+  );
+
+  app.get("/api/auth/github/callback",
+    passport.authenticate("github", { failureRedirect: "/?error=github_auth_failed" }),
+    (req, res) => {
+      res.redirect("/"); // Successful GitHub auth redirects to homepage
     }
   );
 

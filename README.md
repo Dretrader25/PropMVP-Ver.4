@@ -6,6 +6,7 @@ A cutting-edge real estate wholesaling platform that transforms property investm
 
 ### Authentication & Security
 - **Google OAuth Integration** - Seamless sign-in with Google accounts
+- **GitHub OAuth Integration** - Seamless sign-in with GitHub accounts
 - **Email/Password Authentication** - Traditional registration and login system
 - **Secure Session Management** - PostgreSQL-backed session storage
 - **Password Security** - bcrypt hashing with salt rounds
@@ -51,14 +52,52 @@ A cutting-edge real estate wholesaling platform that transforms property investm
 - Node.js 20+
 - PostgreSQL 16+
 - Google OAuth credentials (optional)
+- GitHub OAuth credentials (optional)
 
 ### Environment Variables
+Update your `.env` file or Replit Secrets with the following variables.
+The `SESSION_SECRET` should be a long, random string for production.
+
 ```env
 DATABASE_URL=postgresql://username:password@host:port/database
+SESSION_SECRET=your_very_secure_session_secret
+
+# Google OAuth (Optional)
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-SESSION_SECRET=your_session_secret
+
+# GitHub OAuth (Optional)
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# OpenAI API Key (Required for AI Analysis)
+OPENAI_API_KEY=your_openai_api_key
+
+# Rentcast API Key (Required for property data)
+RENTCAST_API_KEY=your_rentcast_api_key
 ```
+
+#### Setting up OAuth Credentials:
+
+**For Google OAuth:**
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project or select an existing one.
+3. Navigate to "APIs & Services" > "Credentials".
+4. Click "Create Credentials" > "OAuth client ID".
+5. Select "Web application" as the application type.
+6. Add an "Authorized JavaScript origin" (e.g., `https://your-replit-slug.replit.dev` or `http://localhost:5173`).
+7. Add an "Authorized redirect URI": `https://your-replit-slug.replit.dev/api/auth/google/callback` (or `http://localhost:5000/api/auth/google/callback` for local dev).
+8. Copy the "Client ID" and "Client Secret".
+
+**For GitHub OAuth:**
+1. Go to your GitHub account settings > "Developer settings" > "OAuth Apps".
+2. Click "New OAuth App".
+3. **Application name:** e.g., "PropAnalyzed Dev"
+4. **Homepage URL:** e.g., `https://your-replit-slug.replit.dev` or `http://localhost:5173`
+5. **Authorization callback URL:** `https://your-replit-slug.replit.dev/api/auth/github/callback` (or `http://localhost:5000/api/auth/github/callback` for local dev).
+6. Click "Register application".
+7. Copy the "Client ID" and generate/copy the "Client Secret".
+
 
 ### Installation
 ```bash
@@ -94,14 +133,23 @@ npm run dev
 ## 🔐 Authentication Flow
 
 ### Google OAuth
-1. User clicks "Continue with Google"
-2. Redirects to Google OAuth consent screen
-3. Google redirects back with authorization code
-4. Server exchanges code for user profile
-5. User session created and dashboard access granted
+1. User clicks "Continue with Google".
+2. Redirects to Google OAuth consent screen.
+3. Google redirects back to `/api/auth/google/callback` with an authorization code.
+4. Server exchanges code for user profile with Google.
+5. User record is created or updated in the database.
+6. User session created and dashboard access granted.
+
+### GitHub OAuth
+1. User clicks "Continue with GitHub".
+2. Redirects to GitHub OAuth consent screen.
+3. GitHub redirects back to `/api/auth/github/callback` with an authorization code.
+4. Server exchanges code for user profile with GitHub.
+5. User record is created or updated in the database.
+6. User session created and dashboard access granted.
 
 ### Email/Password
-1. User registers with email and password
+1. User registers with email and password.
 2. Password hashed with bcrypt (12 salt rounds)
 3. User record created in PostgreSQL
 4. Login authenticates against stored hash
@@ -110,12 +158,13 @@ npm run dev
 ## 📊 Database Schema
 
 ### Users Table
-- `id` - Unique identifier (local_* or google_*)
-- `email` - User email address
+- `id` - Unique identifier (e.g., `local_*`, `google_*`, `github_*`)
+- `email` - User email address (unique where available)
 - `firstName` - User's first name
 - `lastName` - User's last name
-- `passwordHash` - Encrypted password (local auth only)
-- `authProvider` - Authentication method ('local', 'google')
+- `passwordHash` - Encrypted password (for local auth only)
+- `authProvider` - Authentication method ('local', 'google', 'github', 'apple')
+- `githubId` - GitHub user ID (unique, for GitHub OAuth)
 - `profileImageUrl` - Profile picture URL
 
 ### Properties Table
@@ -134,11 +183,16 @@ The application is configured for deployment on Replit with:
 ## 🔄 API Endpoints
 
 ### Authentication
-- `POST /api/auth/login` - Email/password login
-- `POST /api/auth/register` - User registration
-- `GET /api/auth/google` - Google OAuth initiation
-- `GET /api/auth/user` - Get current user
-- `GET /api/logout` - User logout
+- `POST /api/auth/login` - Email/password login.
+- `POST /api/auth/register` - User registration.
+- `GET /api/auth/google` - Initiates Google OAuth flow.
+- `GET /api/auth/google/callback` - Handles Google OAuth callback.
+- `GET /api/auth/github` - Initiates GitHub OAuth flow.
+- `GET /api/auth/github/callback` - Handles GitHub OAuth callback.
+- `GET /api/auth/apple` - Placeholder for Apple OAuth.
+- `GET /api/auth/user` - Get current authenticated user's details.
+- `GET /api/logout` - User logout (redirects).
+- `POST /api/auth/logout` - User logout (JSON response).
 
 ### Properties
 - `POST /api/properties/search` - Property search

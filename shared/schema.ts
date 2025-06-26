@@ -66,7 +66,8 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   passwordHash: varchar("password_hash"), // For local authentication
-  authProvider: varchar("auth_provider").default("local"), // 'local', 'google', 'apple'
+  authProvider: varchar("auth_provider").default("local"), // 'local', 'google', 'apple', 'github'
+  githubId: varchar("github_id").unique(), // Store GitHub user ID
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
