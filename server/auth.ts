@@ -71,6 +71,15 @@ export function setupOAuth(app: Express) {
     }
   });
 
+  app.get("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.redirect("/?error=logout_failed");
+      }
+      res.redirect("/");
+    });
+  });
+
   app.post("/api/auth/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
