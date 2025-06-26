@@ -1,0 +1,27 @@
+# Commands to push PropAnalyzed to your new GitHub repository
+
+# Step 1: Check current git status
+git status
+
+# Step 2: Add your new remote repository
+git remote add origin git@github.com:Dretrader25/PropMVP.2.git
+
+# Step 3: Check current remotes
+git remote -v
+
+# Step 4: Add all files to staging
+git add .
+
+# Step 5: Create initial commit
+git commit -m "Initial commit: PropAnalyzed - Modern OAuth authentication with Google and email/password login"
+
+# Step 6: Push to the new repository
+git push -u origin main
+
+# Alternative if main branch doesn't exist:
+# git branch -M main
+# git push -u origin main
+
+# If you get any SSH key issues, you may need to:
+# 1. Check if SSH key is added to GitHub: ssh -T git@github.com
+# 2. Or use HTTPS instead: git remote set-url origin https://github.com/Dretrader25/PropMVP.2.git
