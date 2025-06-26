@@ -1,13 +1,15 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Search, 
   BarChart3, 
   TrendingUp, 
   Users, 
   Menu,
-  Home
+  Home,
+  LogOut
 } from "lucide-react";
 
 interface NavigationBarProps {
@@ -16,6 +18,11 @@ interface NavigationBarProps {
 
 export default function NavigationBar({ onMenuClick }: NavigationBarProps) {
   const [location] = useLocation();
+  const { user } = useAuth();
+
+  const handleLogout = () => {
+    window.location.href = "/api/logout";
+  };
 
   const navigationItems = [
     {
@@ -93,11 +100,16 @@ export default function NavigationBar({ onMenuClick }: NavigationBarProps) {
           {/* Right side - Actions */}
           <div className="flex items-center space-x-3">
             <div className="hidden sm:block text-sm text-slate-400">
-              Professional Plan
+              {(user as any)?.email || "Professional Plan"}
             </div>
-            <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl flex items-center justify-center text-white text-xs font-bold">
-              Pro
-            </div>
+            <Button
+              variant="ghost"
+              onClick={handleLogout}
+              className="text-slate-400 hover:text-slate-200 hover:bg-slate-700/30 p-2 rounded-xl transition-all duration-300"
+              title="Sign Out"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
