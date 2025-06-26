@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   TrendingUp, 
   MapPin, 
@@ -11,10 +12,15 @@ import {
   Shield,
   Zap
 } from "lucide-react";
+import { SiGoogle, SiApple } from "react-icons/si";
 
 export default function Landing() {
-  const handleLogin = () => {
-    window.location.href = "/api/login";
+  const handleGoogleLogin = () => {
+    window.location.href = "/api/auth/google";
+  };
+
+  const handleAppleLogin = () => {
+    window.location.href = "/api/auth/apple";
   };
 
   return (
@@ -31,12 +37,46 @@ export default function Landing() {
                 PropAnalyzed
               </span>
             </div>
-            <Button 
-              onClick={handleLogin}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200"
-            >
-              Sign In
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200">
+                  Sign In
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-md border-white/20">
+                <DialogHeader>
+                  <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Welcome to PropAnalyzed
+                  </DialogTitle>
+                  <DialogDescription className="text-center text-gray-600">
+                    Choose your preferred sign-in method to access advanced property analytics
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 mt-6">
+                  <Button
+                    onClick={handleGoogleLogin}
+                    className="w-full flex items-center justify-center space-x-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    <SiGoogle className="h-5 w-5 text-red-500" />
+                    <span className="font-medium">Continue with Google</span>
+                  </Button>
+                  
+                  <Button
+                    onClick={handleAppleLogin}
+                    className="w-full flex items-center justify-center space-x-3 bg-black hover:bg-gray-900 text-white py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    <SiApple className="h-5 w-5" />
+                    <span className="font-medium">Continue with Apple</span>
+                  </Button>
+                </div>
+                
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-gray-500">
+                    By signing in, you agree to our Terms of Service and Privacy Policy
+                  </p>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </nav>
@@ -60,13 +100,49 @@ export default function Landing() {
               AI-driven insights, and interactive property visualization tools.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                onClick={handleLogin}
-                size="lg"
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 text-lg"
-              >
-                Get Started Free
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button 
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 text-lg"
+                  >
+                    Get Started Free
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-md border-white/20">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      Welcome to PropAnalyzed
+                    </DialogTitle>
+                    <DialogDescription className="text-center text-gray-600">
+                      Choose your preferred sign-in method to access advanced property analytics
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 mt-6">
+                    <Button
+                      onClick={handleGoogleLogin}
+                      className="w-full flex items-center justify-center space-x-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                    >
+                      <SiGoogle className="h-5 w-5 text-red-500" />
+                      <span className="font-medium">Continue with Google</span>
+                    </Button>
+                    
+                    <Button
+                      onClick={handleAppleLogin}
+                      className="w-full flex items-center justify-center space-x-3 bg-black hover:bg-gray-900 text-white py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                    >
+                      <SiApple className="h-5 w-5" />
+                      <span className="font-medium">Continue with Apple</span>
+                    </Button>
+                  </div>
+                  
+                  <div className="mt-6 text-center">
+                    <p className="text-xs text-gray-500">
+                      By signing in, you agree to our Terms of Service and Privacy Policy
+                    </p>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button 
                 variant="outline" 
                 size="lg"
@@ -171,13 +247,49 @@ export default function Landing() {
           <p className="text-xl text-gray-300 mb-8">
             Join thousands of successful real estate investors who use PropAnalyzed to find and close profitable deals faster.
           </p>
-          <Button 
-            onClick={handleLogin}
-            size="lg"
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-12 py-4 rounded-lg transition-all duration-200 text-lg"
-          >
-            Start Your Free Trial
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-12 py-4 rounded-lg transition-all duration-200 text-lg"
+              >
+                Start Your Free Trial
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-md border-white/20">
+              <DialogHeader>
+                <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Get Started with PropAnalyzed
+                </DialogTitle>
+                <DialogDescription className="text-center text-gray-600">
+                  Choose your preferred sign-in method to access advanced property analytics
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 mt-6">
+                <Button
+                  onClick={handleGoogleLogin}
+                  className="w-full flex items-center justify-center space-x-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <SiGoogle className="h-5 w-5 text-red-500" />
+                  <span className="font-medium">Continue with Google</span>
+                </Button>
+                
+                <Button
+                  onClick={handleAppleLogin}
+                  className="w-full flex items-center justify-center space-x-3 bg-black hover:bg-gray-900 text-white py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <SiApple className="h-5 w-5" />
+                  <span className="font-medium">Continue with Apple</span>
+                </Button>
+              </div>
+              
+              <div className="mt-6 text-center">
+                <p className="text-xs text-gray-500">
+                  By signing in, you agree to our Terms of Service and Privacy Policy
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
           <p className="text-sm text-gray-400 mt-4">
             No credit card required • Full access to all features
           </p>
