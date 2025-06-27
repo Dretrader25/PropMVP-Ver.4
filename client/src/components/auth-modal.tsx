@@ -46,6 +46,11 @@ export default function AuthModal({ children }: AuthModalProps) {
     window.location.href = "/api/auth/apple";
   };
 
+  const handleAdminBypass = () => {
+    setError("");
+    loginMutation.mutate({ email: "admin", password: "accesstoprop" });
+  };
+
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
       const response = await fetch("/api/auth/login", {
@@ -284,6 +289,24 @@ export default function AuthModal({ children }: AuthModalProps) {
             <span className="font-medium">Continue with Apple</span>
           </Button>
         </div>
+        
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Development Access</span>
+          </div>
+        </div>
+
+        <Button
+          onClick={handleAdminBypass}
+          className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+          disabled={loginMutation.isPending}
+        >
+          {loginMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          🔓 Admin Bypass (Development)
+        </Button>
         
         <div className="text-center">
           <p className="text-xs text-gray-500">
