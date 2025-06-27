@@ -116,83 +116,118 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProperty(propertyData: PropertySearch): Promise<PropertyWithDetails> {
-    // Generate property details with realistic data based on location
-    const propertyDetails = {
-      address: propertyData.address,
-      city: propertyData.city,
-      state: propertyData.state,
-      zipCode: propertyData.zipCode,
-      beds: Math.floor(Math.random() * 4) + 2, // 2-5 beds
-      baths: (Math.floor(Math.random() * 3) + 1.5).toString(), // 1.5-4.5 baths
-      sqft: Math.floor(Math.random() * 2000) + 1500, // 1500-3500 sqft
-      yearBuilt: Math.floor(Math.random() * 50) + 1970, // 1970-2020
-      propertyType: "Single Family",
-      lotSize: "0.2 acres",
-      parking: "2-car garage",
-      hasPool: Math.random() > 0.5,
-      hoaFees: Math.random() > 0.7 ? (Math.floor(Math.random() * 200) + 50).toString() : "0.00",
-      listPrice: (Math.floor(Math.random() * 1000000) + 500000).toString(),
-      listingStatus: Math.random() > 0.3 ? "For Sale" : "Not Listed",
-      daysOnMarket: Math.floor(Math.random() * 90) + 1,
-      pricePerSqft: "400.00",
-      lastSalePrice: (Math.floor(Math.random() * 800000) + 400000).toString(),
-      lastSaleDate: "2020-06-15",
-    };
+    try {
+      // Fetch authentic property data from Rentcast API
+      console.log(`Fetching property data from Rentcast for: ${propertyData.address}, ${propertyData.city}, ${propertyData.state}`);
+      
+      const [rentcastProperty, rentcastComparables, rentcastMarketData] = await Promise.all([
+        rentcastService.getPropertyDetails(propertyData.address, propertyData.city, propertyData.state, propertyData.zipCode),
+        rentcastService.getComparables(propertyData.address, propertyData.city, propertyData.state, propertyData.zipCode),
+        rentcastService.getMarketData(propertyData.city, propertyData.state, propertyData.zipCode)
+      ]);
 
-    // Insert property into database
-    const [property] = await db
-      .insert(properties)
-      .values(propertyDetails)
-      .returning();
+      // Convert Rentcast data to our property format
+      const propertyDetailsFromAPI = rentcastService.convertToPropertyWithDetails(
+        rentcastProperty,
+        rentcastComparables,
+        rentcastMarketData,
+        0 // Temporary ID, will be replaced after DB insert
+      );
 
-    // Generate and insert comparable sales
-    const comparablesData = [
-      {
+      // Insert authentic property data into database
+      const [property] = await db
+        .insert(properties)
+        .values({
+          address: propertyDetailsFromAPI.address,
+          city: propertyDetailsFromAPI.city,
+          state: propertyDetailsFromAPI.state,
+          zipCode: propertyDetailsFromAPI.zipCode,
+          beds: propertyDetailsFromAPI.beds,
+          baths: propertyDetailsFromAPI.baths,
+          sqft: propertyDetailsFromAPI.sqft,
+          yearBuilt: propertyDetailsFromAPI.yearBuilt,
+          propertyType: propertyDetailsFromAPI.propertyType,
+          lotSize: propertyDetailsFromAPI.lotSize,
+          parking: propertyDetailsFromAPI.parking,
+          hasPool: propertyDetailsFromAPI.hasPool,
+          hoaFees: propertyDetailsFromAPI.hoaFees,
+          listPrice: propertyDetailsFromAPI.listPrice,
+          listingStatus: propertyDetailsFromAPI.listingStatus,
+          daysOnMarket: propertyDetailsFromAPI.daysOnMarket,
+          pricePerSqft: propertyDetailsFromAPI.pricePerSqft,
+          lastSalePrice: propertyDetailsFromAPI.lastSalePrice,
+          lastSaleDate: propertyDetailsFromAPI.lastSaleDate,
+        })
+        .returning();
+
+      // Insert authentic comparable sales data
+      const comparablesData = propertyDetailsFromAPI.comparables.map(comp => ({
+        ...comp,
         propertyId: property.id,
-        address: `${Math.floor(Math.random() * 9999)} ${propertyData.city} Street`,
-        salePrice: (Math.floor(Math.random() * 500000) + 750000).toString(),
-        beds: Math.floor(Math.random() * 3) + 3,
-        baths: (Math.floor(Math.random() * 2) + 2).toString(),
-        sqft: Math.floor(Math.random() * 1000) + 2000,
-        pricePerSqft: "425.00",
-        saleDate: "Nov 2023",
-      },
-      {
-        propertyId: property.id,
-        address: `${Math.floor(Math.random() * 9999)} ${propertyData.city} Avenue`,
-        salePrice: (Math.floor(Math.random() * 500000) + 800000).toString(),
-        beds: Math.floor(Math.random() * 3) + 3,
-        baths: (Math.floor(Math.random() * 2) + 2.5).toString(),
-        sqft: Math.floor(Math.random() * 1000) + 2200,
-        pricePerSqft: "435.00",
-        saleDate: "Oct 2023",
-      },
-    ];
+      }));
 
-    const insertedComparables = await db
-      .insert(comparableSales)
-      .values(comparablesData)
-      .returning();
+      const insertedComparables = comparablesData.length > 0 
+        ? await db.insert(comparableSales).values(comparablesData).returning()
+        : [];
 
-    // Generate and insert market metrics
-    const metricsData = {
-      propertyId: property.id,
-      avgDaysOnMarket: Math.floor(Math.random() * 60) + 30,
-      medianSalePrice: (Math.floor(Math.random() * 400000) + 900000).toString(),
-      avgPricePerSqft: (Math.floor(Math.random() * 100) + 400).toString(),
-      priceAppreciation: (Math.random() * 15 + 5).toFixed(1),
-    };
+      // Insert authentic market metrics
+      let insertedMetrics = null;
+      if (propertyDetailsFromAPI.marketMetrics) {
+        const [metrics] = await db
+          .insert(marketMetrics)
+          .values({
+            ...propertyDetailsFromAPI.marketMetrics,
+            propertyId: property.id,
+          })
+          .returning();
+        insertedMetrics = metrics;
+      }
 
-    const [insertedMetrics] = await db
-      .insert(marketMetrics)
-      .values(metricsData)
-      .returning();
+      console.log(`Successfully created property with authentic Rentcast data: ${property.address}`);
 
-    return {
-      ...property,
-      comparables: insertedComparables,
-      marketMetrics: insertedMetrics,
-    };
+      return {
+        ...property,
+        comparables: insertedComparables,
+        marketMetrics: insertedMetrics,
+      };
+
+    } catch (error) {
+      console.error('Rentcast API error, falling back to basic property creation:', error);
+      
+      // If Rentcast API fails, create basic property with minimal required fields
+      const basicPropertyDetails = {
+        address: propertyData.address,
+        city: propertyData.city,
+        state: propertyData.state,
+        zipCode: propertyData.zipCode,
+        beds: 3,
+        baths: "2.0",
+        sqft: 1800,
+        yearBuilt: 1995,
+        propertyType: "Single Family",
+        lotSize: "0.2 acres",
+        parking: "2-car garage",
+        hasPool: false,
+        hoaFees: "0.00",
+        listPrice: "0", // Will show as "Contact for Price"
+        listingStatus: "Data Unavailable",
+        daysOnMarket: 0,
+        pricePerSqft: "0",
+        lastSalePrice: "0",
+        lastSaleDate: "N/A",
+      };
+
+      const [property] = await db
+        .insert(properties)
+        .values(basicPropertyDetails)
+        .returning();
+
+      return {
+        ...property,
+        comparables: [],
+        marketMetrics: null,
+      };
+    }
   }
 }
 
