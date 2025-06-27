@@ -162,8 +162,14 @@ export class DatabaseStorage implements IStorage {
 
       // Insert authentic comparable sales data
       const comparablesData = propertyDetailsFromAPI.comparables.map(comp => ({
-        ...comp,
         propertyId: property.id,
+        address: comp.address,
+        salePrice: comp.salePrice,
+        beds: comp.beds,
+        baths: comp.baths,
+        sqft: comp.sqft,
+        pricePerSqft: comp.pricePerSqft,
+        saleDate: comp.saleDate,
       }));
 
       const insertedComparables = comparablesData.length > 0 
@@ -173,12 +179,17 @@ export class DatabaseStorage implements IStorage {
       // Insert authentic market metrics
       let insertedMetrics = null;
       if (propertyDetailsFromAPI.marketMetrics) {
+        const metricsData = {
+          propertyId: property.id,
+          avgDaysOnMarket: propertyDetailsFromAPI.marketMetrics.avgDaysOnMarket,
+          medianSalePrice: propertyDetailsFromAPI.marketMetrics.medianSalePrice,
+          avgPricePerSqft: propertyDetailsFromAPI.marketMetrics.avgPricePerSqft,
+          priceAppreciation: propertyDetailsFromAPI.marketMetrics.priceAppreciation,
+        };
+        
         const [metrics] = await db
           .insert(marketMetrics)
-          .values({
-            ...propertyDetailsFromAPI.marketMetrics,
-            propertyId: property.id,
-          })
+          .values(metricsData)
           .returning();
         insertedMetrics = metrics;
       }
