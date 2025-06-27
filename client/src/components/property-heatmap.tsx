@@ -326,35 +326,61 @@ export default function PropertyHeatmap() {
   });
 
   return (
-    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
-        <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
-          Investment Property Heatmap
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
+    <Card className="glass-card rounded-3xl shadow-2xl overflow-hidden border border-slate-700/20 backdrop-blur-xl">
+      <CardHeader className="bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 pb-8 relative overflow-hidden">
+        {/* Premium Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-transparent to-blue-500/20"></div>
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="premium-dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="currentColor" opacity="0.3"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#premium-dots)"/>
+          </svg>
+        </div>
+        
+        <CardTitle className="flex items-center justify-between text-slate-100 text-3xl font-bold relative z-10">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-emerald-500/30 to-blue-500/30 rounded-2xl backdrop-blur-sm border border-white/10">
+              <Target className="h-8 w-8 text-emerald-300" />
+            </div>
+            <div>
+              <div className="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Investment Property Heatmap
+              </div>
+              <div className="text-sm font-normal text-slate-400 mt-1">Advanced Real Estate Intelligence</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 bg-slate-800/60 backdrop-blur-sm rounded-2xl p-3 border border-slate-600/30">
               <select 
-                className="bg-slate-800/50 border border-slate-600 rounded-lg px-3 py-1 text-sm text-slate-200"
+                className="bg-slate-700/80 border border-slate-500/50 rounded-xl px-4 py-2 text-sm text-slate-200 font-medium backdrop-blur-sm focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-400/50 transition-all duration-300"
                 value={filterDealType}
                 onChange={(e) => setFilterDealType(e.target.value)}
               >
-                <option value="all">All Types</option>
-                <option value="wholesale">Wholesale</option>
-                <option value="flip">Flip</option>
-                <option value="rental">Rental</option>
-                <option value="land">Land</option>
+                <option value="all">🏘️ All Types</option>
+                <option value="wholesale">💼 Wholesale</option>
+                <option value="flip">🔨 Flip</option>
+                <option value="rental">🏠 Rental</option>
+                <option value="land">🌍 Land</option>
               </select>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={filterScore}
-                onChange={(e) => setFilterScore(Number(e.target.value))}
-                className="w-20"
-              />
-              <span className="text-xs text-slate-300 min-w-[60px]">Score: {filterScore}+</span>
-            </div>
-            <div className="p-2 bg-emerald-500/20 rounded-xl">
-              <Target className="h-6 w-6 text-emerald-400" />
+              
+              <div className="flex items-center gap-2 px-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={filterScore}
+                  onChange={(e) => setFilterScore(Number(e.target.value))}
+                  className="w-24 h-2 bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-emerald-400 [&::-webkit-slider-thumb]:to-blue-400 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-emerald-500/30"
+                />
+                <span className="text-xs text-slate-300 min-w-[65px] font-medium bg-slate-700/50 px-2 py-1 rounded-lg">
+                  {filterScore === 0 ? 'All' : `${filterScore}+`}
+                </span>
+              </div>
             </div>
           </div>
         </CardTitle>
@@ -363,18 +389,36 @@ export default function PropertyHeatmap() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           
           {/* Interactive Investment Heatmap */}
-          <div className="lg:col-span-2 relative bg-slate-900/50 min-h-[600px] overflow-hidden">
+          <div className="lg:col-span-2 relative bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/90 min-h-[700px] overflow-hidden">
             
-            {/* Map Background with Grid */}
-            <div className="absolute inset-0 opacity-20">
-              <svg width="100%" height="100%" className="text-slate-600">
-                <defs>
-                  <pattern id="property-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#property-grid)" />
-              </svg>
+            {/* Premium Map Background */}
+            <div className="absolute inset-0">
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 via-blue-900/5 to-purple-900/10"></div>
+              
+              {/* Sophisticated Grid Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <svg width="100%" height="100%" className="text-slate-400">
+                  <defs>
+                    <pattern id="premium-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+                      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+                      <circle cx="30" cy="30" r="1" fill="currentColor" opacity="0.3"/>
+                    </pattern>
+                    <linearGradient id="grid-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: "#10b981", stopOpacity: 0.1 }} />
+                      <stop offset="50%" style={{ stopColor: "#3b82f6", stopOpacity: 0.05 }} />
+                      <stop offset="100%" style={{ stopColor: "#8b5cf6", stopOpacity: 0.1 }} />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#premium-grid)" />
+                  <rect width="100%" height="100%" fill="url(#grid-gradient)" />
+                </svg>
+              </div>
+              
+              {/* Ambient Light Effects */}
+              <div className="absolute top-0 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+              <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/3 rounded-full blur-2xl transform -translate-x-1/2 -translate-y-1/2"></div>
             </div>
 
             {/* Property Markers */}
@@ -394,32 +438,81 @@ export default function PropertyHeatmap() {
                       }}
                       onClick={() => setSelectedProperty(property)}
                     >
-                      {/* Investment Score Pulse */}
+                      {/* Multi-layer Pulse Animation */}
                       <div 
-                        className={`absolute ${getMarkerSize(property.investmentScore)} rounded-full animate-ping opacity-40`}
+                        className={`absolute ${getMarkerSize(property.investmentScore)} rounded-full animate-ping opacity-30`}
+                        style={{ backgroundColor: getInvestmentColor(property.investmentScore) }}
+                      />
+                      <div 
+                        className={`absolute ${getMarkerSize(property.investmentScore)} rounded-full animate-pulse opacity-20`}
+                        style={{ 
+                          backgroundColor: getInvestmentColor(property.investmentScore),
+                          animationDelay: '0.5s',
+                          transform: 'scale(1.3)'
+                        }}
+                      />
+                      
+                      {/* Glow Effect */}
+                      <div 
+                        className={`absolute ${getMarkerSize(property.investmentScore)} rounded-full blur-sm opacity-60 group-hover:opacity-100 transition-all duration-500`}
                         style={{ backgroundColor: getInvestmentColor(property.investmentScore) }}
                       />
                       
-                      {/* Main Property Marker */}
+                      {/* Main Property Marker with Premium Styling */}
                       <div 
-                        className={`${getMarkerSize(property.investmentScore)} rounded-full border-2 border-white shadow-lg transform transition-all duration-300 group-hover:scale-125 z-20 relative flex items-center justify-center`}
-                        style={{ backgroundColor: getInvestmentColor(property.investmentScore) }}
+                        className={`${getMarkerSize(property.investmentScore)} rounded-full border-2 border-white/80 shadow-2xl transform transition-all duration-500 group-hover:scale-150 group-hover:shadow-3xl z-20 relative flex items-center justify-center backdrop-blur-sm`}
+                        style={{ 
+                          backgroundColor: getInvestmentColor(property.investmentScore),
+                          boxShadow: `0 0 20px ${getInvestmentColor(property.investmentScore)}40, 0 0 40px ${getInvestmentColor(property.investmentScore)}20`
+                        }}
                       >
-                        <Home className="h-3 w-3 text-white" />
+                        <Home className="h-3 w-3 text-white drop-shadow-lg" />
+                        
+                        {/* Inner Highlight */}
+                        <div className="absolute inset-1 rounded-full bg-white/20 opacity-50"></div>
                       </div>
                       
-                      {/* Investment Score Badge */}
-                      <div className="absolute -top-2 -right-2 bg-slate-900/95 text-white text-xs px-1 py-0.5 rounded border border-slate-700/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
-                        {property.investmentScore}
+                      {/* Investment Score Badge with Premium Styling */}
+                      <div className="absolute -top-3 -right-3 bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-md text-white text-xs px-2 py-1 rounded-lg border border-slate-600/50 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-500 z-30 font-bold">
+                        <div className="text-center">
+                          <div className="text-emerald-400">{property.investmentScore}</div>
+                          <div className="text-slate-400 text-[10px]">SCORE</div>
+                        </div>
                       </div>
                       
-                      {/* Hover Details */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
-                        <div className="bg-slate-900/95 text-white text-xs px-3 py-2 rounded-lg border border-slate-700/50 whitespace-nowrap">
-                          <div className="font-semibold">{property.address.split(',')[0]}</div>
-                          <div className="text-slate-300">Score: {property.investmentScore}/100</div>
-                          <div className="text-slate-300">{formatCurrency(property.price)}</div>
-                          <div className="text-slate-300">ROI: {property.roi}%</div>
+                      {/* Enhanced Hover Details */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500 z-40">
+                        <div className="bg-gradient-to-br from-slate-900/98 to-slate-800/95 backdrop-blur-xl text-white text-sm px-4 py-3 rounded-xl border border-slate-600/30 shadow-2xl whitespace-nowrap">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div 
+                              className="w-3 h-3 rounded-full shadow-lg"
+                              style={{ backgroundColor: getInvestmentColor(property.investmentScore) }}
+                            ></div>
+                            <div className="font-bold text-slate-100">{property.address.split(',')[0]}</div>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between gap-4">
+                              <span className="text-slate-400">Score:</span>
+                              <span className="text-emerald-400 font-semibold">{property.investmentScore}/100</span>
+                            </div>
+                            <div className="flex justify-between gap-4">
+                              <span className="text-slate-400">Price:</span>
+                              <span className="text-blue-400 font-semibold">{formatCurrency(property.price)}</span>
+                            </div>
+                            <div className="flex justify-between gap-4">
+                              <span className="text-slate-400">ROI:</span>
+                              <span className="text-purple-400 font-semibold">{property.roi}%</span>
+                            </div>
+                            <div className="flex justify-between gap-4">
+                              <span className="text-slate-400">Type:</span>
+                              <span className="text-amber-400 font-semibold capitalize">{property.dealType}</span>
+                            </div>
+                          </div>
+                          
+                          {/* Tooltip Arrow */}
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                            <div className="w-3 h-3 bg-slate-900 transform rotate-45 border border-slate-600/30"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -428,190 +521,238 @@ export default function PropertyHeatmap() {
               </div>
             </div>
 
-            {/* Control Panel */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              <Button variant="outline" size="sm" className="glass-card">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-              <Button variant="outline" size="sm" className="glass-card" onClick={() => setFilterScore(0)}>
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-              <Button variant="outline" size="sm" className="glass-card">
-                <Maximize className="h-4 w-4 mr-2" />
-                Fullscreen
-              </Button>
-            </div>
-
-            {/* Investment Legend */}
-            <div className="absolute bottom-4 left-4 bg-slate-900/95 rounded-xl p-4 border border-slate-700/50">
-              <div className="text-slate-200 text-sm font-semibold mb-3">Investment Score</div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#10B981" }}></div>
-                  <span className="text-slate-300 text-xs">90-100 (Excellent)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#3B82F6" }}></div>
-                  <span className="text-slate-300 text-xs">80-89 (Very Good)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#8B5CF6" }}></div>
-                  <span className="text-slate-300 text-xs">70-79 (Good)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#F59E0B" }}></div>
-                  <span className="text-slate-300 text-xs">60-69 (Fair)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#EF4444" }}></div>
-                  <span className="text-slate-300 text-xs">50-59 (Poor)</span>
+            {/* Premium Control Panel */}
+            <div className="absolute top-6 left-6 flex flex-col gap-3">
+              <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/90 backdrop-blur-xl rounded-2xl p-3 border border-slate-600/30 shadow-2xl">
+                <div className="flex flex-col gap-2">
+                  <Button variant="outline" size="sm" className="bg-slate-800/50 border-slate-600/50 hover:bg-slate-700/60 hover:border-slate-500/60 transition-all duration-300 text-slate-200">
+                    <Filter className="h-4 w-4 mr-2 text-emerald-400" />
+                    <span className="font-medium">Filter</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-slate-800/50 border-slate-600/50 hover:bg-slate-700/60 hover:border-slate-500/60 transition-all duration-300 text-slate-200" onClick={() => setFilterScore(0)}>
+                    <RotateCcw className="h-4 w-4 mr-2 text-blue-400" />
+                    <span className="font-medium">Reset</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-slate-800/50 border-slate-600/50 hover:bg-slate-700/60 hover:border-slate-500/60 transition-all duration-300 text-slate-200">
+                    <Maximize className="h-4 w-4 mr-2 text-purple-400" />
+                    <span className="font-medium">Expand</span>
+                  </Button>
                 </div>
               </div>
             </div>
 
-            {/* Stats Overlay */}
-            <div className="absolute top-4 right-4 bg-slate-900/95 rounded-xl p-4 border border-slate-700/50">
-              <div className="text-slate-200 text-sm font-semibold mb-3">Live Stats</div>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between gap-4">
-                  <span className="text-slate-400">Properties:</span>
-                  <span className="text-slate-200 font-medium">{filteredProperties.length}</span>
+            {/* Premium Investment Legend */}
+            <div className="absolute bottom-6 left-6 bg-gradient-to-br from-slate-900/98 to-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-slate-600/30 shadow-2xl">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-2 bg-emerald-500/20 rounded-xl">
+                  <Target className="h-4 w-4 text-emerald-400" />
                 </div>
-                <div className="flex justify-between gap-4">
-                  <span className="text-slate-400">Avg Score:</span>
-                  <span className="text-slate-200 font-medium">
-                    {(filteredProperties.reduce((acc, p) => acc + p.investmentScore, 0) / filteredProperties.length).toFixed(0)}
-                  </span>
+                <div className="text-slate-200 text-sm font-bold">Investment Score</div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full shadow-lg border border-white/20" style={{ backgroundColor: "#10B981" }}></div>
+                  <span className="text-slate-300 text-sm font-medium">90-100</span>
+                  <span className="text-emerald-400 text-xs font-bold px-2 py-1 bg-emerald-500/20 rounded-lg">Excellent</span>
                 </div>
-                <div className="flex justify-between gap-4">
-                  <span className="text-slate-400">Excellent:</span>
-                  <span className="text-emerald-400 font-medium">
-                    {filteredProperties.filter(p => p.investmentScore >= 90).length}
-                  </span>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full shadow-lg border border-white/20" style={{ backgroundColor: "#3B82F6" }}></div>
+                  <span className="text-slate-300 text-sm font-medium">80-89</span>
+                  <span className="text-blue-400 text-xs font-bold px-2 py-1 bg-blue-500/20 rounded-lg">Very Good</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full shadow-lg border border-white/20" style={{ backgroundColor: "#8B5CF6" }}></div>
+                  <span className="text-slate-300 text-sm font-medium">70-79</span>
+                  <span className="text-violet-400 text-xs font-bold px-2 py-1 bg-violet-500/20 rounded-lg">Good</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full shadow-lg border border-white/20" style={{ backgroundColor: "#F59E0B" }}></div>
+                  <span className="text-slate-300 text-sm font-medium">60-69</span>
+                  <span className="text-amber-400 text-xs font-bold px-2 py-1 bg-amber-500/20 rounded-lg">Fair</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full shadow-lg border border-white/20" style={{ backgroundColor: "#EF4444" }}></div>
+                  <span className="text-slate-300 text-sm font-medium">50-59</span>
+                  <span className="text-red-400 text-xs font-bold px-2 py-1 bg-red-500/20 rounded-lg">Poor</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium Stats Overlay */}
+            <div className="absolute top-6 right-6 bg-gradient-to-br from-slate-900/98 to-slate-800/95 backdrop-blur-xl rounded-2xl p-5 border border-slate-600/30 shadow-2xl">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-2 bg-blue-500/20 rounded-xl">
+                  <Zap className="h-4 w-4 text-blue-400" />
+                </div>
+                <div className="text-slate-200 text-sm font-bold">Live Analytics</div>
+              </div>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between items-center gap-6">
+                  <span className="text-slate-400 font-medium">Properties:</span>
+                  <div className="bg-slate-700/50 px-3 py-1 rounded-lg">
+                    <span className="text-slate-200 font-bold">{filteredProperties.length}</span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center gap-6">
+                  <span className="text-slate-400 font-medium">Avg Score:</span>
+                  <div className="bg-emerald-500/20 px-3 py-1 rounded-lg">
+                    <span className="text-emerald-400 font-bold">
+                      {filteredProperties.length > 0 ? (filteredProperties.reduce((acc, p) => acc + p.investmentScore, 0) / filteredProperties.length).toFixed(0) : '0'}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center gap-6">
+                  <span className="text-slate-400 font-medium">Excellent:</span>
+                  <div className="bg-emerald-500/20 px-3 py-1 rounded-lg">
+                    <span className="text-emerald-400 font-bold">
+                      {filteredProperties.filter(p => p.investmentScore >= 90).length}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center gap-6">
+                  <span className="text-slate-400 font-medium">High ROI:</span>
+                  <div className="bg-purple-500/20 px-3 py-1 rounded-lg">
+                    <span className="text-purple-400 font-bold">
+                      {filteredProperties.filter(p => p.roi >= 25).length}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Property Details Panel */}
-          <div className="bg-slate-800/30 p-6 border-l border-slate-700/30">
+          {/* Premium Property Details Panel */}
+          <div className="bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 p-8 border-l border-slate-600/30 backdrop-blur-xl relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="detail-pattern" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <circle cx="3" cy="3" r="1" fill="currentColor" opacity="0.2"/>
+                    <circle cx="15" cy="15" r="0.5" fill="currentColor" opacity="0.3"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#detail-pattern)"/>
+              </svg>
+            </div>
             {selectedProperty ? (
-              <div className="space-y-6">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-slate-200">{selectedProperty.address.split(',')[0]}</h3>
-                    <Badge className={getScoreLabel(selectedProperty.investmentScore).color + " border"}>
-                      {getScoreLabel(selectedProperty.investmentScore).label}
-                    </Badge>
+              <div className="space-y-8 relative z-10">
+                {/* Property Header */}
+                <div className="text-center pb-6 border-b border-slate-600/30">
+                  <div className="flex items-center gap-3 mb-4 justify-center">
+                    <div 
+                      className="w-6 h-6 rounded-full shadow-lg border border-white/20"
+                      style={{ backgroundColor: getInvestmentColor(selectedProperty.investmentScore) }}
+                    ></div>
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent">
+                      {selectedProperty.address.split(',')[0]}
+                    </h3>
                   </div>
+                  <Badge className={getScoreLabel(selectedProperty.investmentScore).color + " border text-sm px-4 py-2 font-bold"}>
+                    {getScoreLabel(selectedProperty.investmentScore).label}
+                  </Badge>
+                </div>
                   
-                  <div className="space-y-4">
-                    <div className="glass-card rounded-2xl p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-slate-400 text-sm">Investment Score</span>
-                        <div className="p-1 bg-emerald-500/20 rounded-lg">
-                          <Target className="h-4 w-4 text-emerald-400" />
-                        </div>
-                      </div>
-                      <div className="text-3xl font-bold text-gradient">{selectedProperty.investmentScore}/100</div>
-                      <div className="text-slate-500 text-xs mt-1">Overall potential rating</div>
-                    </div>
-
-                    <div className="glass-card rounded-2xl p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-slate-400 text-sm">Deal Details</span>
-                        <div className="p-1 bg-blue-500/20 rounded-lg">
-                          <DollarSign className="h-4 w-4 text-blue-400" />
-                        </div>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Price:</span>
-                          <span className="text-slate-200 font-medium">{formatCurrency(selectedProperty.price)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Est. Value:</span>
-                          <span className="text-slate-200 font-medium">{formatCurrency(selectedProperty.estimatedValue)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Equity:</span>
-                          <span className="text-emerald-400 font-medium">{formatCurrency(selectedProperty.equity)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">ROI:</span>
-                          <span className="text-purple-400 font-medium">{selectedProperty.roi}%</span>
-                        </div>
+                <div className="space-y-6">
+                  {/* Investment Score Card */}
+                  <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm rounded-3xl p-6 border border-slate-600/30 shadow-2xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-slate-300 text-lg font-semibold">Investment Score</span>
+                      <div className="p-3 bg-emerald-500/20 rounded-2xl">
+                        <Target className="h-6 w-6 text-emerald-400" />
                       </div>
                     </div>
-
-                    <div className="glass-card rounded-2xl p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-slate-400 text-sm">Risk & Type</span>
-                        {getRiskIcon(selectedProperty.riskLevel)}
+                    <div className="text-center">
+                      <div className="text-5xl font-black bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                        {selectedProperty.investmentScore}
                       </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Risk Level:</span>
-                          <span className={`font-medium ${
+                      <div className="text-slate-400 text-sm font-medium">out of 100 points</div>
+                      
+                      {/* Score Progress Bar */}
+                      <div className="w-full bg-slate-700/50 rounded-full h-3 mt-4 overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: `${selectedProperty.investmentScore}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Deal Details Card */}
+                  <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm rounded-3xl p-6 border border-slate-600/30 shadow-2xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-slate-300 text-lg font-semibold">Deal Details</span>
+                      <div className="p-3 bg-blue-500/20 rounded-2xl">
+                        <DollarSign className="h-6 w-6 text-blue-400" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Price:</span>
+                        <span className="text-slate-200 font-bold">{formatCurrency(selectedProperty.price)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Est. Value:</span>
+                        <span className="text-slate-200 font-bold">{formatCurrency(selectedProperty.estimatedValue)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Equity:</span>
+                        <span className="text-emerald-400 font-bold">{formatCurrency(selectedProperty.equity)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">ROI:</span>
+                        <span className="text-purple-400 font-bold">{selectedProperty.roi}%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Risk & Performance Card */}
+                  <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/60 backdrop-blur-sm rounded-3xl p-6 border border-slate-600/30 shadow-2xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-slate-300 text-lg font-semibold">Risk & Performance</span>
+                      <div className="p-3 bg-purple-500/20 rounded-2xl">
+                        <TrendingUp className="h-6 w-6 text-purple-400" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Risk Level:</span>
+                        <div className="flex items-center gap-2">
+                          {getRiskIcon(selectedProperty.riskLevel)}
+                          <span className={`font-bold ${
                             selectedProperty.riskLevel === 'low' ? 'text-emerald-400' :
                             selectedProperty.riskLevel === 'medium' ? 'text-yellow-400' : 'text-red-400'
                           }`}>
                             {selectedProperty.riskLevel.charAt(0).toUpperCase() + selectedProperty.riskLevel.slice(1)}
                           </span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Deal Type:</span>
-                          <span className="text-slate-200 font-medium">
-                            {selectedProperty.dealType.charAt(0).toUpperCase() + selectedProperty.dealType.slice(1)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Days on Market:</span>
-                          <span className="text-slate-200 font-medium">{selectedProperty.daysOnMarket}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Motivation:</span>
-                          <span className="text-orange-400 font-medium">{selectedProperty.motivation}</span>
-                        </div>
                       </div>
-                    </div>
-
-                    <div className="glass-card rounded-2xl p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-slate-400 text-sm">Performance Metrics</span>
-                        <div className="p-1 bg-purple-500/20 rounded-lg">
-                          <TrendingUp className="h-4 w-4 text-purple-400" />
-                        </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Deal Type:</span>
+                        <span className="text-slate-200 font-bold capitalize">{selectedProperty.dealType}</span>
                       </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Cash Flow:</span>
-                          <span className="text-emerald-400 font-medium">{formatCurrency(selectedProperty.cashFlow)}/mo</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Appreciation:</span>
-                          <span className="text-blue-400 font-medium">+{selectedProperty.appreciationPotential}%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Distress Level:</span>
-                          <span className="text-red-400 font-medium">{selectedProperty.distressLevel}%</span>
-                        </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Cash Flow:</span>
+                        <span className="text-emerald-400 font-bold">{formatCurrency(selectedProperty.cashFlow)}/mo</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400 font-medium">Motivation:</span>
+                        <span className="text-orange-400 font-bold">{selectedProperty.motivation}</span>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="space-y-3">
-                  <Button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium py-2 px-4 rounded-xl">
-                    <Eye className="h-4 w-4 mr-2" />
-                    Analyze Deal
-                  </Button>
-                  <Button variant="outline" className="w-full glass-card">
-                    <Search className="h-4 w-4 mr-2" />
-                    View Comparables
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="space-y-3 pt-4">
+                    <Button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium py-3 px-4 rounded-xl">
+                      <Eye className="h-4 w-4 mr-2" />
+                      Analyze Deal
+                    </Button>
+                    <Button variant="outline" className="w-full bg-slate-800/50 border-slate-600/50 hover:bg-slate-700/60 text-slate-200 py-3 px-4 rounded-xl">
+                      <Search className="h-4 w-4 mr-2" />
+                      View Comparables
+                    </Button>
+                  </div>
                 </div>
               </div>
             ) : (
