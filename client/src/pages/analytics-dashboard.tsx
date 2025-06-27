@@ -4,10 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "wouter";
 import Sidebar from "@/components/sidebar";
 import NavigationBar from "@/components/navigation-bar";
 import AIAnalysis from "@/components/ai-analysis";
+import type { PropertyWithDetails } from "@shared/schema";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -118,7 +121,28 @@ const mockDashboardData = {
 export default function AnalyticsDashboard() {
   const [timeRange, setTimeRange] = useState("30d");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string>("");
   const [location, setLocation] = useLocation();
+
+  // Fetch all properties that have been searched
+  const { data: properties, isLoading: propertiesLoading } = useQuery<PropertyWithDetails[]>({
+    queryKey: ['/api/properties'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Fetch detailed data for selected property
+  const { data: selectedProperty, isLoading: propertyLoading } = useQuery<PropertyWithDetails>({
+    queryKey: ['/api/properties', selectedPropertyId],
+    enabled: !!selectedPropertyId,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Auto-select first property if none selected
+  useEffect(() => {
+    if (properties && Array.isArray(properties) && properties.length > 0 && !selectedPropertyId) {
+      setSelectedPropertyId(properties[0].id.toString());
+    }
+  }, [properties, selectedPropertyId]);
 
   // Apply dark theme
   useEffect(() => {
@@ -170,6 +194,22 @@ export default function AnalyticsDashboard() {
           </div>
           
           <div className="flex items-center space-x-4">
+            {/* Property Selection */}
+            <Select value={selectedPropertyId} onValueChange={setSelectedPropertyId}>
+              <SelectTrigger className="w-80 bg-slate-800/50 text-slate-200 border-slate-600 rounded-xl">
+                <SelectValue placeholder="Select property to analyze" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-600">
+                {properties && Array.isArray(properties) ? properties.map((property: PropertyWithDetails) => (
+                  <SelectItem key={property.id} value={property.id.toString()}>
+                    {property.address}, {property.city}, {property.state}
+                  </SelectItem>
+                )) : (
+                  <SelectItem value="no-properties" disabled>No properties found</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+            
             <select 
               value={timeRange} 
               onChange={(e) => setTimeRange(e.target.value)}
@@ -198,18 +238,43 @@ export default function AnalyticsDashboard() {
               </p>
             </div>
 
-            {/* Featured Property Analysis */}
-            <Card className="gradient-border-card shadow-lg overflow-hidden neon-glow">
-              <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
-                <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
-                  Featured Property Analysis
-                  <div className="p-2 bg-emerald-500/20 rounded-xl">
-                    <Target className="h-6 w-6 text-emerald-400" />
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+            {/* Loading and Empty States */}
+            {propertiesLoading && (
+              <Alert className="bg-slate-800/50 border-slate-600">
+                <Activity className="h-4 w-4" />
+                <AlertDescription>Loading properties...</AlertDescription>
+              </Alert>
+            )}
+
+            {!propertiesLoading && (!properties || !Array.isArray(properties) || properties.length === 0) && (
+              <Alert className="bg-slate-800/50 border-slate-600">
+                <Target className="h-4 w-4" />
+                <AlertDescription>
+                  No properties found. Go to the Property Search page to search for properties first.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {propertyLoading && selectedPropertyId && (
+              <Alert className="bg-slate-800/50 border-slate-600">
+                <Activity className="h-4 w-4" />
+                <AlertDescription>Loading property analysis...</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Property Analysis - Only show when property is selected and loaded */}
+            {selectedProperty && !propertyLoading && (
+              <Card className="gradient-border-card shadow-lg overflow-hidden neon-glow">
+                <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
+                  <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+                    Property Analysis: {selectedProperty.address}
+                    <div className="p-2 bg-emerald-500/20 rounded-xl">
+                      <Target className="h-6 w-6 text-emerald-400" />
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
                   
                   {/* Location & Property Basics */}
                   <div className="floating-card rounded-2xl p-6">
@@ -220,33 +285,33 @@ export default function AnalyticsDashboard() {
                     <div className="space-y-3">
                       <div>
                         <p className="text-slate-400 text-sm">Full Address</p>
-                        <p className="text-slate-200 font-medium">{mockDashboardData.featuredProperty.fullAddress}</p>
+                        <p className="text-slate-200 font-medium">{selectedProperty.address}, {selectedProperty.city}, {selectedProperty.state} {selectedProperty.zipCode}</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">County</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.county}</p>
+                        <p className="text-slate-400 text-sm">Property Type</p>
+                        <p className="text-slate-200">{selectedProperty.propertyType || 'N/A'}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-slate-400 text-sm">Beds/Baths</p>
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.beds}/{mockDashboardData.featuredProperty.baths}</p>
+                          <p className="text-slate-200">{selectedProperty.beds || 0}/{selectedProperty.baths || '0'}</p>
                         </div>
                         <div>
                           <p className="text-slate-400 text-sm">Year Built</p>
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.yearBuilt}</p>
+                          <p className="text-slate-200">{selectedProperty.yearBuilt || 'N/A'}</p>
                         </div>
                       </div>
                       <div>
                         <p className="text-slate-400 text-sm">Square Footage</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.squareFootage.toLocaleString()} sq ft</p>
+                        <p className="text-slate-200">{selectedProperty.sqft ? selectedProperty.sqft.toLocaleString() : 'N/A'} sq ft</p>
                       </div>
                       <div>
                         <p className="text-slate-400 text-sm">Lot Size</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.lotSize}</p>
+                        <p className="text-slate-200">{selectedProperty.lotSize || 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Property Type</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.propertyType}</p>
+                        <p className="text-slate-400 text-sm">Listing Status</p>
+                        <p className="text-slate-200">{selectedProperty.listingStatus || 'N/A'}</p>
                       </div>
                     </div>
                   </div>
@@ -418,12 +483,13 @@ export default function AnalyticsDashboard() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            )}
 
             {/* AI Property Analysis */}
             <AIAnalysis />
 
-          {/* Key Metrics Grid */}
+            {/* Key Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             <Card className="floating-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
