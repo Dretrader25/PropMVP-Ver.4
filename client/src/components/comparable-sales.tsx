@@ -1,6 +1,6 @@
 import { ComparableSale } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, Database } from "lucide-react";
 
 interface ComparableSalesProps {
   comparables: ComparableSale[];
@@ -38,39 +38,57 @@ export default function ComparableSales({ comparables }: ComparableSalesProps) {
               </tr>
             </thead>
             <tbody>
-              {comparables.map((comp, index) => (
-                <tr 
-                  key={comp.id} 
-                  className={`border-b border-slate-700/20 hover:bg-slate-700/20 transition-all duration-300 group ${
-                    index % 2 === 0 ? 'bg-slate-800/20' : 'bg-slate-800/10'
-                  }`}
-                >
-                  <td className="py-5 px-6 text-slate-200 font-medium group-hover:text-white transition-colors">
-                    {comp.address}
+              {comparables.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="flex flex-col items-center space-y-4">
+                      <div className="p-4 bg-slate-700/20 rounded-full">
+                        <Database className="h-8 w-8 text-slate-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-slate-300 font-medium mb-2">No Comparable Sales Data</h3>
+                        <p className="text-slate-400 text-sm">
+                          Comparable sales data is currently unavailable. This may be due to API configuration limitations.
+                        </p>
+                      </div>
+                    </div>
                   </td>
-                  <td className="py-5 px-6">
-                    <span className="text-emerald-400 font-bold text-lg bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                      {formatPrice(comp.salePrice)}
-                    </span>
-                  </td>
-                  <td className="py-5 px-6">
-                    <span className="text-slate-300 bg-slate-700/30 px-3 py-1 rounded-full font-medium">
-                      {comp.beds}/{comp.baths}
-                    </span>
-                  </td>
-                  <td className="py-5 px-6">
-                    <span className="text-slate-300 bg-slate-700/30 px-3 py-1 rounded-full font-medium">
-                      {comp.sqft?.toLocaleString()}
-                    </span>
-                  </td>
-                  <td className="py-5 px-6">
-                    <span className="text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full font-semibold border border-blue-500/20">
-                      ${comp.pricePerSqft}
-                    </span>
-                  </td>
-                  <td className="py-5 px-6 text-slate-400 font-medium">{comp.saleDate}</td>
                 </tr>
-              ))}
+              ) : (
+                comparables.map((comp, index) => (
+                  <tr 
+                    key={comp.id} 
+                    className={`border-b border-slate-700/20 hover:bg-slate-700/20 transition-all duration-300 group ${
+                      index % 2 === 0 ? 'bg-slate-800/20' : 'bg-slate-800/10'
+                    }`}
+                  >
+                    <td className="py-5 px-6 text-slate-200 font-medium group-hover:text-white transition-colors">
+                      {comp.address}
+                    </td>
+                    <td className="py-5 px-6">
+                      <span className="text-emerald-400 font-bold text-lg bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                        {formatPrice(comp.salePrice)}
+                      </span>
+                    </td>
+                    <td className="py-5 px-6">
+                      <span className="text-slate-300 bg-slate-700/30 px-3 py-1 rounded-full font-medium">
+                        {comp.beds}/{comp.baths}
+                      </span>
+                    </td>
+                    <td className="py-5 px-6">
+                      <span className="text-slate-300 bg-slate-700/30 px-3 py-1 rounded-full font-medium">
+                        {comp.sqft?.toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="py-5 px-6">
+                      <span className="text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full font-semibold border border-blue-500/20">
+                        ${comp.pricePerSqft}
+                      </span>
+                    </td>
+                    <td className="py-5 px-6 text-slate-400 font-medium">{comp.saleDate}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

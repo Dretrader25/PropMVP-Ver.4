@@ -1,25 +1,39 @@
 import { PropertyWithDetails } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Home } from "lucide-react";
+import { Home, AlertTriangle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface PropertyDetailsProps {
   property: PropertyWithDetails;
 }
 
 export default function PropertyDetails({ property }: PropertyDetailsProps) {
+  // Check if data appears to be unavailable (indicating missing API key)
+  const isDataLimited = property.listingStatus === "Data Unavailable" || 
+                       property.propertyType === "Data Unavailable" ||
+                       (property.sqft === 0 && property.yearBuilt === 0);
+
   const details = [
     { label: "Property Type", value: property.propertyType || "N/A" },
     { label: "Lot Size", value: property.lotSize || "N/A" },
     { label: "Parking", value: property.parking || "N/A" },
     { label: "Pool", value: property.hasPool ? "Yes" : "No" },
-    { label: "HOA", value: property.hoaFees ? `$${property.hoaFees}/month` : "None" },
+    { label: "HOA", value: property.hoaFees && property.hoaFees !== "0.00" ? `$${property.hoaFees}/month` : "None" },
   ];
 
   return (
     <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 pb-4">
         <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
-          Property Details
+          <div className="flex items-center gap-3">
+            Property Details
+            {isDataLimited && (
+              <Badge variant="secondary" className="bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Limited Data
+              </Badge>
+            )}
+          </div>
           <div className="p-2 bg-blue-500/20 rounded-xl">
             <Home className="h-6 w-6 text-blue-400" />
           </div>
