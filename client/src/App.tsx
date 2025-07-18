@@ -9,6 +9,10 @@ import Dashboard from "@/pages/dashboard";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import MarketIntelligence from "@/pages/market-intelligence";
 import LeadManagement from "@/pages/lead-management";
+import ProfilePage from "@/pages/profile";
+import SavedSearchesPage from "@/pages/saved-searches";
+import NotificationsPage from "@/pages/notifications";
+import AdminDashboard from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -36,6 +40,10 @@ function Router() {
           <Route path="/analytics" component={AnalyticsDashboard} />
           <Route path="/market-intelligence" component={MarketIntelligence} />
           <Route path="/lead-management" component={LeadManagement} />
+          <Route path="/profile" component={ProfilePage} />
+          <Route path="/saved-searches" component={SavedSearchesPage} />
+          <Route path="/notifications" component={NotificationsPage} />
+          <Route path="/admin" component={AdminDashboard} />
         </>
       )}
       <Route component={NotFound} />
