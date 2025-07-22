@@ -46,6 +46,26 @@ export default function AuthModal({ children }: AuthModalProps) {
     window.location.href = "/api/auth/apple";
   };
 
+  const handleAdminBypass = async () => {
+    try {
+      const response = await fetch("/api/auth/admin-bypass", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error("Admin bypass failed");
+      }
+    } catch (error) {
+      console.error("Admin bypass error:", error);
+    }
+  };
+
   const handleAdminBypass = () => {
     setError("");
     loginMutation.mutate({ email: "admin", password: "accesstoprop" });

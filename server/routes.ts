@@ -39,11 +39,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const searchData = propertySearchSchema.parse(req.body);
       const property = await storage.searchProperty(searchData);
-      
+
       if (!property) {
         return res.status(404).json({ message: "Property not found" });
       }
-      
+
       res.json(property);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -60,13 +60,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid property ID" });
       }
-      
+
       const property = await storage.getPropertyById(id);
-      
+
       if (!property) {
         return res.status(404).json({ message: "Property not found" });
       }
-      
+
       res.json(property);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
@@ -80,13 +80,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid property ID" });
       }
-      
+
       const property = await storage.getPropertyById(id);
-      
+
       if (!property) {
         return res.status(404).json({ message: "Property not found" });
       }
-      
+
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Content-Disposition', 'attachment; filename="property-report.json"');
       res.json(property);
@@ -102,13 +102,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid property ID" });
       }
-      
+
       const property = await storage.getPropertyById(id);
-      
+
       if (!property) {
         return res.status(404).json({ message: "Property not found" });
       }
-      
+
       const analysis = await analyzePropertyWithAI(property);
       res.json(analysis);
     } catch (error) {
@@ -126,6 +126,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(properties);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  // Development admin bypass route
+  app.post("/api/auth/admin-bypass", async (req, res) => {
+    if (process.env.NODE_ENV !== "development") {
+      return res.status(403).json({ message: "Admin bypass only available in development" });
+    }
+
+    try {
+      // Create or get admin user
+      const adminUser = await storage.upsertUser({
+        id: "admin_dev_user",
+        email: "admin@dev.local",
+        firstName: "Admin",
+        lastName: "User",
+        profileImageUrl: null,
+      });
+
+      req.login(adminUser, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Admin bypass login failed" });
+        }
+        res.json({ success: true, user: adminUser });
+      });
+    } catch (error) {
+      console.error("Admin bypass error:", error);
+      res.status(500).json({ message: "Admin bypass failed" });
     }
   });
 
