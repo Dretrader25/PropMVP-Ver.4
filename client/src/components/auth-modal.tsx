@@ -66,11 +66,6 @@ export default function AuthModal({ children }: AuthModalProps) {
     }
   };
 
-  const handleAdminBypass = () => {
-    setError("");
-    loginMutation.mutate({ email: "admin", password: "accesstoprop" });
-  };
-
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
       const response = await fetch("/api/auth/login", {
