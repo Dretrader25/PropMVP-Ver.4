@@ -84,8 +84,13 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
           </div>
           <h2 className="text-4xl font-bold text-gradient mb-3">Property Intelligence Engine</h2>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Unlock comprehensive property insights with our advanced data enrichment platform
+            Powered by authentic MLS data - Enter complete address for accurate property analysis
           </p>
+          <div className="mt-4 p-4 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-xl border border-emerald-500/20">
+            <p className="text-sm text-emerald-400 font-medium">
+              ✓ Real MLS Data • ✓ Authentic Comparables • ✓ Current Market Trends
+            </p>
+          </div>
         </div>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

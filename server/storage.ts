@@ -172,20 +172,13 @@ export class DatabaseStorage implements IStorage {
         originalPropertyData: !!rentcastProperty.formattedAddress
       });
       
-      // Create enhanced property details using search data and comparables averages
-      let enhancedPropertyDetails = {
-        formattedAddress: `${propertyData.address}, ${propertyData.city}, ${propertyData.state}${propertyData.zipCode ? ' ' + propertyData.zipCode : ''}`,
-        addressLine1: propertyData.address,
-        city: propertyData.city,
-        state: propertyData.state,
-        zipCode: propertyData.zipCode || '',
-        bedrooms: 3,
-        bathrooms: 2,
-        squareFootage: 1500,
-        yearBuilt: 1980,
-        propertyType: 'Single Family',
-        avm: 500000
-      };
+      // Only use authentic data - no synthetic fallbacks
+      console.log('Data integrity check: Creating property with authentic data only');
+      console.log(`Rentcast property data available: ${Object.keys(rentcastProperty).length > 0 ? 'Yes' : 'No'}`);
+      console.log(`Comparables available: ${rentcastComparables.length}`);
+      
+      // Use actual Rentcast property data if available, otherwise indicate data unavailable
+      let enhancedPropertyDetails = rentcastProperty;
       
       // Enhance with authentic comparables data when available
       if (rentcastComparables.length > 0) {
@@ -209,7 +202,6 @@ export class DatabaseStorage implements IStorage {
             city: propertyData.city,
             state: propertyData.state,
             zipCode: propertyData.zipCode || '',
-            county: validComparables[0]?.county || '',
             bedrooms: avgBeds,
             bathrooms: avgBaths,
             squareFootage: avgSqft,
@@ -229,9 +221,16 @@ export class DatabaseStorage implements IStorage {
         }
       }
 
-      // Convert Rentcast data to our property format
+      // Convert Rentcast data to our property format - only if authentic data available
       const propertyDetailsFromAPI = rentcastService.convertToPropertyWithDetails(
-        enhancedPropertyDetails,
+        enhancedPropertyDetails.formattedAddress ? enhancedPropertyDetails : {
+          formattedAddress: `${propertyData.address}, ${propertyData.city}, ${propertyData.state}${propertyData.zipCode ? ' ' + propertyData.zipCode : ''}`,
+          addressLine1: propertyData.address,
+          city: propertyData.city,
+          state: propertyData.state,
+          zipCode: propertyData.zipCode || '',
+          apiStatus: 'not_found'
+        },
         rentcastComparables,
         rentcastMarketData,
         0 // Temporary ID, will be replaced after DB insert

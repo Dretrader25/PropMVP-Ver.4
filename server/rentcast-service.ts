@@ -45,6 +45,9 @@ interface RentcastPropertyDetails {
   capRate?: number;
   cashOnCashReturn?: number;
   
+  // API status for tracking data authenticity
+  apiStatus?: 'success' | 'no_key' | 'not_found' | 'unavailable';
+  
   // Property condition and features
   condition?: string;
   heating?: string;
@@ -151,20 +154,61 @@ class RentcastService {
     return data;
   }
 
+  // Enhanced address formatting for better API compatibility
+  private formatAddressForAPI(address: string, city: string, state: string, zipCode?: string): string {
+    // Clean and standardize address components
+    const cleanAddress = address.trim();
+    const cleanCity = city?.trim() || '';
+    const cleanState = state?.trim() || '';
+    const cleanZip = zipCode?.trim() || '';
+
+    // Handle common abbreviations and expand them for better API matching
+    let formattedAddress = cleanAddress;
+    
+    // Standardize street type abbreviations to full words for better matching
+    formattedAddress = formattedAddress.replace(/\bCt\b/gi, 'Court');
+    formattedAddress = formattedAddress.replace(/\bSt\b/gi, 'Street');
+    formattedAddress = formattedAddress.replace(/\bAve\b/gi, 'Avenue');
+    formattedAddress = formattedAddress.replace(/\bDr\b/gi, 'Drive');
+    formattedAddress = formattedAddress.replace(/\bRd\b/gi, 'Road');
+    formattedAddress = formattedAddress.replace(/\bBlvd\b/gi, 'Boulevard');
+    formattedAddress = formattedAddress.replace(/\bLn\b/gi, 'Lane');
+    formattedAddress = formattedAddress.replace(/\bPl\b/gi, 'Place');
+
+    // Construct full address with proper formatting - only include non-empty components
+    let fullAddress = formattedAddress;
+    if (cleanCity) {
+      fullAddress += `, ${cleanCity}`;
+    }
+    if (cleanState) {
+      fullAddress += `, ${cleanState}`;
+    }
+    if (cleanZip) {
+      fullAddress += ` ${cleanZip}`;
+    }
+
+    return fullAddress;
+  }
+
   async getPropertyDetails(address: string, city: string, state: string, zipCode?: string): Promise<RentcastPropertyDetails> {
     if (!this.apiKey) {
-      console.log('Rentcast API key not available - returning basic property structure');
+      console.log('Rentcast API key not available - cannot fetch authentic property data');
       return {
         address: `${address}`,
-        city: city,
-        state: state,
+        city: city || '',
+        state: state || '',
         zipCode: zipCode || '',
+        apiStatus: 'no_key'
       };
     }
 
+    // Use enhanced address formatting for better API success
+    const fullAddress = this.formatAddressForAPI(address, city, state, zipCode);
     const params: Record<string, string> = {
-      address: `${address}, ${city}, ${state}${zipCode ? ' ' + zipCode : ''}`,
+      address: fullAddress,
     };
+
+    console.log(`Enhanced Rentcast API request with formatted address: ${fullAddress}`);
 
     try {
       const result = await this.makeRequest<RentcastPropertyDetails>('/avm/value', params);
@@ -177,13 +221,14 @@ class RentcastService {
         console.log('Rent estimate API returned:', JSON.stringify(rentResult, null, 2));
         return rentResult;
       } catch (rentError) {
-        console.warn('Both property APIs failed, returning basic structure with search parameters');
+        console.warn(`Both property APIs failed for address: ${fullAddress} - API cannot locate this property`);
         return {
-          formattedAddress: `${address}, ${city}, ${state}${zipCode ? ' ' + zipCode : ''}`,
+          formattedAddress: fullAddress,
           addressLine1: address,
-          city: city,
-          state: state,
+          city: city || '',
+          state: state || '',
           zipCode: zipCode || '',
+          apiStatus: 'not_found'
         };
       }
     }

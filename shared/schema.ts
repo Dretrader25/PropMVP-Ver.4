@@ -76,6 +76,11 @@ export const propertySearchSchema = createInsertSchema(properties).pick({
   city: true,
   state: true,
   zipCode: true,
+}).extend({
+  address: z.string().min(1, "Street address is required for accurate property lookup"),
+  city: z.string().min(1, "City is required for MLS data accuracy"),
+  state: z.string().min(1, "State is required"),
+  zipCode: z.string().optional(),
 });
 
 export type PropertySearch = z.infer<typeof propertySearchSchema>;
