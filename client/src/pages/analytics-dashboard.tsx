@@ -32,7 +32,8 @@ import {
   Phone,
   Mail,
   ArrowLeft,
-  Menu
+  Menu,
+  Search
 } from "lucide-react";
 
 // Mock data for the dashboard - in a real app, this would come from APIs
@@ -324,43 +325,62 @@ export default function AnalyticsDashboard() {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <p className="text-slate-400 text-sm">Owner Occupancy</p>
+                        <p className="text-slate-400 text-sm">Days on Market</p>
                         <div className="flex items-center">
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.ownerOccupancy}</p>
-                          <span className="ml-2 px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full">High Motivation</span>
+                          <p className="text-slate-200">{selectedProperty.daysOnMarket || 0} days</p>
+                          {(selectedProperty.daysOnMarket || 0) > 60 ? (
+                            <span className="ml-2 px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full">High Motivation</span>
+                          ) : (selectedProperty.daysOnMarket || 0) > 30 ? (
+                            <span className="ml-2 px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Moderate</span>
+                          ) : (
+                            <span className="ml-2 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Fresh</span>
+                          )}
                         </div>
                       </div>
                       <div>
                         <p className="text-slate-400 text-sm">Last Sale</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.lastSaleDate} - {formatCurrency(mockDashboardData.featuredProperty.lastSalePrice)}</p>
+                        <p className="text-slate-200">{selectedProperty.lastSaleDate !== 'N/A' ? selectedProperty.lastSaleDate : 'No recent sale'} - {selectedProperty.lastSalePrice !== '0.00' ? `$${parseInt(selectedProperty.lastSalePrice || '0').toLocaleString()}` : 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Mortgage Balance</p>
-                        <p className="text-slate-200">{formatCurrency(mockDashboardData.featuredProperty.mortgageBalance)}</p>
+                        <p className="text-slate-400 text-sm">Current List Price</p>
+                        <p className="text-slate-200">{selectedProperty.listPrice !== '0' ? `$${parseInt(selectedProperty.listPrice || '0').toLocaleString()}` : 'Not listed'}</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Tax Status</p>
+                        <p className="text-slate-400 text-sm">Price Per Sq Ft</p>
                         <div className="flex items-center">
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.taxDelinquency}</p>
-                          <span className="ml-2 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Good</span>
+                          <p className="text-slate-200">${selectedProperty.pricePerSqft || '0'}/sq ft</p>
+                          {parseInt(selectedProperty.pricePerSqft || '0') > 300 ? (
+                            <span className="ml-2 px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">High</span>
+                          ) : parseInt(selectedProperty.pricePerSqft || '0') > 200 ? (
+                            <span className="ml-2 px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full">Moderate</span>
+                          ) : (
+                            <span className="ml-2 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Good Value</span>
+                          )}
                         </div>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Foreclosure Status</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.foreclosureStatus}</p>
-                      </div>
-                      <div>
-                        <p className="text-slate-400 text-sm">Code Violations</p>
-                        <div className="flex items-center">
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.codeViolations} violations</p>
-                          <span className="ml-2 px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">Alert</span>
+                        <p className="text-slate-400 text-sm">Property Features</p>
+                        <div className="flex items-center space-x-2">
+                          {selectedProperty.hasPool && (
+                            <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Pool</span>
+                          )}
+                          {selectedProperty.parking !== 'N/A' && (
+                            <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Parking</span>
+                          )}
+                          {selectedProperty.hoaFees !== '0.00' && (
+                            <span className="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full">HOA</span>
+                          )}
                         </div>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Vacancy Status</p>
+                        <p className="text-slate-400 text-sm">Market Position</p>
                         <div className="flex items-center">
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.vacancyStatus}</p>
-                          <span className="ml-2 px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-full">Opportunity</span>
+                          <p className="text-slate-200">{selectedProperty.listingStatus}</p>
+                          {selectedProperty.listingStatus === 'Property Valued' ? (
+                            <span className="ml-2 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Analyzed</span>
+                          ) : (
+                            <span className="ml-2 px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Available</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -374,26 +394,32 @@ export default function AnalyticsDashboard() {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <p className="text-slate-400 text-sm">Estimated Market Value (AVM)</p>
-                        <p className="text-2xl font-bold text-gradient">{formatCurrency(mockDashboardData.featuredProperty.estimatedMarketValue)}</p>
+                        <p className="text-slate-400 text-sm">Current List Price</p>
+                        <p className="text-2xl font-bold text-gradient">
+                          {selectedProperty.listPrice !== '0' ? `$${parseInt(selectedProperty.listPrice).toLocaleString()}` : 'Not Listed'}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">ARV (After Repair Value)</p>
-                        <p className="text-xl font-semibold text-emerald-400">{formatCurrency(mockDashboardData.featuredProperty.arvEstimate)}</p>
+                        <p className="text-slate-400 text-sm">Last Sale Price</p>
+                        <p className="text-xl font-semibold text-emerald-400">
+                          {selectedProperty.lastSalePrice !== '0.00' ? `$${parseInt(selectedProperty.lastSalePrice).toLocaleString()}` : 'No recent sale'}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Rental Estimate</p>
-                        <p className="text-slate-200">{formatCurrency(mockDashboardData.featuredProperty.rentalEstimate)}/month</p>
+                        <p className="text-slate-400 text-sm">Price Per Sq Ft</p>
+                        <p className="text-slate-200">${selectedProperty.pricePerSqft}/sq ft</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Estimated Equity</p>
-                        <p className="text-xl font-semibold text-blue-400">{formatCurrency(mockDashboardData.featuredProperty.estimatedEquity)}</p>
+                        <p className="text-slate-400 text-sm">Total Square Footage</p>
+                        <p className="text-xl font-semibold text-blue-400">{selectedProperty.sqft ? selectedProperty.sqft.toLocaleString() : 'N/A'} sq ft</p>
                       </div>
                       <div className="pt-2 border-t border-slate-600">
-                        <p className="text-slate-400 text-sm">Deal Potential</p>
+                        <p className="text-slate-400 text-sm">Deal Status</p>
                         <div className="flex items-center">
-                          <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-sm rounded-full font-semibold">Strong Deal</span>
-                          <span className="ml-2 text-emerald-400 text-sm">56% equity</span>
+                          <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full font-semibold">{selectedProperty.listingStatus}</span>
+                          {selectedProperty.listPrice !== '0' && (
+                            <span className="ml-2 text-blue-400 text-sm">Market priced</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -403,29 +429,34 @@ export default function AnalyticsDashboard() {
                   <div className="floating-card rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <TrendingUp className="h-5 w-5 text-purple-400 mr-2" />
-                      <h3 className="text-lg font-semibold text-slate-200">Market Data for Dispo</h3>
+                      <h3 className="text-lg font-semibold text-slate-200">Market Data</h3>
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <p className="text-slate-400 text-sm">Avg Days on Market</p>
-                        <p className="text-slate-200">{mockDashboardData.featuredProperty.avgDaysOnMarket} days</p>
+                        <p className="text-slate-400 text-sm">Market Avg DOM</p>
+                        <p className="text-slate-200">{selectedProperty.marketMetrics?.avgDaysOnMarket || 30} days</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Price per Sq Ft</p>
-                        <p className="text-slate-200">${mockDashboardData.featuredProperty.pricePerSqFt}/sq ft</p>
+                        <p className="text-slate-400 text-sm">Market Price/Sq Ft</p>
+                        <p className="text-slate-200">${selectedProperty.marketMetrics?.avgPricePerSqft || '0'}/sq ft</p>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Appreciation Trend</p>
+                        <p className="text-slate-400 text-sm">Price Appreciation</p>
                         <div className="flex items-center">
-                          <p className="text-emerald-400 font-semibold">{mockDashboardData.featuredProperty.appreciationTrend}</p>
+                          <p className="text-emerald-400 font-semibold">{selectedProperty.marketMetrics?.priceAppreciation || '0.0'}%</p>
                           <ArrowUpRight className="h-4 w-4 text-emerald-400 ml-1" />
                         </div>
                       </div>
                       <div>
-                        <p className="text-slate-400 text-sm">Flood Zone</p>
+                        <p className="text-slate-400 text-sm">Median Sale Price</p>
                         <div className="flex items-center">
-                          <p className="text-slate-200">{mockDashboardData.featuredProperty.floodZone}</p>
-                          <span className="ml-2 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">Safe</span>
+                          <p className="text-slate-200">
+                            {selectedProperty.marketMetrics?.medianSalePrice && selectedProperty.marketMetrics.medianSalePrice !== '0.00' 
+                              ? `$${parseInt(selectedProperty.marketMetrics.medianSalePrice).toLocaleString()}`
+                              : 'N/A'
+                            }
+                          </p>
+                          <span className="ml-2 px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Market</span>
                         </div>
                       </div>
                     </div>
@@ -441,43 +472,58 @@ export default function AnalyticsDashboard() {
                       <h3 className="text-lg font-semibold text-slate-200">Recent Sold Comps</h3>
                     </div>
                     <div className="space-y-3">
-                      {mockDashboardData.featuredProperty.recentComps.map((comp, index) => (
-                        <div key={index} className="flex justify-between items-center p-3 bg-slate-700/20 rounded-xl">
-                          <div>
-                            <p className="text-slate-200 font-medium">{comp.address}</p>
-                            <p className="text-slate-400 text-sm">{comp.distance} • {comp.sqft.toLocaleString()} sq ft</p>
+                      {selectedProperty.comparables && selectedProperty.comparables.length > 0 ? (
+                        selectedProperty.comparables.slice(0, 3).map((comp) => (
+                          <div key={comp.id} className="flex justify-between items-center p-3 bg-slate-700/20 rounded-xl">
+                            <div>
+                              <p className="text-slate-200 font-medium">{comp.address}</p>
+                              <p className="text-slate-400 text-sm">{comp.beds} bed • {comp.sqft.toLocaleString()} sq ft</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-slate-200 font-semibold">${parseInt(comp.salePrice).toLocaleString()}</p>
+                              <p className="text-slate-400 text-sm">{comp.saleDate}</p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-slate-200 font-semibold">{formatCurrency(comp.price)}</p>
-                            <p className="text-slate-400 text-sm">{comp.dom} DOM</p>
-                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-4">
+                          <p className="text-slate-400">No comparable sales data available</p>
+                          <p className="text-slate-500 text-sm mt-1">Comparables will appear when property data is available</p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
 
-                  {/* Active Competition */}
+                  {/* Property Summary */}
                   <div className="holographic-card rounded-2xl p-6">
                     <div className="flex items-center mb-4">
                       <Eye className="h-5 w-5 text-amber-400 mr-2" />
-                      <h3 className="text-lg font-semibold text-slate-200">Active Competition</h3>
+                      <h3 className="text-lg font-semibold text-slate-200">Property Summary</h3>
                     </div>
                     <div className="space-y-3">
-                      {mockDashboardData.featuredProperty.activeListings.map((listing, index) => (
-                        <div key={index} className="flex justify-between items-center p-3 bg-slate-700/20 rounded-xl">
-                          <div>
-                            <p className="text-slate-200 font-medium">{listing.address}</p>
-                            <p className="text-slate-400 text-sm">{listing.distance} • {listing.sqft.toLocaleString()} sq ft</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-slate-200 font-semibold">{formatCurrency(listing.price)}</p>
-                            <p className="text-slate-400 text-sm">{listing.dom} DOM</p>
-                          </div>
+                      <div className="flex justify-between items-center p-3 bg-slate-700/20 rounded-xl">
+                        <div>
+                          <p className="text-slate-200 font-medium">Total Square Footage</p>
+                          <p className="text-slate-400 text-sm">{selectedProperty.propertyType}</p>
                         </div>
-                      ))}
+                        <div className="text-right">
+                          <p className="text-slate-200 font-semibold">{selectedProperty.sqft?.toLocaleString() || 'N/A'} sq ft</p>
+                          <p className="text-slate-400 text-sm">Built {selectedProperty.yearBuilt || 'N/A'}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-slate-700/20 rounded-xl">
+                        <div>
+                          <p className="text-slate-200 font-medium">Bed/Bath Configuration</p>
+                          <p className="text-slate-400 text-sm">Living spaces</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-slate-200 font-semibold">{selectedProperty.beds}/{selectedProperty.baths}</p>
+                          <p className="text-slate-400 text-sm">Bed/Bath</p>
+                        </div>
+                      </div>
                       <div className="pt-2 border-t border-slate-600">
-                        <p className="text-slate-400 text-sm">Market Position</p>
-                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-sm rounded-full">Below Market</span>
+                        <p className="text-slate-400 text-sm">Current Status</p>
+                        <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">{selectedProperty.listingStatus}</span>
                       </div>
                     </div>
                   </div>
@@ -495,17 +541,17 @@ export default function AnalyticsDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-slate-400 text-sm font-medium uppercase tracking-wide">Total Leads</p>
-                    <p className="text-3xl font-bold text-gradient mt-1">{formatNumber(mockDashboardData.overview.totalLeads)}</p>
+                    <p className="text-slate-400 text-sm font-medium uppercase tracking-wide">Properties Analyzed</p>
+                    <p className="text-3xl font-bold text-gradient mt-1">{formatNumber(properties?.length || 0)}</p>
                   </div>
                   <div className="p-3 bg-blue-500/20 rounded-xl">
                     <Users className="h-6 w-6 text-blue-400" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center">
-                  <ArrowUpRight className="h-4 w-4 text-emerald-400 mr-1" />
-                  <span className="text-emerald-400 text-sm font-medium">+12.5%</span>
-                  <span className="text-slate-400 text-sm ml-2">vs last month</span>
+                  <Search className="h-4 w-4 text-blue-400 mr-1" />
+                  <span className="text-blue-400 text-sm font-medium">Searched</span>
+                  <span className="text-slate-400 text-sm ml-2">from Property Search</span>
                 </div>
               </CardContent>
             </Card>
@@ -515,16 +561,16 @@ export default function AnalyticsDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-slate-400 text-sm font-medium uppercase tracking-wide">Active Properties</p>
-                    <p className="text-3xl font-bold text-gradient mt-1">{mockDashboardData.overview.activeProperties}</p>
+                    <p className="text-3xl font-bold text-gradient mt-1">{properties?.length || 0}</p>
                   </div>
                   <div className="p-3 bg-emerald-500/20 rounded-xl">
                     <Home className="h-6 w-6 text-emerald-400" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center">
-                  <ArrowUpRight className="h-4 w-4 text-emerald-400 mr-1" />
-                  <span className="text-emerald-400 text-sm font-medium">+8.3%</span>
-                  <span className="text-slate-400 text-sm ml-2">vs last month</span>
+                  <Target className="h-4 w-4 text-emerald-400 mr-1" />
+                  <span className="text-emerald-400 text-sm font-medium">Available</span>
+                  <span className="text-slate-400 text-sm ml-2">for analysis</span>
                 </div>
               </CardContent>
             </Card>
@@ -533,8 +579,8 @@ export default function AnalyticsDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-slate-400 text-sm font-medium uppercase tracking-wide">Deals Pending</p>
-                    <p className="text-3xl font-bold text-gradient mt-1">{mockDashboardData.overview.dealsPending}</p>
+                    <p className="text-slate-400 text-sm font-medium uppercase tracking-wide">Data Sources</p>
+                    <p className="text-3xl font-bold text-gradient mt-1">MLS</p>
                   </div>
                   <div className="p-3 bg-amber-500/20 rounded-xl">
                     <Target className="h-6 w-6 text-amber-400" />
