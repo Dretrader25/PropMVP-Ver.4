@@ -306,7 +306,7 @@ class RentcastService {
       state: rentcastProperty.state || 'Unknown State',
       zipCode: rentcastProperty.zipCode || 'N/A',
       beds: beds,
-      baths: baths > 0 ? baths.toString() : '0',
+      baths: baths > 0 ? baths.toString() : '0.0',
       sqft: sqft,
       yearBuilt: yearBuilt,
       propertyType: rentcastProperty.propertyType || 'Single Family',

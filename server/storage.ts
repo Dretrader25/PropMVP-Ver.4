@@ -126,11 +126,27 @@ export class DatabaseStorage implements IStorage {
         rentcastService.getMarketData(propertyData.city, propertyData.state, propertyData.zipCode)
       ]);
 
+      console.log('Fetched Rentcast data:', {
+        propertyKeys: Object.keys(rentcastProperty),
+        comparablesCount: rentcastComparables.length,
+        firstComparable: rentcastComparables[0] ? rentcastComparables[0].formattedAddress : 'none'
+      });
+
       // If main property details are empty but we have comparables, enhance with search data and comparables
       let enhancedPropertyDetails = rentcastProperty;
       const hasEmptyPropertyData = !rentcastProperty.formattedAddress && !rentcastProperty.addressLine1 && !rentcastProperty.address;
       
-      if (hasEmptyPropertyData && rentcastComparables.length > 0) {
+      console.log('Property enhancement debug:', {
+        hasEmptyPropertyData,
+        comparablesCount: rentcastComparables.length,
+        formattedAddress: rentcastProperty.formattedAddress,
+        addressLine1: rentcastProperty.addressLine1,
+        address: rentcastProperty.address
+      });
+      
+      // Enhanced logic: use comparables data when main property is empty OR when we have good comparables data
+      const shouldEnhance = hasEmptyPropertyData && rentcastComparables.length > 0;
+      if (shouldEnhance) {
         console.log('Main property API returned empty, enhancing with search params and comparable data');
         // Filter comparables that have required data (exclude land parcels for averaging)
         const validComparables = rentcastComparables.filter(comp => 
