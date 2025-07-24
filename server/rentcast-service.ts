@@ -299,11 +299,11 @@ class RentcastService {
       listingStatus = 'Data Available';
     }
 
-    // Enhanced property details using authentic Rentcast data
+    // Enhanced property details using authentic Rentcast data or enhanced details
     return {
       address: rentcastProperty.formattedAddress || rentcastProperty.addressLine1 || rentcastProperty.address || 'Address Not Available',
       city: rentcastProperty.city || 'Unknown City',
-      state: rentcastProperty.state || 'Unknown State',
+      state: rentcastProperty.state || 'Unknown State', 
       zipCode: rentcastProperty.zipCode || 'N/A',
       beds: beds,
       baths: baths > 0 ? baths.toString() : '0.0',
