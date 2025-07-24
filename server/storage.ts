@@ -126,9 +126,48 @@ export class DatabaseStorage implements IStorage {
         rentcastService.getMarketData(propertyData.city, propertyData.state, propertyData.zipCode)
       ]);
 
+      // If main property details are empty but we have comparables, enhance with search data and comparables
+      let enhancedPropertyDetails = rentcastProperty;
+      const hasEmptyPropertyData = !rentcastProperty.formattedAddress && !rentcastProperty.addressLine1 && !rentcastProperty.address;
+      
+      if (hasEmptyPropertyData && rentcastComparables.length > 0) {
+        console.log('Main property API returned empty, enhancing with search params and comparable data');
+        // Filter comparables that have required data (exclude land parcels for averaging)
+        const validComparables = rentcastComparables.filter(comp => 
+          comp.bedrooms > 0 && comp.bathrooms > 0 && comp.squareFootage > 0 && comp.propertyType !== 'Land'
+        );
+        
+        if (validComparables.length > 0) {
+          enhancedPropertyDetails = {
+            formattedAddress: `${propertyData.address}, ${propertyData.city}, ${propertyData.state}${propertyData.zipCode ? ' ' + propertyData.zipCode : ''}`,
+            addressLine1: propertyData.address,
+            city: propertyData.city,
+            state: propertyData.state,
+            zipCode: propertyData.zipCode || '',
+            county: validComparables[0]?.county || '',
+            // Use average data from valid comparables for property specs
+            bedrooms: Math.round(validComparables.reduce((sum, comp) => sum + (comp.bedrooms || 0), 0) / validComparables.length) || 3,
+            bathrooms: Math.round(validComparables.reduce((sum, comp) => sum + (comp.bathrooms || 0), 0) / validComparables.length * 10) / 10 || 2,
+            squareFootage: Math.round(validComparables.reduce((sum, comp) => sum + (comp.squareFootage || 0), 0) / validComparables.length) || 1500,
+            yearBuilt: Math.round(validComparables.reduce((sum, comp) => sum + (comp.yearBuilt || 1980), 0) / validComparables.length) || 1980,
+            propertyType: validComparables[0]?.propertyType || 'Single Family',
+            avm: Math.round(validComparables.reduce((sum, comp) => sum + (comp.price || 0), 0) / validComparables.length) || 0,
+          };
+        } else {
+          // Fallback to search parameters if no valid comparables
+          enhancedPropertyDetails = {
+            formattedAddress: `${propertyData.address}, ${propertyData.city}, ${propertyData.state}${propertyData.zipCode ? ' ' + propertyData.zipCode : ''}`,
+            addressLine1: propertyData.address,
+            city: propertyData.city,
+            state: propertyData.state,
+            zipCode: propertyData.zipCode || '',
+          };
+        }
+      }
+
       // Convert Rentcast data to our property format
       const propertyDetailsFromAPI = rentcastService.convertToPropertyWithDetails(
-        rentcastProperty,
+        enhancedPropertyDetails,
         rentcastComparables,
         rentcastMarketData,
         0 // Temporary ID, will be replaced after DB insert

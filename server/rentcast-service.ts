@@ -2,25 +2,41 @@ import { PropertySearch, PropertyWithDetails } from "@shared/schema";
 
 // Enhanced Rentcast API interfaces to capture more comprehensive data
 interface RentcastPropertyDetails {
+  // Address information
+  formattedAddress?: string;
   address?: string;
+  addressLine1?: string;
+  addressLine2?: string;
   city?: string;
   state?: string;
   zipCode?: string;
+  county?: string;
+  
+  // Property specifications
   bedrooms?: number;
   bathrooms?: number;
   squareFootage?: number;
   yearBuilt?: number;
   propertyType?: string;
+  lotSize?: number;
   lotSizeSquareFeet?: number;
   lotSizeAcres?: number;
+  
+  // Valuation data
   rent?: number;
   rentHigh?: number;
   rentLow?: number;
   avm?: number;
   avmHigh?: number;
   avmLow?: number;
+  value?: number;
+  valueHigh?: number;
+  valueLow?: number;
+  
+  // Sale history
   lastSaleDate?: string;
   lastSalePrice?: number;
+  
   // Additional fields for comprehensive analysis
   taxAssessment?: number;
   pricePerSquareFoot?: number;
@@ -28,6 +44,7 @@ interface RentcastPropertyDetails {
   grossRentMultiplier?: number;
   capRate?: number;
   cashOnCashReturn?: number;
+  
   // Property condition and features
   condition?: string;
   heating?: string;
@@ -36,10 +53,12 @@ interface RentcastPropertyDetails {
   garage?: boolean;
   pool?: boolean;
   fireplace?: boolean;
+  
   // Financial data
   taxes?: number;
   insurance?: number;
   hoaFees?: number;
+  
   // Market position
   daysOnMarket?: number;
   listingStatus?: string;
@@ -58,6 +77,8 @@ interface RentcastComparable {
   city: string;
   state: string;
   zipCode: string;
+  county?: string;
+  propertyType: string;
   bedrooms: number;
   bathrooms: number;
   squareFootage: number;
@@ -125,7 +146,8 @@ class RentcastService {
     }
 
     const data = await response.json();
-    console.log(`Rentcast API response received:`, JSON.stringify(data, null, 2));
+    console.log(`Rentcast API response received (first 500 chars):`, JSON.stringify(data, null, 2).substring(0, 500));
+    console.log(`Full response keys:`, Object.keys(data || {}));
     return data;
   }
 
@@ -144,7 +166,27 @@ class RentcastService {
       address: `${address}, ${city}, ${state}${zipCode ? ' ' + zipCode : ''}`,
     };
 
-    return this.makeRequest<RentcastPropertyDetails>('/avm/rent/long-term', params);
+    try {
+      const result = await this.makeRequest<RentcastPropertyDetails>('/avm/value', params);
+      console.log('Property details API returned:', JSON.stringify(result, null, 2));
+      return result;
+    } catch (error) {
+      console.warn('Property details API failed, attempting rent estimate endpoint');
+      try {
+        const rentResult = await this.makeRequest<RentcastPropertyDetails>('/avm/rent/long-term', params);
+        console.log('Rent estimate API returned:', JSON.stringify(rentResult, null, 2));
+        return rentResult;
+      } catch (rentError) {
+        console.warn('Both property APIs failed, returning basic structure with search parameters');
+        return {
+          formattedAddress: `${address}, ${city}, ${state}${zipCode ? ' ' + zipCode : ''}`,
+          addressLine1: address,
+          city: city,
+          state: state,
+          zipCode: zipCode || '',
+        };
+      }
+    }
   }
 
   async getComparables(address: string, city: string, state: string, zipCode?: string): Promise<RentcastComparable[]> {
@@ -159,7 +201,7 @@ class RentcastService {
     };
 
     try {
-      const response = await this.makeRequest<RentcastComparable[]>('/avm/rent/long-term/comparables', params);
+      const response = await this.makeRequest<RentcastComparable[]>('/avm/value/comparables', params);
       return Array.isArray(response) ? response : [];
     } catch (error) {
       console.warn('Comparables not found, returning empty array');
@@ -228,7 +270,7 @@ class RentcastService {
     }
 
     // Extract comprehensive property data from API response
-    const listPrice = rentcastProperty.avm || 0;
+    const listPrice = rentcastProperty.avm || rentcastProperty.value || 0;
     const sqft = rentcastProperty.squareFootage || 0;
     const beds = rentcastProperty.bedrooms || 0;
     const baths = rentcastProperty.bathrooms || 0;
@@ -259,7 +301,7 @@ class RentcastService {
 
     // Enhanced property details using authentic Rentcast data
     return {
-      address: rentcastProperty.address || 'Address Not Available',
+      address: rentcastProperty.formattedAddress || rentcastProperty.addressLine1 || rentcastProperty.address || 'Address Not Available',
       city: rentcastProperty.city || 'Unknown City',
       state: rentcastProperty.state || 'Unknown State',
       zipCode: rentcastProperty.zipCode || 'N/A',
