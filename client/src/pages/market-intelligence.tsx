@@ -6,6 +6,7 @@ import { useState } from "react";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
 import MarketHeatmap from "@/components/market-heatmap";
+import WorkflowProgress from "@/components/workflow-progress";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -186,6 +187,16 @@ export default function MarketIntelligence() {
       
       <div className="lg:pl-16 relative z-10">
         <div className="max-w-7xl mx-auto space-y-8 p-8">
+        
+        {/* Workflow Progress Assistant */}
+        <div className="fade-in">
+          <WorkflowProgress 
+            currentStep="evaluate"
+            propertySearched={true}
+            propertyAnalyzed={true}
+            leadAdded={false}
+          />
+        </div>
         
         {/* Header */}
         <div className="text-center">

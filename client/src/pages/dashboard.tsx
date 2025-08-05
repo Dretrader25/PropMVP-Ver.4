@@ -4,6 +4,7 @@ import NavigationBar from "@/components/navigation-bar";
 import PropertySearchForm from "@/components/property-search-form";
 import PropertyDashboard from "@/components/property-dashboard";
 import PropertyHeatmap from "@/components/property-heatmap";
+import WorkflowProgress from "@/components/workflow-progress";
 import { PropertyWithDetails } from "@shared/schema";
 import { Search, Menu, X, BarChart3, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -93,6 +94,16 @@ export default function Dashboard() {
         {/* Enhanced content area */}
         <div className="p-8">
           <div className="max-w-6xl mx-auto space-y-8">
+            {/* Workflow Progress Assistant */}
+            <div className="fade-in">
+              <WorkflowProgress 
+                currentStep="search"
+                propertySearched={!!selectedProperty}
+                propertyAnalyzed={false}
+                leadAdded={false}
+              />
+            </div>
+
             <div className="fade-in">
               <PropertySearchForm 
                 onPropertySelect={handlePropertySelect}

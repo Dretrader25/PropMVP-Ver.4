@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
+import WorkflowProgress from "@/components/workflow-progress";
 import { 
   Users, 
   Phone, 
@@ -227,6 +228,16 @@ export default function LeadManagement() {
       
       <div className="lg:pl-16 relative z-10">
         <div className="max-w-7xl mx-auto space-y-8 p-8">
+        
+        {/* Workflow Progress Assistant */}
+        <div className="fade-in">
+          <WorkflowProgress 
+            currentStep="convert"
+            propertySearched={true}
+            propertyAnalyzed={true}
+            leadAdded={true}
+          />
+        </div>
         
         {/* Header */}
         <div className="text-center">

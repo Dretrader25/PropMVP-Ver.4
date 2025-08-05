@@ -10,6 +10,7 @@ import { useLocation } from "wouter";
 import Sidebar from "@/components/sidebar";
 import NavigationBar from "@/components/navigation-bar";
 import AIAnalysis from "@/components/ai-analysis";
+import WorkflowProgress from "@/components/workflow-progress";
 import type { PropertyWithDetails } from "@shared/schema";
 import { 
   TrendingUp, 
@@ -231,6 +232,16 @@ export default function AnalyticsDashboard() {
         <div className="p-8">
           <div className="max-w-7xl mx-auto space-y-8">
             
+            {/* Workflow Progress Assistant */}
+            <div className="fade-in">
+              <WorkflowProgress 
+                currentStep="analyze"
+                propertySearched={properties && Array.isArray(properties) && properties.length > 0}
+                propertyAnalyzed={!!selectedProperty}
+                leadAdded={false}
+              />
+            </div>
+
             {/* Header */}
             <div className="text-center">
               <h1 className="text-5xl font-bold text-gradient mb-4">Wholesaler Command Center</h1>
