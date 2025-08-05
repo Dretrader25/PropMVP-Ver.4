@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { propertySearchSchema, type PropertySearch, type PropertyWithDetails } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +52,8 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
     onSuccess: (property) => {
       onLoadingChange(false);
       onPropertySelect(property);
+      // Invalidate properties cache so analytics dashboard sees the new property
+      queryClient.invalidateQueries({ queryKey: ['/api/properties'] });
       toast({
         title: "Property Found",
         description: "Property data has been successfully enriched.",
