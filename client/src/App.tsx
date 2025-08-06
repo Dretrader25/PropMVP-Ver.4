@@ -9,6 +9,8 @@ import Dashboard from "@/pages/dashboard";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import MarketIntelligence from "@/pages/market-intelligence";
 import LeadManagement from "@/pages/lead-management";
+import MakeOfferPage from "@/pages/make-offer";
+import SecureContractPage from "@/pages/secure-contract";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -36,6 +38,8 @@ function Router() {
           <Route path="/property-search" component={Dashboard} />
           <Route path="/analytics" component={AnalyticsDashboard} />
           <Route path="/lead-management" component={LeadManagement} />
+          <Route path="/make-offer" component={MakeOfferPage} />
+          <Route path="/secure-contract" component={SecureContractPage} />
         </>
       )}
       <Route component={NotFound} />

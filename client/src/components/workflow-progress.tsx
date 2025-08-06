@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, TrendingUp, AlertCircle, X, HelpCircle } from "lucide-react";
+import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, TrendingUp, AlertCircle, X, HelpCircle, FileText, PenTool, Crown } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface WorkflowStep {
@@ -23,6 +23,9 @@ interface WorkflowProgressProps {
   propertySearched?: boolean;
   propertyAnalyzed?: boolean;
   leadAdded?: boolean;
+  offerMade?: boolean;
+  contractSecured?: boolean;
+  isPremium?: boolean;
   onStepClick?: (step: WorkflowStep) => void;
   isVisible?: boolean;
   onToggle?: (visible: boolean) => void;
@@ -100,6 +103,46 @@ const workflowSteps: WorkflowStep[] = [
       'Add detailed notes from analysis',
       'Schedule follow-up activities'
     ]
+  },
+  {
+    id: 'offer',
+    title: 'Make an Offer',
+    description: 'Present cash offer based on MAO with purchase agreement and assignment clause',
+    icon: FileText,
+    route: '/make-offer',
+    status: 'pending',
+    requirements: [
+      'MAO calculated and verified',
+      'Purchase agreement template ready',
+      'Assignment clause included',
+      'Negotiation strategy planned'
+    ],
+    tips: [
+      'Offer 10-15% below MAO for negotiation room',
+      'Emphasize speed and convenience to seller',
+      'Include inspection period contingency',
+      'Prepare for counteroffers'
+    ]
+  },
+  {
+    id: 'contract',
+    title: 'Secure Contract',
+    description: 'Execute legally binding purchase agreement with assignment rights',
+    icon: PenTool,
+    route: '/secure-contract',
+    status: 'pending',
+    requirements: [
+      'Offer accepted by seller',
+      'Purchase agreement finalized',
+      'Assignment clause confirmed',
+      'Title status verified'
+    ],
+    tips: [
+      'Use e-signature for quick execution',
+      'Provide small earnest money deposit',
+      'Verify clear title with title company',
+      'Store contract securely in CRM'
+    ]
   }
 ];
 
@@ -109,6 +152,9 @@ export default function WorkflowProgress({
   propertySearched = false, 
   propertyAnalyzed = false, 
   leadAdded = false,
+  offerMade = false,
+  contractSecured = false,
+  isPremium = false,
   onStepClick,
   isVisible = false,
   onToggle
@@ -146,6 +192,26 @@ export default function WorkflowProgress({
         } else if (leadAdded) {
           status = 'completed';
         } else if (currentStep === 'convert') {
+          status = 'active';
+        } else {
+          status = 'pending';
+        }
+      } else if (step.id === 'offer') {
+        if (!isPremium || !leadAdded) {
+          status = 'pending';
+        } else if (offerMade) {
+          status = 'completed';
+        } else if (currentStep === 'offer') {
+          status = 'active';
+        } else {
+          status = 'pending';
+        }
+      } else if (step.id === 'contract') {
+        if (!isPremium || !offerMade) {
+          status = 'pending';
+        } else if (contractSecured) {
+          status = 'completed';
+        } else if (currentStep === 'contract') {
           status = 'active';
         } else {
           status = 'pending';
@@ -379,8 +445,11 @@ export default function WorkflowProgress({
                         }`}>
                           {step.title}
                         </h4>
-                        {isBlocked && (
-                          <AlertCircle className="h-4 w-4 text-slate-500" />
+                        {(step.id === 'offer' || step.id === 'contract') && (
+                          <Badge className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30 text-xs">
+                            <Crown className="h-3 w-3 mr-1" />
+                            PREMIUM
+                          </Badge>
                         )}
                       </div>
                       <p className={`text-sm ${
