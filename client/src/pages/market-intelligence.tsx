@@ -145,6 +145,7 @@ const marketIntelligenceData = {
 
 export default function MarketIntelligence() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [workflowVisible, setWorkflowVisible] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -195,6 +196,8 @@ export default function MarketIntelligence() {
             propertySearched={true}
             propertyAnalyzed={true}
             leadAdded={false}
+            isVisible={workflowVisible}
+            onToggle={setWorkflowVisible}
           />
         </div>
         

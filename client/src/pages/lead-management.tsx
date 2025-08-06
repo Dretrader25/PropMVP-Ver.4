@@ -159,6 +159,7 @@ const leadManagementData = {
 
 export default function LeadManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [workflowVisible, setWorkflowVisible] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -236,6 +237,8 @@ export default function LeadManagement() {
             propertySearched={true}
             propertyAnalyzed={true}
             leadAdded={true}
+            isVisible={workflowVisible}
+            onToggle={setWorkflowVisible}
           />
         </div>
         

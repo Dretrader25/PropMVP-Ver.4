@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, AlertCircle } from "lucide-react";
+import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, AlertCircle, X, HelpCircle } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface WorkflowStep {
@@ -23,6 +23,8 @@ interface WorkflowProgressProps {
   propertyAnalyzed?: boolean;
   leadAdded?: boolean;
   onStepClick?: (step: WorkflowStep) => void;
+  isVisible?: boolean;
+  onToggle?: (visible: boolean) => void;
 }
 
 const workflowSteps: WorkflowStep[] = [
@@ -105,7 +107,9 @@ export default function WorkflowProgress({
   propertySearched = false, 
   propertyAnalyzed = false, 
   leadAdded = false,
-  onStepClick 
+  onStepClick,
+  isVisible = false,
+  onToggle
 }: WorkflowProgressProps) {
   const [, setLocation] = useLocation();
   const [steps, setSteps] = useState<WorkflowStep[]>(workflowSteps);
@@ -223,6 +227,34 @@ export default function WorkflowProgress({
   const nextStep = getNextStep();
   const progress = calculateProgress();
 
+  // Show toggle button if workflow is not visible
+  if (!isVisible) {
+    return (
+      <Card className="glass-card border-slate-700/30 rounded-xl">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <HelpCircle className="h-5 w-5 text-blue-400" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">Need guidance?</h4>
+                <p className="text-sm text-slate-400">Enable the workflow assistant to guide you through the deal process</p>
+              </div>
+            </div>
+            <Button 
+              onClick={() => onToggle && onToggle(true)}
+              className="btn-primary-gradient"
+              size="sm"
+            >
+              Enable Guide
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="glass-card border-slate-700/30 rounded-xl">
       <CardContent className="p-6">
@@ -230,9 +262,19 @@ export default function WorkflowProgress({
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-white">Deal Workflow Assistant</h3>
-            <Badge className="bg-gradient-to-r from-blue-500/20 to-emerald-500/20 text-white border-blue-500/30">
-              {Math.round(progress)}% Complete
-            </Badge>
+            <div className="flex items-center space-x-3">
+              <Badge className="bg-gradient-to-r from-blue-500/20 to-emerald-500/20 text-white border-blue-500/30">
+                {Math.round(progress)}% Complete
+              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onToggle && onToggle(false)}
+                className="text-slate-400 hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
           {/* Progress Bar */}

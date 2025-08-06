@@ -124,6 +124,7 @@ export default function AnalyticsDashboard() {
   const [timeRange, setTimeRange] = useState("30d");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPropertyId, setSelectedPropertyId] = useState<string>("");
+  const [workflowVisible, setWorkflowVisible] = useState(false);
   const [location, setLocation] = useLocation();
 
   // Fetch all properties that have been searched
@@ -239,6 +240,8 @@ export default function AnalyticsDashboard() {
                 propertySearched={properties && Array.isArray(properties) && properties.length > 0}
                 propertyAnalyzed={!!selectedProperty}
                 leadAdded={false}
+                isVisible={workflowVisible}
+                onToggle={setWorkflowVisible}
               />
             </div>
 

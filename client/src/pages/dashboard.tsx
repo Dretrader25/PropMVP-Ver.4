@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<PropertyWithDetails | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [workflowVisible, setWorkflowVisible] = useState(false);
   const [location, setLocation] = useLocation();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -101,6 +102,8 @@ export default function Dashboard() {
                 propertySearched={!!selectedProperty}
                 propertyAnalyzed={false}
                 leadAdded={false}
+                isVisible={workflowVisible}
+                onToggle={setWorkflowVisible}
               />
             </div>
 
