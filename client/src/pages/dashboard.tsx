@@ -5,6 +5,7 @@ import PropertySearchForm from "@/components/property-search-form";
 import PropertyDashboard from "@/components/property-dashboard";
 import PropertyHeatmap from "@/components/property-heatmap";
 import WorkflowProgress from "@/components/workflow-progress";
+import CollapsibleSection from "@/components/collapsible-section";
 import { PropertyWithDetails } from "@shared/schema";
 import { Search, Menu, X, BarChart3, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -107,18 +108,29 @@ export default function Dashboard() {
               />
             </div>
 
-            <div className="fade-in">
+            {/* Property Search Section */}
+            <CollapsibleSection
+              title="Property Search"
+              description="Search and analyze investment properties"
+              icon={Search}
+              defaultExpanded={true}
+            >
               <PropertySearchForm 
                 onPropertySelect={handlePropertySelect}
                 onLoadingChange={handleLoadingChange}
               />
-            </div>
+            </CollapsibleSection>
 
             {/* Interactive Property Heatmap */}
             {!selectedProperty && !isLoading && (
-              <div className="space-y-8">
+              <CollapsibleSection
+                title="Market Heatmap"
+                description="Visual analysis of property investment opportunities"
+                icon={BarChart3}
+                defaultExpanded={false}
+              >
                 <PropertyHeatmap />
-              </div>
+              </CollapsibleSection>
             )}
 
             {/* Analytics Dashboard CTA */}

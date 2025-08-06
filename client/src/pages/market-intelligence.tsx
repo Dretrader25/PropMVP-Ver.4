@@ -7,6 +7,7 @@ import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
 import MarketHeatmap from "@/components/market-heatmap";
 import WorkflowProgress from "@/components/workflow-progress";
+import CollapsibleSection from "@/components/collapsible-section";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -224,7 +225,13 @@ export default function MarketIntelligence() {
         </div>
 
         {/* Market Overview Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <CollapsibleSection
+          title="Market Overview"
+          description="Key market metrics and performance indicators"
+          icon={Activity}
+          defaultExpanded={true}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="floating-card rounded-2xl overflow-hidden">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -292,13 +299,27 @@ export default function MarketIntelligence() {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
+        </CollapsibleSection>
 
         {/* Market Activity Heatmap */}
-        <MarketHeatmap />
+        <CollapsibleSection
+          title="Market Activity Heatmap"
+          description="Visual representation of market activity and opportunities"
+          icon={MapPin}
+          defaultExpanded={false}
+        >
+          <MarketHeatmap />
+        </CollapsibleSection>
 
         {/* Hot Markets Table */}
-        <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+        <CollapsibleSection
+          title="Hottest Markets"
+          description="Top performing markets with highest activity"
+          icon={Zap}
+          defaultExpanded={false}
+        >
+          <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-red-800/30 to-orange-700/30 pb-6">
             <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
               Hottest Markets
@@ -362,9 +383,16 @@ export default function MarketIntelligence() {
             </div>
           </CardContent>
         </Card>
+        </CollapsibleSection>
 
         {/* Market Segments & Distressed Properties */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <CollapsibleSection
+          title="Market Segments & Distressed Properties"
+          description="Market segment analysis and distressed property opportunities"
+          icon={PieChart}
+          defaultExpanded={false}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Market Segments */}
           <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
@@ -535,7 +563,8 @@ export default function MarketIntelligence() {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
+        </CollapsibleSection>
         </div>
       </div>
     </div>

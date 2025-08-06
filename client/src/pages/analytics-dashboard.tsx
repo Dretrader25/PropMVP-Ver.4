@@ -11,6 +11,7 @@ import Sidebar from "@/components/sidebar";
 import NavigationBar from "@/components/navigation-bar";
 import AIAnalysis from "@/components/ai-analysis";
 import WorkflowProgress from "@/components/workflow-progress";
+import CollapsibleSection from "@/components/collapsible-section";
 import type { PropertyWithDetails } from "@shared/schema";
 import { 
   TrendingUp, 
@@ -279,16 +280,18 @@ export default function AnalyticsDashboard() {
 
             {/* Property Analysis - Only show when property is selected and loaded */}
             {selectedProperty && !propertyLoading && (
-              <Card className="gradient-border-card shadow-lg overflow-hidden neon-glow">
-                <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
-                  <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
-                    Property Analysis: {selectedProperty.address}
-                    <div className="p-2 bg-emerald-500/20 rounded-xl">
-                      <Target className="h-6 w-6 text-emerald-400" />
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
+              <div className="space-y-6">
+                
+                {/* Property Overview */}
+                <CollapsibleSection
+                  title={`Property Overview: ${selectedProperty.address}`}
+                  description="Basic property information and key metrics"
+                  icon={Target}
+                  badge="Selected"
+                  defaultExpanded={true}
+                  className="gradient-border-card shadow-lg neon-glow"
+                  headerClassName="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30"
+                >
                   <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
                   
                   {/* Location & Property Basics */}
@@ -475,16 +478,21 @@ export default function AnalyticsDashboard() {
                       </div>
                     </div>
                   </div>
-                </div>
+                  </div>
+                </CollapsibleSection>
 
-                {/* Comparable Sales & Active Listings */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-                  {/* Recent Sold Comps */}
-                  <div className="glass-card-enhanced rounded-2xl p-6">
-                    <div className="flex items-center mb-4">
-                      <BarChart3 className="h-5 w-5 text-blue-400 mr-2" />
-                      <h3 className="text-lg font-semibold text-slate-200">Recent Sold Comps</h3>
-                    </div>
+                {/* Comparable Sales Section */}
+                <CollapsibleSection
+                  title="Comparable Sales Analysis"
+                  description="Recent sold comparables and market comps"
+                  icon={BarChart3}
+                  badge={selectedProperty.comparables?.length ? `${selectedProperty.comparables.length} Comps` : "No Comps"}
+                  defaultExpanded={false}
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Recent Sold Comps */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-slate-200 mb-4">Recent Sold Comps</h4>
                     <div className="space-y-3">
                       {selectedProperty.comparables && selectedProperty.comparables.length > 0 ? (
                         selectedProperty.comparables.slice(0, 3).map((comp) => (
@@ -504,16 +512,13 @@ export default function AnalyticsDashboard() {
                           <p className="text-slate-400">No comparable sales data available</p>
                           <p className="text-slate-500 text-sm mt-1">Comparables will appear when property data is available</p>
                         </div>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Property Summary */}
-                  <div className="holographic-card rounded-2xl p-6">
-                    <div className="flex items-center mb-4">
-                      <Eye className="h-5 w-5 text-amber-400 mr-2" />
-                      <h3 className="text-lg font-semibold text-slate-200">Property Summary</h3>
-                    </div>
+                    {/* Property Summary */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-slate-200 mb-4">Property Summary</h4>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center p-3 bg-slate-700/20 rounded-xl">
                         <div>
@@ -541,17 +546,29 @@ export default function AnalyticsDashboard() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-              </Card>
-            )}
+                  </div>
+                </CollapsibleSection>
 
-            {/* AI Property Analysis */}
-            <AIAnalysis />
+                {/* AI Property Analysis */}
+                <CollapsibleSection
+                  title="AI Investment Analysis"
+                  description="Smart property grading and investment insights"
+                  icon={Zap}
+                  badge="AI Powered"
+                  defaultExpanded={false}
+                >
+                  <AIAnalysis />
+                </CollapsibleSection>
 
-            {/* Key Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-            <Card className="floating-card rounded-2xl overflow-hidden">
+                {/* Dashboard Metrics */}
+                <CollapsibleSection
+                  title="Dashboard Overview"
+                  description="Key metrics and performance indicators"
+                  icon={Activity}
+                  defaultExpanded={false}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+                    <Card className="floating-card rounded-2xl overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -756,10 +773,116 @@ export default function AnalyticsDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+                  </div>
+                </CollapsibleSection>
 
-          {/* Market Intelligence & Top Markets */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Deal Pipeline & Activity */}
+                <CollapsibleSection
+                  title="Deal Pipeline & Recent Activity"
+                  description="Pipeline analysis and recent activity tracking"
+                  icon={BarChart3}
+                  defaultExpanded={false}
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    {/* Deal Pipeline */}
+                    <Card className="lg:col-span-2 gradient-border-card shadow-2xl overflow-hidden neon-glow">
+                      <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
+                        <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+                          Deal Pipeline Analysis
+                          <div className="p-2 bg-blue-500/20 rounded-xl">
+                            <BarChart3 className="h-6 w-6 text-blue-400" />
+                          </div>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <div className="space-y-6">
+                          {mockDashboardData.pipeline.map((stage, index) => (
+                            <div key={stage.stage} className="floating-card rounded-2xl p-5">
+                              <div className="flex items-center justify-between mb-4">
+                                <div>
+                                  <h4 className="text-slate-200 font-semibold text-lg">{stage.stage}</h4>
+                                  <p className="text-slate-400 text-sm">{stage.count} properties</p>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-2xl font-bold text-gradient">{formatCurrency(stage.value)}</p>
+                                  <p className="text-slate-400 text-sm">total value</p>
+                                </div>
+                              </div>
+                              <Progress 
+                                value={((stage.count / mockDashboardData.pipeline[0].count) * 100)} 
+                                className="h-3 bg-slate-700/30"
+                              />
+                              <div className="mt-2 flex justify-between text-xs text-slate-400">
+                                <span>{((stage.count / mockDashboardData.pipeline[0].count) * 100).toFixed(1)}% of total leads</span>
+                                <span>Avg: {formatCurrency(stage.value / stage.count)}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Recent Activity */}
+                    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+                      <CardHeader className="bg-gradient-to-r from-purple-800/30 to-purple-700/30 pb-6">
+                        <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+                          Recent Activity
+                          <div className="p-2 bg-purple-500/20 rounded-xl">
+                            <Activity className="h-5 w-5 text-purple-400" />
+                          </div>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          {mockDashboardData.recentActivity.map((activity) => (
+                            <div key={activity.id} className="flex items-center space-x-4 p-4 rounded-xl hover:bg-slate-700/20 transition-colors">
+                              <div className={`p-2 rounded-lg ${
+                                activity.type === 'lead' ? 'bg-blue-500/20 text-blue-400' :
+                                activity.type === 'deal' ? 'bg-emerald-500/20 text-emerald-400' :
+                                activity.type === 'contact' ? 'bg-amber-500/20 text-amber-400' :
+                                'bg-purple-500/20 text-purple-400'
+                              }`}>
+                                {activity.type === 'lead' && <Users className="h-4 w-4" />}
+                                {activity.type === 'deal' && <Target className="h-4 w-4" />}
+                                {activity.type === 'contact' && <Phone className="h-4 w-4" />}
+                                {activity.type === 'analysis' && <Eye className="h-4 w-4" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-slate-200 font-medium truncate">{activity.address}</p>
+                                <div className="flex items-center space-x-2 mt-1">
+                                  <Badge className={`text-xs ${
+                                    activity.status === 'qualified' ? 'status-active' :
+                                    activity.status === 'contract' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+                                    activity.status === 'contacted' ? 'status-pending' :
+                                    'status-inactive'
+                                  }`}>
+                                    {activity.status}
+                                  </Badge>
+                                  <span className="text-slate-400 text-xs">{activity.time}</span>
+                                </div>
+                              </div>
+                              <div className={`w-2 h-2 rounded-full ${
+                                activity.priority === 'high' ? 'bg-red-400' :
+                                activity.priority === 'medium' ? 'bg-amber-400' :
+                                'bg-slate-400'
+                              }`} />
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CollapsibleSection>
+
+                {/* Market Intelligence */}
+                <CollapsibleSection
+                  title="Market Intelligence & Top Markets"
+                  description="Market trends and top performing areas"
+                  icon={TrendingUp}
+                  defaultExpanded={false}
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* Market Trends */}
             <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
@@ -842,10 +965,13 @@ export default function AnalyticsDashboard() {
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+                    </CardContent>
+                  </Card>
+                  </div>
+                </CollapsibleSection>
 
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { useState } from "react";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
 import WorkflowProgress from "@/components/workflow-progress";
+import CollapsibleSection from "@/components/collapsible-section";
 import { 
   Users, 
   Phone, 
@@ -265,7 +266,13 @@ export default function LeadManagement() {
         </div>
 
         {/* Overview Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+        <CollapsibleSection
+          title="Lead Overview"
+          description="Key metrics and performance indicators"
+          icon={Activity}
+          defaultExpanded={true}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           <Card className="floating-card rounded-2xl overflow-hidden">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -367,10 +374,17 @@ export default function LeadManagement() {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
+        </CollapsibleSection>
 
         {/* Pipeline Visualization */}
-        <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+        <CollapsibleSection
+          title="Deal Pipeline"
+          description="Visual pipeline tracking and deal flow analysis"
+          icon={Activity}
+          defaultExpanded={false}
+        >
+          <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-indigo-800/30 to-indigo-700/30 pb-6">
             <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
               Deal Pipeline
@@ -393,10 +407,17 @@ export default function LeadManagement() {
               ))}
             </div>
           </CardContent>
-        </Card>
+          </Card>
+        </CollapsibleSection>
 
-        {/* Tabs for different sections */}
-        <Tabs defaultValue="leads" className="space-y-6">
+        {/* Lead Management Sections */}
+        <CollapsibleSection
+          title="Lead Management & Activity"
+          description="Detailed lead tracking, sources, and activity monitoring"
+          icon={Users}
+          defaultExpanded={false}
+        >
+          <Tabs defaultValue="leads" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 glass-card rounded-2xl">
             <TabsTrigger value="leads" className="rounded-xl">Recent Leads</TabsTrigger>
             <TabsTrigger value="sources" className="rounded-xl">Lead Sources</TabsTrigger>
@@ -621,7 +642,8 @@ export default function LeadManagement() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        </CollapsibleSection>
 
         </div>
       </div>
