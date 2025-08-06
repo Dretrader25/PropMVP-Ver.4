@@ -185,6 +185,7 @@ export default function WorkflowProgress({
     const canNavigate = stepIndex === 0 || steps[stepIndex - 1].status === 'completed';
 
     if (canNavigate) {
+      console.log('Navigating to:', step.route); // Debug log
       setLocation(step.route);
       if (onStepClick) {
         onStepClick(step);
@@ -195,6 +196,7 @@ export default function WorkflowProgress({
   const handleNextStep = () => {
     const nextStep = getNextStep();
     if (nextStep) {
+      console.log('Next step navigation to:', nextStep.route); // Debug log
       handleStepClick(nextStep);
     }
   };
@@ -243,7 +245,11 @@ export default function WorkflowProgress({
               </div>
             </div>
             <Button 
-              onClick={() => onToggle && onToggle(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggle && onToggle(true);
+              }}
               className="btn-primary-gradient"
               size="sm"
             >
@@ -303,7 +309,11 @@ export default function WorkflowProgress({
                 </div>
               </div>
               <Button 
-                onClick={handleNextStep}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleNextStep();
+                }}
                 className="btn-primary-gradient"
                 size="sm"
               >
@@ -335,7 +345,13 @@ export default function WorkflowProgress({
                   }
                   ${canNavigate ? 'hover:border-blue-500/40' : ''}
                 `}
-                onClick={() => !isBlocked && handleStepClick(step)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!isBlocked) {
+                    handleStepClick(step);
+                  }
+                }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
