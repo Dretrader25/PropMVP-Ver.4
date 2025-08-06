@@ -100,6 +100,7 @@ export default function Dashboard() {
             <div className="fade-in">
               <WorkflowProgress 
                 currentStep="search"
+                marketResearched={true}
                 propertySearched={!!selectedProperty}
                 propertyAnalyzed={false}
                 leadAdded={false}

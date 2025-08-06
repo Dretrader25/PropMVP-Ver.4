@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, AlertCircle, X, HelpCircle } from "lucide-react";
+import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, TrendingUp, AlertCircle, X, HelpCircle } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface WorkflowStep {
@@ -19,6 +19,7 @@ interface WorkflowStep {
 
 interface WorkflowProgressProps {
   currentStep?: string;
+  marketResearched?: boolean;
   propertySearched?: boolean;
   propertyAnalyzed?: boolean;
   leadAdded?: boolean;
@@ -29,11 +30,29 @@ interface WorkflowProgressProps {
 
 const workflowSteps: WorkflowStep[] = [
   {
+    id: 'market',
+    title: 'Market Intelligence',
+    description: 'Research market conditions and identify hot opportunities',
+    icon: TrendingUp,
+    route: '/',
+    status: 'pending',
+    requirements: [
+      'Market data access',
+      'Regional analysis',
+      'Investment opportunity identification'
+    ],
+    tips: [
+      'Check market heatmaps for area activity',
+      'Review distressed property indicators',
+      'Analyze investor activity levels'
+    ]
+  },
+  {
     id: 'search',
     title: 'Find Property',
-    description: 'Search for investment properties using our MLS-powered engine',
+    description: 'Search for specific investment properties using our MLS-powered engine',
     icon: Search,
-    route: '/',
+    route: '/property-search',
     status: 'pending',
     requirements: [
       'Complete property address',
@@ -65,24 +84,6 @@ const workflowSteps: WorkflowStep[] = [
     ]
   },
   {
-    id: 'evaluate',
-    title: 'Market Intelligence',
-    description: 'Examine market conditions and investment potential',
-    icon: Target,
-    route: '/market-intelligence',
-    status: 'pending',
-    requirements: [
-      'Property analyzed',
-      'Market data reviewed',
-      'Investment potential assessed'
-    ],
-    tips: [
-      'Check market heatmaps for area activity',
-      'Review distressed property indicators',
-      'Analyze investor activity levels'
-    ]
-  },
-  {
     id: 'convert',
     title: 'Add to Pipeline',
     description: 'Convert qualified property into active lead for follow-up',
@@ -103,7 +104,8 @@ const workflowSteps: WorkflowStep[] = [
 ];
 
 export default function WorkflowProgress({ 
-  currentStep, 
+  currentStep = 'market', 
+  marketResearched = false,
   propertySearched = false, 
   propertyAnalyzed = false, 
   leadAdded = false,
@@ -120,8 +122,14 @@ export default function WorkflowProgress({
     const updatedSteps = steps.map((step, index) => {
       let status: 'pending' | 'active' | 'completed' | 'skipped' = 'pending';
 
-      if (step.id === 'search') {
-        status = propertySearched ? 'completed' : (currentStep === 'search' ? 'active' : 'pending');
+      if (step.id === 'market') {
+        status = marketResearched ? 'completed' : (currentStep === 'market' ? 'active' : 'pending');
+      } else if (step.id === 'search') {
+        if (!marketResearched) {
+          status = 'pending';
+        } else {
+          status = propertySearched ? 'completed' : (currentStep === 'search' ? 'active' : 'pending');
+        }
       } else if (step.id === 'analyze') {
         if (!propertySearched) {
           status = 'pending';
@@ -129,16 +137,6 @@ export default function WorkflowProgress({
           status = 'completed';
         } else if (currentStep === 'analyze') {
           status = 'active';
-        } else {
-          status = 'pending';
-        }
-      } else if (step.id === 'evaluate') {
-        if (!propertyAnalyzed) {
-          status = 'pending';
-        } else if (currentStep === 'evaluate') {
-          status = 'active';
-        } else if (leadAdded) {
-          status = 'completed';
         } else {
           status = 'pending';
         }
@@ -167,7 +165,7 @@ export default function WorkflowProgress({
       const lastCompletedIndex = updatedSteps.map(step => step.status).lastIndexOf('completed');
       setCurrentStepIndex(Math.min(lastCompletedIndex + 1, updatedSteps.length - 1));
     }
-  }, [currentStep, propertySearched, propertyAnalyzed, leadAdded]);
+  }, [currentStep, marketResearched, propertySearched, propertyAnalyzed, leadAdded]);
 
   const calculateProgress = () => {
     const completedSteps = steps.filter(step => step.status === 'completed').length;

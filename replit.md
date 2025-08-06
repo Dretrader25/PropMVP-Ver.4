@@ -27,11 +27,12 @@ Preferred communication style: Simple, everyday language.
 ### Key Features & Components
 - **Database Schema**: Properties, Comparable Sales, and Market Metrics tables.
 - **API Endpoints**: For property search, retrieval, and data export.
-- **Frontend Components**: Dashboard, Property Search Form, Property Dashboard, Comparable Sales, Market Analysis, Export Actions, Analytics Dashboard (including wholesaling analysis, distress indicators, valuation, AI insights), Market Intelligence (real-time data, hot markets, distressed properties, investor activity), and Lead Management.
+- **Frontend Components**: Market Intelligence (real-time data, hot markets, distressed properties, investor activity), Property Search Form, Property Dashboard, Comparable Sales, Market Analysis, Analytics Dashboard (including wholesaling analysis, distress indicators, valuation, AI insights), Lead Management, and Export Actions.
 - **AI Analysis Feature**: GPT-4o integration for property investment grading (A+ to F), detailed analysis, estimated profit, and recommendations.
 - **Market Heatmaps**: Interactive visualizations of deal activity and property investment potential with color-coded scoring.
 - **Authentication System**: Comprehensive user authentication using Replit Auth (OpenID Connect), Google OAuth, and email/password, with secure session management via PostgreSQL.
 - **Global Navigation Bar**: Sticky, responsive navigation across all pages.
+- **Workflow Organization**: Market Intelligence → Property Search → Analytics → Lead Management workflow with collapsible sections for improved UX.
 
 ## External Dependencies
 

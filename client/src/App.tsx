@@ -32,9 +32,9 @@ function Router() {
         <Route path="/" component={Landing} />
       ) : (
         <>
-          <Route path="/" component={Dashboard} />
+          <Route path="/" component={MarketIntelligence} />
+          <Route path="/property-search" component={Dashboard} />
           <Route path="/analytics" component={AnalyticsDashboard} />
-          <Route path="/market-intelligence" component={MarketIntelligence} />
           <Route path="/lead-management" component={LeadManagement} />
         </>
       )}

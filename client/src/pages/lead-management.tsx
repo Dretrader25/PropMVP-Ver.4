@@ -235,6 +235,7 @@ export default function LeadManagement() {
         <div className="fade-in">
           <WorkflowProgress 
             currentStep="convert"
+            marketResearched={true}
             propertySearched={true}
             propertyAnalyzed={true}
             leadAdded={true}

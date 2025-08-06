@@ -26,22 +26,22 @@ export default function NavigationBar({ onMenuClick }: NavigationBarProps) {
 
   const navigationItems = [
     {
-      icon: Search,
-      label: "Property Search",
+      icon: TrendingUp,
+      label: "Market Intelligence",
       path: "/",
       active: location === "/"
+    },
+    {
+      icon: Search,
+      label: "Property Search",
+      path: "/property-search",
+      active: location === "/property-search"
     },
     {
       icon: BarChart3,
       label: "Analytics",
       path: "/analytics",
       active: location === "/analytics"
-    },
-    {
-      icon: TrendingUp,
-      label: "Market Intelligence",
-      path: "/market-intelligence",
-      active: location === "/market-intelligence"
     },
     {
       icon: Users,

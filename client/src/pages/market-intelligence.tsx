@@ -193,9 +193,10 @@ export default function MarketIntelligence() {
         {/* Workflow Progress Assistant */}
         <div className="fade-in">
           <WorkflowProgress 
-            currentStep="evaluate"
-            propertySearched={true}
-            propertyAnalyzed={true}
+            currentStep="market"
+            marketResearched={true}
+            propertySearched={false}
+            propertyAnalyzed={false}
             leadAdded={false}
             isVisible={workflowVisible}
             onToggle={setWorkflowVisible}

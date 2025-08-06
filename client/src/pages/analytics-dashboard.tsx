@@ -238,6 +238,7 @@ export default function AnalyticsDashboard() {
             <div className="fade-in">
               <WorkflowProgress 
                 currentStep="analyze"
+                marketResearched={true}
                 propertySearched={properties && Array.isArray(properties) && properties.length > 0}
                 propertyAnalyzed={!!selectedProperty}
                 leadAdded={false}
