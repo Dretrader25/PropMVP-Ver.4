@@ -205,33 +205,134 @@ export default function MarketIntelligence() {
         
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-5xl font-bold text-gradient mb-4">Market Intelligence Center</h1>
-          <p className="text-slate-400 text-xl max-w-3xl mx-auto">
-            Real-time market data, trends analysis, and investment opportunities across all target markets
+          <h1 className="text-5xl font-bold text-gradient mb-4">Define Your Target Market</h1>
+          <p className="text-slate-400 text-xl max-w-4xl mx-auto">
+            Step 1 of Wholesaling: Choose your geographic area and property type. Research high-motivation areas with distressed properties, foreclosures, and motivated sellers to maximize deal potential.
           </p>
           <div className="flex justify-center gap-4 mt-6">
             <Button variant="outline" className="glass-card">
+              <Target className="h-4 w-4 mr-2" />
+              Set Target Criteria
+            </Button>
+            <Button variant="outline" className="glass-card">
               <Filter className="h-4 w-4 mr-2" />
-              Filter Markets
+              Filter by Motivation
             </Button>
             <Button variant="outline" className="glass-card">
               <Download className="h-4 w-4 mr-2" />
-              Export Report
+              Export Target List
             </Button>
             <Button variant="outline" className="glass-card">
               <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh Data
+              Update Market Data
             </Button>
           </div>
         </div>
 
-        {/* Market Overview Metrics */}
+        {/* Target Market Selection Tools */}
         <CollapsibleSection
-          title="Market Overview"
-          description="Key market metrics and performance indicators"
-          icon={Activity}
+          title="Target Market Selection"
+          description="Define your geographic focus and property criteria for maximum deal potential"
+          icon={Target}
           defaultExpanded={true}
         >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Geographic Targeting */}
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
+                <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+                  Geographic Targeting
+                  <div className="p-2 bg-blue-500/20 rounded-xl">
+                    <MapPin className="h-6 w-6 text-blue-400" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="glass-card rounded-2xl p-4">
+                  <h4 className="text-slate-200 font-semibold mb-3">Select Target Areas</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button variant="outline" className="justify-start">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      Los Angeles County
+                    </Button>
+                    <Button variant="outline" className="justify-start">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      Orange County
+                    </Button>
+                    <Button variant="outline" className="justify-start">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      Riverside County
+                    </Button>
+                    <Button variant="outline" className="justify-start">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      San Bernardino
+                    </Button>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-slate-600">
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div>
+                        <p className="text-slate-400">Foreclosure Rate</p>
+                        <p className="text-red-400 font-bold">2.8%</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400">Median Price</p>
+                        <p className="text-slate-200 font-bold">$675K</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400">Vacancy Rate</p>
+                        <p className="text-yellow-400 font-bold">12%</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Property Type Criteria */}
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
+                <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+                  Property Criteria
+                  <div className="p-2 bg-emerald-500/20 rounded-xl">
+                    <Home className="h-6 w-6 text-emerald-400" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="glass-card rounded-2xl p-4">
+                  <h4 className="text-slate-200 font-semibold mb-3">Ideal Property Profile</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Property Type</span>
+                      <span className="text-slate-200 font-medium">Single Family</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Bedrooms</span>
+                      <span className="text-slate-200 font-medium">3-4 BR</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Price Range</span>
+                      <span className="text-emerald-400 font-medium">$200K - $500K</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Built</span>
+                      <span className="text-slate-200 font-medium">1980-2010</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Condition</span>
+                      <span className="text-yellow-400 font-medium">Needs Work</span>
+                    </div>
+                  </div>
+                  <Button className="w-full mt-4 bg-emerald-500 hover:bg-emerald-600">
+                    <Target className="h-4 w-4 mr-2" />
+                    Set as Target Criteria
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Market Overview Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="floating-card rounded-2xl overflow-hidden">
             <CardContent className="p-6">
@@ -305,12 +406,72 @@ export default function MarketIntelligence() {
 
         {/* Market Activity Heatmap */}
         <CollapsibleSection
-          title="Market Activity Heatmap"
-          description="Visual representation of market activity and opportunities"
+          title="Market Activity & Opportunity Heatmap"
+          description="Visual representation of high-motivation areas and deal activity for target identification"
           icon={MapPin}
-          defaultExpanded={false}
+          defaultExpanded={true}
         >
-          <MarketHeatmap />
+          <div className="space-y-4">
+            {/* Heatmap Controls */}
+            <div className="flex flex-wrap gap-3 mb-4">
+              <Button variant="outline" size="sm" className="glass-card">
+                <Zap className="h-4 w-4 mr-2" />
+                Foreclosure Density
+              </Button>
+              <Button variant="outline" size="sm" className="glass-card">
+                <DollarSign className="h-4 w-4 mr-2" />
+                Tax Delinquent
+              </Button>
+              <Button variant="outline" size="sm" className="glass-card">
+                <Users className="h-4 w-4 mr-2" />
+                Absentee Owners
+              </Button>
+              <Button variant="outline" size="sm" className="glass-card">
+                <Home className="h-4 w-4 mr-2" />
+                Property Age (1980-2010)
+              </Button>
+              <Button variant="outline" size="sm" className="glass-card">
+                <Activity className="h-4 w-4 mr-2" />
+                Investor Activity
+              </Button>
+            </div>
+            <MarketHeatmap />
+            
+            {/* Heatmap Legend & Insights */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <Card className="glass-card rounded-2xl p-4">
+                <h4 className="text-slate-200 font-semibold mb-3">Heat Map Legend</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-red-500 rounded"></div>
+                    <span className="text-slate-400">High Motivation (90%+)</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-orange-400 rounded"></div>
+                    <span className="text-slate-400">Medium Motivation (70-89%)</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-yellow-400 rounded"></div>
+                    <span className="text-slate-400">Some Motivation (50-69%)</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-blue-400 rounded"></div>
+                    <span className="text-slate-400">Low Motivation (&lt;50%)</span>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="glass-card rounded-2xl p-4">
+                <h4 className="text-slate-200 font-semibold mb-3">Targeting Insights</h4>
+                <div className="space-y-2 text-sm text-slate-400">
+                  <p>• <span className="text-red-400">Riverside County</span> shows highest foreclosure density</p>
+                  <p>• <span className="text-amber-400">78% absentee owners</span> in tax delinquent areas</p>
+                  <p>• <span className="text-emerald-400">Properties built 1980-2010</span> most common</p>
+                  <p>• <span className="text-blue-400">Low competition</span> in outlying areas</p>
+                </div>
+              </Card>
+            </div>
+          </div>
         </CollapsibleSection>
 
         {/* Hot Markets Table */}
@@ -386,10 +547,223 @@ export default function MarketIntelligence() {
         </Card>
         </CollapsibleSection>
 
-        {/* Market Segments & Distressed Properties */}
+        {/* High-Motivation Seller Analysis */}
         <CollapsibleSection
-          title="Market Segments & Distressed Properties"
-          description="Market segment analysis and distressed property opportunities"
+          title="High-Motivation Seller Analysis"
+          description="Identify areas with distressed properties, foreclosures, and motivated sellers"
+          icon={Zap}
+          defaultExpanded={true}
+        >
+          {/* Motivation Indicators */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-red-800/30 to-red-700/30 pb-6">
+                <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+                  Foreclosure Hotspots
+                  <div className="p-2 bg-red-500/20 rounded-xl">
+                    <Home className="h-5 w-5 text-red-400" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold text-red-400 mb-1">{marketIntelligenceData.distressedProperties.foreclosures}</div>
+                  <div className="text-slate-400 text-sm">Active Foreclosures</div>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Pre-Foreclosures</span>
+                    <span className="text-yellow-400">{marketIntelligenceData.distressedProperties.preForeclosures}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Bank Owned</span>
+                    <span className="text-red-400">{marketIntelligenceData.distressedProperties.bankOwned}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Auction Properties</span>
+                    <span className="text-orange-400">{marketIntelligenceData.distressedProperties.auctions}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-amber-800/30 to-amber-700/30 pb-6">
+                <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+                  Tax Delinquent
+                  <div className="p-2 bg-amber-500/20 rounded-xl">
+                    <DollarSign className="h-5 w-5 text-amber-400" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold text-amber-400 mb-1">{marketIntelligenceData.distressedProperties.taxDelinquent}</div>
+                  <div className="text-slate-400 text-sm">Tax Delinquent Properties</div>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Avg Owed</span>
+                    <span className="text-amber-400">$12,500</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">1+ Years Behind</span>
+                    <span className="text-red-400">687</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Absentee Owners</span>
+                    <span className="text-orange-400">78%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-purple-800/30 to-purple-700/30 pb-6">
+                <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+                  Estate/Probate
+                  <div className="p-2 bg-purple-500/20 rounded-xl">
+                    <Users className="h-5 w-5 text-purple-400" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold text-purple-400 mb-1">{marketIntelligenceData.distressedProperties.probate}</div>
+                  <div className="text-slate-400 text-sm">Probate Properties</div>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Inherited</span>
+                    <span className="text-purple-400">423</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Estate Sales</span>
+                    <span className="text-blue-400">144</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Avg Timeline</span>
+                    <span className="text-green-400">6-12 mo</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Wholesaling Target Criteria Helper */}
+          <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-indigo-800/30 to-indigo-700/30 pb-6">
+              <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+                Wholesaling Target Criteria
+                <div className="p-2 bg-indigo-500/20 rounded-xl">
+                  <Target className="h-6 w-6 text-indigo-400" />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* Geographic Focus */}
+                <div className="glass-card rounded-2xl p-4">
+                  <h4 className="text-indigo-400 font-semibold mb-3 flex items-center">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Geographic Focus
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Primary Market</span>
+                      <span className="text-slate-200">Riverside County</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Median Price</span>
+                      <span className="text-emerald-400">$485K</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Deal Flow</span>
+                      <span className="text-blue-400">187 deals/mo</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Competition</span>
+                      <span className="text-yellow-400">Medium</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Property Criteria */}
+                <div className="glass-card rounded-2xl p-4">
+                  <h4 className="text-emerald-400 font-semibold mb-3 flex items-center">
+                    <Home className="h-4 w-4 mr-2" />
+                    Property Criteria
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Type</span>
+                      <span className="text-slate-200">Single Family</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Price Range</span>
+                      <span className="text-emerald-400">$200K - $500K</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Bedrooms</span>
+                      <span className="text-slate-200">3-4 BR</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Built</span>
+                      <span className="text-slate-200">1980-2010</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Motivation Indicators */}
+                <div className="glass-card rounded-2xl p-4">
+                  <h4 className="text-red-400 font-semibold mb-3 flex items-center">
+                    <Zap className="h-4 w-4 mr-2" />
+                    Motivation Signals
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Foreclosures</span>
+                      <span className="text-red-400">High Priority</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Tax Delinquent</span>
+                      <span className="text-amber-400">Monitor</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Probate/Estate</span>
+                      <span className="text-purple-400">Target</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Absentee Owners</span>
+                      <span className="text-orange-400">Focus Area</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center gap-4 mt-6">
+                <Button className="bg-indigo-500 hover:bg-indigo-600">
+                  <Target className="h-4 w-4 mr-2" />
+                  Save Target Profile
+                </Button>
+                <Button variant="outline" className="glass-card">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Apply Filters to Search
+                </Button>
+                <Button variant="outline" className="glass-card">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Target List
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </CollapsibleSection>
+
+        {/* Market Segments & Property Types */}
+        <CollapsibleSection
+          title="Property Type Analysis"
+          description="Market segment breakdown and property type performance"
           icon={PieChart}
           defaultExpanded={false}
         >
