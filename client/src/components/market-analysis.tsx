@@ -21,55 +21,57 @@ export default function MarketAnalysis({ property }: MarketAnalysisProps) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
-          <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
-            Market Intelligence
-            <div className="p-2 bg-blue-500/20 rounded-xl">
-              <BarChart3 className="h-6 w-6 text-blue-400" />
+      {/* Market Intelligence Card */}
+      <Card className="glass-card rounded-3xl shadow-lg overflow-hidden h-fit">
+        <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-4">
+          <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-500/20 rounded-xl">
+                <BarChart3 className="h-5 w-5 text-blue-400" />
+              </div>
+              Market Intelligence
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="space-y-6">
-            <div className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 font-medium">Average Days on Market</span>
-                <span className="text-3xl font-bold text-gradient">
-                  {marketMetrics?.avgDaysOnMarket || 0}
-                </span>
-              </div>
-              <div className="text-sm text-slate-500 bg-slate-700/30 px-3 py-1 rounded-full w-fit">
-                Neighborhood average
-              </div>
-            </div>
-            
-            <div className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 font-medium">Median Sale Price</span>
-                <span className="text-3xl font-bold text-gradient">
-                  {marketMetrics?.medianSalePrice ? 
-                    `$${(parseInt(marketMetrics.medianSalePrice) / 1000000).toFixed(1)}M` : 
-                    "N/A"
-                  }
-                </span>
-              </div>
-              <div className="flex items-center">
-                <div className="text-sm bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30">
-                  +{marketMetrics?.priceAppreciation || 0}% from last year
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <h4 className="text-slate-300 font-semibold text-sm uppercase tracking-wide">Key Metrics</h4>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="bg-slate-800/30 rounded-lg p-4 hover:bg-slate-800/40 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">Avg Days on Market</span>
+                    <span className="text-2xl font-bold text-blue-400">
+                      {marketMetrics?.avgDaysOnMarket || 0}
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Neighborhood average</div>
                 </div>
-              </div>
-            </div>
-            
-            <div className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 font-medium">Price per Sq Ft</span>
-                <span className="text-3xl font-bold text-gradient">
-                  ${marketMetrics?.avgPricePerSqft || 0}
-                </span>
-              </div>
-              <div className="text-sm bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full border border-blue-500/30 w-fit">
-                +12.3% from last year
+                
+                <div className="bg-slate-800/30 rounded-lg p-4 hover:bg-slate-800/40 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">Median Sale Price</span>
+                    <span className="text-2xl font-bold text-emerald-400">
+                      {marketMetrics?.medianSalePrice ? 
+                        `$${(parseInt(marketMetrics.medianSalePrice) / 1000000).toFixed(1)}M` : 
+                        "N/A"
+                      }
+                    </span>
+                  </div>
+                  <div className="text-xs text-emerald-400 mt-1">
+                    +{marketMetrics?.priceAppreciation || 0}% YoY
+                  </div>
+                </div>
+                
+                <div className="bg-slate-800/30 rounded-lg p-4 hover:bg-slate-800/40 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400 text-sm">Price per Sq Ft</span>
+                    <span className="text-2xl font-bold text-purple-400">
+                      ${marketMetrics?.avgPricePerSqft || 0}
+                    </span>
+                  </div>
+                  <div className="text-xs text-purple-400 mt-1">+12.3% YoY</div>
+                </div>
               </div>
             </div>
           </div>

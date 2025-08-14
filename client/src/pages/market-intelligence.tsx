@@ -411,29 +411,35 @@ export default function MarketIntelligence() {
           icon={MapPin}
           defaultExpanded={true}
         >
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Heatmap Controls */}
-            <div className="flex flex-wrap gap-3 mb-4">
-              <Button variant="outline" size="sm" className="glass-card">
-                <Zap className="h-4 w-4 mr-2" />
-                Foreclosure Density
-              </Button>
-              <Button variant="outline" size="sm" className="glass-card">
-                <DollarSign className="h-4 w-4 mr-2" />
-                Tax Delinquent
-              </Button>
-              <Button variant="outline" size="sm" className="glass-card">
-                <Users className="h-4 w-4 mr-2" />
-                Absentee Owners
-              </Button>
-              <Button variant="outline" size="sm" className="glass-card">
-                <Home className="h-4 w-4 mr-2" />
-                Property Age (1980-2010)
-              </Button>
-              <Button variant="outline" size="sm" className="glass-card">
-                <Activity className="h-4 w-4 mr-2" />
-                Investor Activity
-              </Button>
+            <div className="bg-slate-800/30 rounded-2xl p-4">
+              <h4 className="text-slate-200 font-semibold mb-3 flex items-center">
+                <Filter className="h-4 w-4 mr-2 text-blue-400" />
+                Filter Market Data
+              </h4>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline" size="sm" className="glass-card">
+                  <Zap className="h-4 w-4 mr-2" />
+                  Foreclosure Density
+                </Button>
+                <Button variant="outline" size="sm" className="glass-card">
+                  <DollarSign className="h-4 w-4 mr-2" />
+                  Tax Delinquent
+                </Button>
+                <Button variant="outline" size="sm" className="glass-card">
+                  <Users className="h-4 w-4 mr-2" />
+                  Absentee Owners
+                </Button>
+                <Button variant="outline" size="sm" className="glass-card">
+                  <Home className="h-4 w-4 mr-2" />
+                  Property Age (1980-2010)
+                </Button>
+                <Button variant="outline" size="sm" className="glass-card">
+                  <Activity className="h-4 w-4 mr-2" />
+                  Investor Activity
+                </Button>
+              </div>
             </div>
             <MarketHeatmap />
             

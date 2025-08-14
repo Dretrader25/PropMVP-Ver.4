@@ -14,13 +14,18 @@ export default function ComparableSales({ comparables }: ComparableSalesProps) {
   return (
     <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 pb-6">
-        <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
-          Comparable Sales Analysis
+        <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
           <div className="flex items-center space-x-3">
-            <span className="text-slate-400 text-sm bg-slate-700/40 px-3 py-1 rounded-full">Last 6 months</span>
             <div className="p-2 bg-blue-500/20 rounded-xl">
-              <BarChart3 className="h-6 w-6 text-blue-400" />
+              <BarChart3 className="h-5 w-5 text-blue-400" />
             </div>
+            Comparable Sales Analysis
+          </div>
+          <div className="flex items-center space-x-3">
+            <span className="text-slate-400 text-xs bg-slate-700/40 px-3 py-1 rounded-full">Last 6 months</span>
+            <span className="text-slate-400 text-xs bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
+              {comparables.length} comps
+            </span>
           </div>
         </CardTitle>
       </CardHeader>

@@ -60,55 +60,61 @@ export default function ExportActions({ property }: ExportActionsProps) {
 
   return (
     <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-purple-800/30 to-purple-700/30 pb-6">
-        <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
-          Export & Reporting Suite
-          <div className="p-2 bg-purple-500/20 rounded-xl">
-            <Download className="h-6 w-6 text-purple-400" />
+      <CardHeader className="bg-gradient-to-r from-purple-800/30 to-purple-700/30 pb-4">
+        <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-purple-500/20 rounded-xl">
+              <Download className="h-5 w-5 text-purple-400" />
+            </div>
+            Export & Reporting Suite
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Button
-            onClick={handleExportJSON}
-            className="btn-secondary-gradient flex flex-col items-center space-y-3 py-6 px-4 h-auto rounded-2xl group hover:scale-105 transition-all duration-300"
-          >
-            <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
-              <FileCode className="h-6 w-6 text-blue-400" />
+        <div className="space-y-6">
+          {/* Export Options */}
+          <div className="space-y-3">
+            <h4 className="text-slate-300 font-semibold text-sm uppercase tracking-wide">Export Formats</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button
+                onClick={handleExportJSON}
+                className="glass-card flex flex-col items-center space-y-3 py-4 px-4 h-auto rounded-xl group hover:bg-slate-800/40 transition-all duration-300 border border-slate-700/30"
+              >
+                <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+                  <FileCode className="h-6 w-6 text-blue-400" />
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-slate-200">JSON Export</div>
+                  <div className="text-xs text-slate-400 mt-1">Raw data format</div>
+                </div>
+              </Button>
+              
+              <Button
+                onClick={handleExportPDF}
+                className="glass-card flex flex-col items-center space-y-3 py-4 px-4 h-auto rounded-xl group hover:bg-slate-800/40 transition-all duration-300 border border-slate-700/30"
+              >
+                <div className="p-3 bg-red-500/20 rounded-xl group-hover:bg-red-500/30 transition-colors">
+                  <FileText className="h-6 w-6 text-red-400" />
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-slate-200">PDF Report</div>
+                  <div className="text-xs text-slate-400 mt-1">Professional format</div>
+                </div>
+              </Button>
+              
+              <Button
+                onClick={handleExportExcel}
+                className="glass-card flex flex-col items-center space-y-3 py-4 px-4 h-auto rounded-xl group hover:bg-slate-800/40 transition-all duration-300 border border-slate-700/30"
+              >
+                <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
+                  <FileSpreadsheet className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-slate-200">Excel Export</div>
+                  <div className="text-xs text-slate-400 mt-1">Spreadsheet format</div>
+                </div>
+              </Button>
             </div>
-            <div className="text-center">
-              <div className="font-semibold text-slate-200">JSON Export</div>
-              <div className="text-xs text-slate-400 mt-1">Raw data format</div>
-            </div>
-          </Button>
-          
-          <Button
-            onClick={handleExportPDF}
-            className="btn-secondary-gradient flex flex-col items-center space-y-3 py-6 px-4 h-auto rounded-2xl group hover:scale-105 transition-all duration-300"
-          >
-            <div className="p-3 bg-red-500/20 rounded-xl group-hover:bg-red-500/30 transition-colors">
-              <FileText className="h-6 w-6 text-red-400" />
-            </div>
-            <div className="text-center">
-              <div className="font-semibold text-slate-200">PDF Report</div>
-              <div className="text-xs text-slate-400 mt-1">Professional format</div>
-            </div>
-          </Button>
-          
-          <Button
-            onClick={handleExportExcel}
-            className="btn-secondary-gradient flex flex-col items-center space-y-3 py-6 px-4 h-auto rounded-2xl group hover:scale-105 transition-all duration-300"
-          >
-            <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
-              <FileSpreadsheet className="h-6 w-6 text-emerald-400" />
-            </div>
-            <div className="text-center">
-              <div className="font-semibold text-slate-200">Excel Export</div>
-              <div className="text-xs text-slate-400 mt-1">Spreadsheet format</div>
-            </div>
-          </Button>
-        </div>
         
         <div className="mt-8 p-6 glass-card rounded-2xl border border-slate-600/30">
           <div className="flex items-start space-x-4">
@@ -141,6 +147,8 @@ export default function ExportActions({ property }: ExportActionsProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
           </div>
         </div>
       </CardContent>

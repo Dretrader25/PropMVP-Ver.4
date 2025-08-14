@@ -6,8 +6,9 @@ import SkipTracingPlaceholder from "./skip-tracing-placeholder";
 import ComparableSales from "./comparable-sales";
 import MarketAnalysis from "./market-analysis";
 import ExportActions from "./export-actions";
+import CollapsibleSection from "./collapsible-section";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info } from "lucide-react";
+import { Info, Home, TrendingUp, BarChart3, FileText, Users } from "lucide-react";
 
 interface PropertyDashboardProps {
   property: PropertyWithDetails;
@@ -33,17 +34,43 @@ export default function PropertyDashboard({ property }: PropertyDashboardProps) 
         </Alert>
       )}
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <PropertyDetails property={property} />
-        <ListingStatus property={property} />
-        <SkipTracingPlaceholder />
-      </div>
+      {/* Property Overview & Details */}
+      <CollapsibleSection
+        title="Property Overview & Details"
+        description="Comprehensive property information and current listing status"
+        icon={Home}
+        defaultExpanded={true}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <PropertyDetails property={property} />
+          <ListingStatus property={property} />
+          <SkipTracingPlaceholder />
+        </div>
+      </CollapsibleSection>
       
-      <ComparableSales comparables={property.comparables} />
+      {/* Market Analysis & Comparables */}
+      <CollapsibleSection
+        title="Market Analysis & Comparable Sales"
+        description="Market trends, comparable sales data, and neighborhood analysis"
+        icon={TrendingUp}
+        badge="Market Data"
+        defaultExpanded={true}
+      >
+        <div className="space-y-6">
+          <ComparableSales comparables={property.comparables} />
+          <MarketAnalysis property={property} />
+        </div>
+      </CollapsibleSection>
       
-      <MarketAnalysis property={property} />
-      
-      <ExportActions property={property} />
+      {/* Export & Actions */}
+      <CollapsibleSection
+        title="Export & Actions"
+        description="Download reports, export data, and manage property information"
+        icon={FileText}
+        defaultExpanded={false}
+      >
+        <ExportActions property={property} />
+      </CollapsibleSection>
     </div>
   );
 }
