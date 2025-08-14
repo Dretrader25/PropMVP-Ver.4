@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { Search, X, MapPin, ChevronDown } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Search, X, MapPin, ChevronDown, ChevronUp, Settings, Sparkles, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface PropertySearchFormProps {
@@ -45,6 +46,8 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
   const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -209,25 +212,44 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
   }, []);
 
   return (
-    <Card className="premium-card rounded-3xl shadow-2xl">
-      <CardContent className="p-10">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl mb-4 float-animation">
-            <Search className="h-8 w-8 text-white" />
+    <Card className="premium-card rounded-3xl shadow-2xl overflow-hidden">
+      {/* Header Section */}
+      <CardHeader className="text-center pb-8 bg-gradient-to-br from-slate-900/50 to-slate-800/30">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl mb-4 mx-auto float-animation">
+          <Search className="h-8 w-8 text-white" />
+        </div>
+        <CardTitle className="text-4xl font-bold text-gradient mb-3">
+          Property Intelligence Engine
+        </CardTitle>
+        <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-4">
+          Powered by authentic MLS data with smart address autocomplete
+        </p>
+        <div className="flex justify-center gap-6 text-sm text-slate-300">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-emerald-400" />
+            <span>Smart Autocomplete</span>
           </div>
-          <h2 className="text-4xl font-bold text-gradient mb-3">Property Intelligence Engine</h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Powered by authentic MLS data - Enter complete address for accurate property analysis
-          </p>
-          <div className="mt-4 p-4 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-xl border border-emerald-500/20">
-            <p className="text-sm text-emerald-400 font-medium">
-              ✓ Smart Address Autocomplete • ✓ Real MLS Data • ✓ Authentic Comparables
-            </p>
+          <div className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-blue-400" />
+            <span>Real MLS Data</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Settings className="h-4 w-4 text-purple-400" />
+            <span>Market Analysis</span>
           </div>
         </div>
-        
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      </CardHeader>
+
+      <CardContent className="p-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          
+          {/* Primary Address Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <MapPin className="h-5 w-5 text-emerald-400" />
+              <h3 className="text-lg font-semibold text-slate-200">Property Address</h3>
+            </div>
+            
             <div className="space-y-3 relative">
               <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">
                 Street Address
@@ -236,17 +258,21 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
               <div className="relative">
                 <Input
                   ref={inputRef}
-                  {...form.register("address")}
-                  onChange={(e) => handleAddressChange(e.target.value)}
+                  name="address"
+                  value={form.watch("address") || ""}
+                  onChange={(e) => {
+                    form.setValue("address", e.target.value);
+                    handleAddressChange(e.target.value);
+                  }}
                   placeholder="Start typing an address..."
-                  className="modern-input h-12 text-slate-200 placeholder-slate-400 rounded-xl pr-10"
+                  className="modern-input h-14 text-slate-200 placeholder-slate-400 rounded-xl pr-10 text-lg"
                   autoComplete="off"
                 />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
                   {isSearching ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-emerald-400 border-t-transparent" />
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-emerald-400 border-t-transparent" />
                   ) : (
-                    <MapPin className="h-4 w-4 text-slate-400" />
+                    <MapPin className="h-5 w-5 text-slate-400" />
                   )}
                 </div>
                 
@@ -254,7 +280,7 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
                 {showSuggestions && addressSuggestions.length > 0 && (
                   <div 
                     ref={suggestionsRef}
-                    className="absolute top-full left-0 right-0 z-50 mt-1 bg-slate-800/95 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-2xl max-h-60 overflow-y-auto"
+                    className="absolute top-full left-0 right-0 z-50 mt-2 bg-slate-800/95 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-2xl max-h-60 overflow-y-auto"
                   >
                     {addressSuggestions.map((suggestion, index) => (
                       <button
@@ -279,7 +305,6 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
                               ].filter(Boolean).join(', ')}
                             </div>
                           </div>
-                          <ChevronDown className="h-3 w-3 text-slate-500 rotate-270" />
                         </div>
                       </button>
                     ))}
@@ -293,65 +318,92 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
                 </p>
               )}
             </div>
-            
-            <div className="space-y-3">
-              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">City</Label>
-              <Input
-                {...form.register("city")}
-                placeholder="Los Angeles"
-                className="modern-input h-12 text-slate-200 placeholder-slate-400 rounded-xl"
-              />
-              {form.formState.errors.city && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
-                  <X className="h-3 w-3 mr-1" />
-                  {form.formState.errors.city.message}
-                </p>
-              )}
-            </div>
-            
-            <div className="space-y-3">
-              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">State</Label>
-              <Select onValueChange={(value) => form.setValue("state", value)}>
-                <SelectTrigger className="modern-input h-12 text-slate-200 rounded-xl">
-                  <SelectValue placeholder="Select State" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-600">
-                  {states.map((state) => (
-                    <SelectItem key={state.value} value={state.value} className="text-slate-200 focus:bg-slate-700">
-                      {state.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {form.formState.errors.state && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
-                  <X className="h-3 w-3 mr-1" />
-                  {form.formState.errors.state.message}
-                </p>
-              )}
-            </div>
-            
-            <div className="space-y-3">
-              <Label className="text-slate-200 font-medium text-sm uppercase tracking-wide">ZIP Code</Label>
-              <Input
-                {...form.register("zipCode")}
-                placeholder="90210"
-                className="modern-input h-12 text-slate-200 placeholder-slate-400 rounded-xl"
-              />
-              {form.formState.errors.zipCode && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
-                  <X className="h-3 w-3 mr-1" />
-                  {form.formState.errors.zipCode.message}
-                </p>
-              )}
-            </div>
           </div>
+
+          {/* Location Details - Collapsible */}
+          <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+            <CollapsibleTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost" 
+                className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-700/30 hover:bg-slate-800/50 text-slate-200"
+              >
+                <div className="flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  <span>Location Details</span>
+                  <span className="text-xs text-slate-400">(Auto-filled from address)</span>
+                </div>
+                {advancedOpen ? (
+                  <ChevronUp className="h-4 w-4 text-slate-400" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-slate-400" />
+                )}
+              </Button>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent className="space-y-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-slate-800/20 rounded-xl border border-slate-700/20">
+                <div className="space-y-2">
+                  <Label className="text-slate-300 font-medium text-sm">City</Label>
+                  <Input
+                    {...form.register("city")}
+                    placeholder="Los Angeles"
+                    className="modern-input h-11 text-slate-200 placeholder-slate-400 rounded-lg"
+                  />
+                  {form.formState.errors.city && (
+                    <p className="text-red-400 text-xs flex items-center">
+                      <X className="h-3 w-3 mr-1" />
+                      {form.formState.errors.city.message}
+                    </p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-slate-300 font-medium text-sm">State</Label>
+                  <Select onValueChange={(value) => form.setValue("state", value)}>
+                    <SelectTrigger className="modern-input h-11 text-slate-200 rounded-lg">
+                      <SelectValue placeholder="Select State" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-slate-600">
+                      {states.map((state) => (
+                        <SelectItem key={state.value} value={state.value} className="text-slate-200 focus:bg-slate-700">
+                          {state.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.state && (
+                    <p className="text-red-400 text-xs flex items-center">
+                      <X className="h-3 w-3 mr-1" />
+                      {form.formState.errors.state.message}
+                    </p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-slate-300 font-medium text-sm">ZIP Code</Label>
+                  <Input
+                    {...form.register("zipCode")}
+                    placeholder="90210"
+                    className="modern-input h-11 text-slate-200 placeholder-slate-400 rounded-lg"
+                  />
+                  {form.formState.errors.zipCode && (
+                    <p className="text-red-400 text-xs flex items-center">
+                      <X className="h-3 w-3 mr-1" />
+                      {form.formState.errors.zipCode.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
           
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
             <Button
               type="submit"
               disabled={searchMutation.isPending}
-              className="flex-1 btn-primary-gradient text-white font-bold py-4 px-8 rounded-xl h-14 text-lg transition-all duration-300"
+              className="flex-1 btn-primary-gradient text-white font-bold py-4 px-8 rounded-xl h-14 text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <Search className="mr-3 h-5 w-5" />
               {searchMutation.isPending ? "Analyzing Property..." : "Analyze Property"}
@@ -359,27 +411,34 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
             <Button
               type="button"
               onClick={handleClear}
-              className="btn-secondary-gradient text-slate-300 font-medium py-4 px-8 rounded-xl h-14 transition-all duration-300"
+              variant="outline"
+              className="btn-secondary-gradient text-slate-300 font-medium py-4 px-6 rounded-xl h-14 transition-all duration-300 border-slate-600"
             >
               <X className="mr-2 h-4 w-4" />
-              Clear Form
+              Clear
             </Button>
           </div>
         </form>
         
-        <div className="mt-8 pt-8 border-t border-slate-700/30">
-          <div className="flex items-center justify-center space-x-8 text-slate-400 text-sm">
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
-              Property Details
-            </div>
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-              Market Analysis
-            </div>
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-              Comparable Sales
+        {/* Footer Info */}
+        <div className="mt-8 pt-6 border-t border-slate-700/30">
+          <div className="text-center">
+            <p className="text-slate-400 text-sm mb-4">
+              Comprehensive property analysis powered by authentic data sources
+            </p>
+            <div className="flex items-center justify-center space-x-6 text-slate-500 text-xs">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                <span>Property Details</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span>Market Analysis</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <span>Comparable Sales</span>
+              </div>
             </div>
           </div>
         </div>
