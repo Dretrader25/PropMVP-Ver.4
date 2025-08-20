@@ -1,5 +1,6 @@
 import { PropertyWithDetails } from "@shared/schema";
 import PropertyHeader from "./property-header";
+import PropertyImage from "./property-image";
 import PropertyDetails from "./property-details";
 import ListingStatus from "./listing-status";
 import SkipTracingPlaceholder from "./skip-tracing-placeholder";
@@ -34,12 +35,15 @@ export default function PropertyDashboard({ property }: PropertyDashboardProps) 
         </Alert>
       )}
       
+      {/* Property Image - First section after analysis */}
+      <PropertyImage property={property} />
+      
       {/* Property Overview & Details */}
       <CollapsibleSection
         title="Property Overview & Details"
         description="Comprehensive property information and current listing status"
         icon={Home}
-        defaultExpanded={true}
+        defaultExpanded={false}
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <PropertyDetails property={property} />
@@ -54,7 +58,7 @@ export default function PropertyDashboard({ property }: PropertyDashboardProps) 
         description="Market trends, comparable sales data, and neighborhood analysis"
         icon={TrendingUp}
         badge="Market Data"
-        defaultExpanded={true}
+        defaultExpanded={false}
       >
         <div className="space-y-6">
           <ComparableSales comparables={property.comparables} />
