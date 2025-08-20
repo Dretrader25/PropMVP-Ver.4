@@ -100,7 +100,7 @@ export default function AIAnalysis() {
   };
 
   return (
-    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden" data-tour="ai-analysis">
       <CardHeader className="bg-gradient-to-r from-purple-800/30 to-blue-800/30 pb-6">
         <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
           <div className="flex items-center">

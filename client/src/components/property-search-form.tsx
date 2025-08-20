@@ -240,7 +240,7 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
         </div>
       </CardHeader>
 
-      <CardContent className="p-8">
+      <CardContent className="p-8" data-tour="property-search-form">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           
           {/* Primary Address Section */}
@@ -404,6 +404,7 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
               type="submit"
               disabled={searchMutation.isPending}
               className="flex-1 btn-primary-gradient text-white font-bold py-4 px-8 rounded-xl h-14 text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              data-tour="search-button"
             >
               <Search className="mr-3 h-5 w-5" />
               {searchMutation.isPending ? "Analyzing Property..." : "Analyze Property"}

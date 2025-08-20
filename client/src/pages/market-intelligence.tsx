@@ -333,7 +333,7 @@ export default function MarketIntelligence() {
           </div>
 
           {/* Market Overview Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-tour="market-overview">
           <Card className="floating-card rounded-2xl overflow-hidden">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -441,7 +441,9 @@ export default function MarketIntelligence() {
                 </Button>
               </div>
             </div>
-            <MarketHeatmap />
+            <div data-tour="market-heatmap">
+              <MarketHeatmap />
+            </div>
             
             {/* Heatmap Legend & Insights */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -487,7 +489,7 @@ export default function MarketIntelligence() {
           icon={Zap}
           defaultExpanded={false}
         >
-          <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+          <Card className="glass-card rounded-3xl shadow-lg overflow-hidden" data-tour="hot-markets">
           <CardHeader className="bg-gradient-to-r from-red-800/30 to-orange-700/30 pb-6">
             <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
               Hottest Markets

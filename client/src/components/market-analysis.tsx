@@ -20,7 +20,7 @@ export default function MarketAnalysis({ property }: MarketAnalysisProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" data-tour="market-analysis">
       {/* Market Intelligence Card */}
       <Card className="glass-card rounded-3xl shadow-lg overflow-hidden h-fit">
         <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-4">

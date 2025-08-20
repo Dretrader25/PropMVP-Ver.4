@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, TrendingUp, AlertCircle, X, HelpCircle, FileText, PenTool, Crown } from "lucide-react";
+import { CheckCircle, Circle, ArrowRight, Search, BarChart3, Users, Target, TrendingUp, AlertCircle, X, HelpCircle, FileText, PenTool, Crown, ChevronRight, ChevronDown, Play, Pause, SkipForward } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface WorkflowStep {
@@ -15,6 +15,11 @@ interface WorkflowStep {
   status: 'pending' | 'active' | 'completed' | 'skipped';
   requirements?: string[];
   tips?: string[];
+  tourElements?: {
+    selector: string;
+    description: string;
+    position: 'top' | 'bottom' | 'left' | 'right';
+  }[];
 }
 
 interface WorkflowProgressProps {
@@ -29,6 +34,8 @@ interface WorkflowProgressProps {
   onStepClick?: (step: WorkflowStep) => void;
   isVisible?: boolean;
   onToggle?: (visible: boolean) => void;
+  tourMode?: boolean;
+  onTourToggle?: (enabled: boolean) => void;
 }
 
 const workflowSteps: WorkflowStep[] = [
@@ -48,6 +55,23 @@ const workflowSteps: WorkflowStep[] = [
       'Check market heatmaps for area activity',
       'Review distressed property indicators',
       'Analyze investor activity levels'
+    ],
+    tourElements: [
+      {
+        selector: '[data-tour="market-overview"]',
+        description: 'Start here to understand current market conditions and trending opportunities',
+        position: 'bottom'
+      },
+      {
+        selector: '[data-tour="hot-markets"]',
+        description: 'View high-activity markets with the best investment potential',
+        position: 'left'
+      },
+      {
+        selector: '[data-tour="market-heatmap"]',
+        description: 'Use the interactive heatmap to identify motivated seller areas',
+        position: 'top'
+      }
     ]
   },
   {
@@ -66,6 +90,18 @@ const workflowSteps: WorkflowStep[] = [
       'Use full street addresses for best results',
       'Include apartment/unit numbers when applicable',
       'Verify spelling of street names'
+    ],
+    tourElements: [
+      {
+        selector: '[data-tour="property-search-form"]',
+        description: 'Enter the complete property address here for accurate analysis',
+        position: 'bottom'
+      },
+      {
+        selector: '[data-tour="search-button"]',
+        description: 'Click to start the property analysis and get comprehensive data',
+        position: 'top'
+      }
     ]
   },
   {
@@ -84,6 +120,28 @@ const workflowSteps: WorkflowStep[] = [
       'Review all comparable sales carefully',
       'Check AI analysis for investment grade',
       'Verify market trends and DOM statistics'
+    ],
+    tourElements: [
+      {
+        selector: '[data-tour="property-overview"]',
+        description: 'Review comprehensive property details and specifications',
+        position: 'right'
+      },
+      {
+        selector: '[data-tour="comparable-sales"]',
+        description: 'Analyze recent comparable sales to determine market value',
+        position: 'top'
+      },
+      {
+        selector: '[data-tour="market-analysis"]',
+        description: 'Study market trends and investment metrics for this area',
+        position: 'left'
+      },
+      {
+        selector: '[data-tour="ai-analysis"]',
+        description: 'Get AI-powered investment grade and profit estimates',
+        position: 'bottom'
+      }
     ]
   },
   {
@@ -102,6 +160,23 @@ const workflowSteps: WorkflowStep[] = [
       'Set appropriate lead priority',
       'Add detailed notes from analysis',
       'Schedule follow-up activities'
+    ],
+    tourElements: [
+      {
+        selector: '[data-tour="add-lead"]',
+        description: 'Convert this property into an active lead for your pipeline',
+        position: 'bottom'
+      },
+      {
+        selector: '[data-tour="lead-priority"]',
+        description: 'Set the priority level based on your analysis',
+        position: 'right'
+      },
+      {
+        selector: '[data-tour="lead-notes"]',
+        description: 'Add detailed notes from your property analysis',
+        position: 'top'
+      }
     ]
   },
   {
@@ -157,11 +232,103 @@ export default function WorkflowProgress({
   isPremium = false,
   onStepClick,
   isVisible = false,
-  onToggle
+  onToggle,
+  tourMode = false,
+  onTourToggle
 }: WorkflowProgressProps) {
   const [, setLocation] = useLocation();
   const [steps, setSteps] = useState<WorkflowStep[]>(workflowSteps);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [tourActive, setTourActive] = useState(false);
+  const [currentTourElement, setCurrentTourElement] = useState(0);
+  const [highlightedElement, setHighlightedElement] = useState<string | null>(null);
+  const tourOverlayRef = useRef<HTMLDivElement>(null);
+
+  // Tour functionality
+  const startTour = () => {
+    setTourActive(true);
+    setCurrentTourElement(0);
+    if (onTourToggle) {
+      onTourToggle(true);
+    }
+    // Navigate to first step route if needed
+    const firstStep = steps.find(step => step.status === 'active' || step.status === 'pending');
+    if (firstStep && window.location.pathname !== firstStep.route) {
+      setLocation(firstStep.route);
+    }
+  };
+
+  const stopTour = () => {
+    setTourActive(false);
+    setCurrentTourElement(0);
+    setHighlightedElement(null);
+    if (onTourToggle) {
+      onTourToggle(false);
+    }
+  };
+
+  const nextTourElement = () => {
+    const currentStep = steps[currentStepIndex];
+    const totalElements = currentStep?.tourElements?.length || 0;
+    
+    if (currentTourElement < totalElements - 1) {
+      setCurrentTourElement(currentTourElement + 1);
+    } else {
+      // Move to next step
+      const nextStep = currentStepIndex + 1;
+      if (nextStep < steps.length) {
+        setCurrentStepIndex(nextStep);
+        setCurrentTourElement(0);
+        const nextStepObj = steps[nextStep];
+        if (nextStepObj && nextStepObj.route !== window.location.pathname) {
+          setLocation(nextStepObj.route);
+        }
+      } else {
+        stopTour();
+      }
+    }
+  };
+
+  const previousTourElement = () => {
+    if (currentTourElement > 0) {
+      setCurrentTourElement(currentTourElement - 1);
+    } else if (currentStepIndex > 0) {
+      const prevStep = currentStepIndex - 1;
+      const prevStepObj = steps[prevStep];
+      setCurrentStepIndex(prevStep);
+      setCurrentTourElement((prevStepObj?.tourElements?.length || 1) - 1);
+      if (prevStepObj && prevStepObj.route !== window.location.pathname) {
+        setLocation(prevStepObj.route);
+      }
+    }
+  };
+
+  // Auto-scroll and highlight tour elements
+  useEffect(() => {
+    if (tourActive && steps[currentStepIndex]?.tourElements) {
+      const currentElement = steps[currentStepIndex].tourElements![currentTourElement];
+      if (currentElement) {
+        const element = document.querySelector(currentElement.selector);
+        if (element) {
+          // Smooth scroll to element
+          element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'center'
+          });
+          
+          // Highlight element
+          setHighlightedElement(currentElement.selector);
+          
+          // Add pulse effect
+          element.classList.add('tour-highlight');
+          setTimeout(() => {
+            element.classList.remove('tour-highlight');
+          }, 2000);
+        }
+      }
+    }
+  }, [tourActive, currentStepIndex, currentTourElement]);
 
   // Update step statuses based on progress
   useEffect(() => {
@@ -505,6 +672,38 @@ export default function WorkflowProgress({
           })}
         </div>
 
+        {/* Interactive Tour Controls */}
+        <div className="mt-6 pt-4 border-t border-slate-700/30">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-purple-500/20 rounded-lg">
+                <HelpCircle className="h-5 w-5 text-purple-400" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">Interactive Tour</h4>
+                <p className="text-sm text-slate-400">Get guided walkthrough with arrows and highlights</p>
+              </div>
+            </div>
+            <Button 
+              onClick={tourActive ? stopTour : startTour}
+              className={tourActive ? "bg-red-500/20 text-red-300 border-red-500/30" : "btn-primary-gradient"}
+              size="sm"
+            >
+              {tourActive ? (
+                <>
+                  <Pause className="h-4 w-4 mr-1" />
+                  Stop Tour
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4 mr-1" />
+                  Start Tour
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
         {/* Completion Message */}
         {progress === 100 && (
           <div className="mt-6 p-4 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-xl border border-emerald-500/30">
@@ -520,6 +719,188 @@ export default function WorkflowProgress({
           </div>
         )}
       </CardContent>
+
+      {/* Tour Overlay */}
+      {tourActive && (
+        <div 
+          ref={tourOverlayRef}
+          className="fixed inset-0 z-50 pointer-events-none"
+          style={{ background: 'rgba(0, 0, 0, 0.3)' }}
+        >
+          {/* Tour Tooltip */}
+          {steps[currentStepIndex]?.tourElements && (
+            <TourTooltip
+              element={steps[currentStepIndex].tourElements![currentTourElement]}
+              stepInfo={{
+                current: currentTourElement + 1,
+                total: steps[currentStepIndex].tourElements!.length,
+                stepTitle: steps[currentStepIndex].title
+              }}
+              onNext={nextTourElement}
+              onPrevious={previousTourElement}
+              onClose={stopTour}
+              canGoPrevious={currentStepIndex > 0 || currentTourElement > 0}
+              canGoNext={currentStepIndex < steps.length - 1 || currentTourElement < (steps[currentStepIndex]?.tourElements?.length || 0) - 1}
+            />
+          )}
+        </div>
+      )}
     </Card>
+  );
+}
+
+// Tour Tooltip Component
+interface TourTooltipProps {
+  element: {
+    selector: string;
+    description: string;
+    position: 'top' | 'bottom' | 'left' | 'right';
+  };
+  stepInfo: {
+    current: number;
+    total: number;
+    stepTitle: string;
+  };
+  onNext: () => void;
+  onPrevious: () => void;
+  onClose: () => void;
+  canGoPrevious: boolean;
+  canGoNext: boolean;
+}
+
+function TourTooltip({ element, stepInfo, onNext, onPrevious, onClose, canGoPrevious, canGoNext }: TourTooltipProps) {
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [arrowPosition, setArrowPosition] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    const targetElement = document.querySelector(element.selector);
+    if (targetElement) {
+      const rect = targetElement.getBoundingClientRect();
+      const tooltipWidth = 320;
+      const tooltipHeight = 120;
+      
+      let top = 0;
+      let left = 0;
+      let arrowTop = 0;
+      let arrowLeft = 0;
+
+      switch (element.position) {
+        case 'top':
+          top = rect.top - tooltipHeight - 20;
+          left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+          arrowTop = rect.top - 10;
+          arrowLeft = rect.left + (rect.width / 2) - 10;
+          break;
+        case 'bottom':
+          top = rect.bottom + 20;
+          left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+          arrowTop = rect.bottom + 10;
+          arrowLeft = rect.left + (rect.width / 2) - 10;
+          break;
+        case 'left':
+          top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+          left = rect.left - tooltipWidth - 20;
+          arrowTop = rect.top + (rect.height / 2) - 10;
+          arrowLeft = rect.left - 10;
+          break;
+        case 'right':
+          top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+          left = rect.right + 20;
+          arrowTop = rect.top + (rect.height / 2) - 10;
+          arrowLeft = rect.right + 10;
+          break;
+      }
+
+      // Keep tooltip in viewport
+      top = Math.max(10, Math.min(top, window.innerHeight - tooltipHeight - 10));
+      left = Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10));
+
+      setPosition({ top, left });
+      setArrowPosition({ top: arrowTop, left: arrowLeft });
+    }
+  }, [element, currentTourElement]);
+
+  return (
+    <>
+      {/* Pointing Arrow */}
+      <div
+        className="absolute w-5 h-5 bg-blue-500 transform rotate-45 pointer-events-none z-51"
+        style={{
+          top: arrowPosition.top,
+          left: arrowPosition.left,
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+        }}
+      />
+      
+      {/* Tooltip */}
+      <div
+        className="absolute bg-slate-900 border border-blue-500/30 rounded-xl p-4 pointer-events-auto z-52 shadow-2xl"
+        style={{
+          top: position.top,
+          left: position.left,
+          width: '320px',
+          backdropFilter: 'blur(10px)',
+          background: 'rgba(15, 23, 42, 0.95)'
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center">
+              <span className="text-xs font-bold text-blue-400">{stepInfo.current}</span>
+            </div>
+            <h4 className="font-semibold text-white text-sm">{stepInfo.stepTitle}</h4>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-6 w-6 p-0 text-slate-400 hover:text-white"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+
+        {/* Content */}
+        <p className="text-sm text-slate-300 mb-4 leading-relaxed">
+          {element.description}
+        </p>
+
+        {/* Controls */}
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-slate-400">
+            {stepInfo.current} of {stepInfo.total}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onPrevious}
+              disabled={!canGoPrevious}
+              className="h-8 px-2 text-slate-400 hover:text-white disabled:opacity-50"
+            >
+              <ChevronRight className="h-4 w-4 rotate-180" />
+            </Button>
+            <Button
+              onClick={onNext}
+              size="sm"
+              className="h-8 px-3 bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
+            >
+              {canGoNext ? (
+                <>
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </>
+              ) : (
+                <>
+                  Finish
+                  <CheckCircle className="h-4 w-4 ml-1" />
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

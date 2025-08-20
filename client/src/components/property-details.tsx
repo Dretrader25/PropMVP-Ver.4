@@ -29,7 +29,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
   ];
 
   return (
-    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden h-fit">
+    <Card className="glass-card rounded-3xl shadow-lg overflow-hidden h-fit" data-tour="property-overview">
       <CardHeader className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 pb-4">
         <CardTitle className="flex items-center justify-between text-slate-100 text-xl">
           <div className="flex items-center gap-3">

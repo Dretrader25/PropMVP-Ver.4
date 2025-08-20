@@ -428,7 +428,7 @@ export default function LeadManagement() {
 
           {/* Recent Leads Tab */}
           <TabsContent value="leads">
-            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden" data-tour="add-lead">
               <CardHeader className="bg-gradient-to-r from-emerald-800/30 to-emerald-700/30 pb-6">
                 <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
                   Recent Leads
