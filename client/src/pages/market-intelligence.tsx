@@ -6,6 +6,7 @@ import { useState } from "react";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
 import MarketHeatmap from "@/components/market-heatmap";
+import MarketFeeds from "@/components/market-feeds";
 import WorkflowProgress from "@/components/workflow-progress";
 import CollapsibleSection from "@/components/collapsible-section";
 import { 
@@ -229,15 +230,18 @@ export default function MarketIntelligence() {
           </div>
         </div>
 
-        {/* Target Market Selection Tools */}
+        {/* Real-Time Market Feeds - First Section */}
         <CollapsibleSection
-          title="Target Market Selection"
-          description="Define your geographic focus and property criteria for maximum deal potential"
-          icon={Target}
+          title="Real-Time Market Intelligence"
+          description="Live market feeds, news, and data streams from multiple sources"
+          icon={Globe}
           defaultExpanded={true}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Geographic Targeting */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            {/* Market Feeds */}
+            <MarketFeeds />
+            
+            {/* Geographic Targeting - Moved here as second item */}
             <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
                 <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
@@ -284,6 +288,55 @@ export default function MarketIntelligence() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </CollapsibleSection>
+
+        {/* Target Market Selection Tools - Property Criteria moved further down */}
+        <CollapsibleSection
+          title="Target Market Selection"
+          description="Define your geographic focus and property criteria for maximum deal potential"
+          icon={Target}
+          defaultExpanded={false}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Additional Geographic Options */}
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
+                <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
+                  Advanced Geographic Tools
+                  <div className="p-2 bg-blue-500/20 rounded-xl">
+                    <MapPin className="h-6 w-6 text-blue-400" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="glass-card rounded-2xl p-4">
+                  <h4 className="text-slate-200 font-semibold mb-3">Market Boundaries & Zones</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Focus Zone</span>
+                      <span className="text-blue-400 font-medium">5-mile radius</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">School Districts</span>
+                      <span className="text-slate-200 font-medium">Top-rated only</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Crime Rate</span>
+                      <span className="text-emerald-400 font-medium">Low to Moderate</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-400">Public Transit</span>
+                      <span className="text-slate-200 font-medium">Within 2 miles</span>
+                    </div>
+                  </div>
+                  <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Apply Geographic Filters
+                  </Button>
                 </div>
               </CardContent>
             </Card>
