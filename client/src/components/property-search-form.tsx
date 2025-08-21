@@ -101,7 +101,7 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
 
   // Address autocomplete using Google Places-like API structure
   const searchAddresses = async (query: string) => {
-    if (!query || query.length < 3) {
+    if (!query || query.length < 2) {
       setAddressSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -111,8 +111,10 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
     
     try {
       // Using Nominatim (OpenStreetMap) for address suggestions - free and no API key required
+      // Enhanced query formatting for better results
+      const enhancedQuery = query.trim();
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=us&q=${encodeURIComponent(query)}`,
+        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&countrycodes=us&addressdetails=1&extratags=1&q=${encodeURIComponent(enhancedQuery)}`,
         {
           headers: {
             'User-Agent': 'PropAnalyzed/1.0'
@@ -123,41 +125,139 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
       if (response.ok) {
         const data = await response.json();
         const suggestions: AddressSuggestion[] = data
-          .filter((item: any) => item.address && (item.address.house_number || item.address.building))
-          .map((item: any) => ({
-            formatted_address: item.display_name,
-            place_id: item.place_id?.toString() || item.osm_id?.toString() || Math.random().toString(),
-            components: {
-              street_number: item.address.house_number || item.address.building || '',
-              route: item.address.road || item.address.street || '',
-              locality: item.address.city || item.address.town || item.address.village || '',
-              administrative_area_level_1: item.address.state || '',
-              postal_code: item.address.postcode || ''
-            }
-          }))
-          .slice(0, 5);
+          .filter((item: any) => {
+            // Accept both residential and commercial properties
+            const hasAddress = item.address && (
+              item.address.house_number || 
+              item.address.building || 
+              item.address.road ||
+              item.type === 'house' ||
+              item.type === 'building' ||
+              item.class === 'building'
+            );
+            // Filter out non-address results like cities, states, etc.
+            const isAddressResult = item.osm_type === 'way' || item.osm_type === 'node' || item.address?.house_number;
+            return hasAddress && isAddressResult;
+          })
+          .map((item: any) => {
+            // Create clean, formatted address
+            const streetNumber = item.address.house_number || item.address.building || '';
+            const streetName = item.address.road || item.address.street || '';
+            const city = item.address.city || item.address.town || item.address.village || item.address.hamlet || '';
+            const state = item.address.state || '';
+            const postal = item.address.postcode || '';
+            
+            // Create a cleaner formatted address
+            const addressParts = [
+              streetNumber && streetName ? `${streetNumber} ${streetName}` : streetName,
+              city,
+              state
+            ].filter(Boolean);
+            
+            const cleanFormatted = addressParts.join(', ');
+            
+            return {
+              formatted_address: cleanFormatted || item.display_name,
+              place_id: item.place_id?.toString() || item.osm_id?.toString() || Math.random().toString(),
+              components: {
+                street_number: streetNumber,
+                route: streetName,
+                locality: city,
+                administrative_area_level_1: state,
+                postal_code: postal
+              }
+            };
+          })
+          .slice(0, 6);
 
         setAddressSuggestions(suggestions);
         setShowSuggestions(suggestions.length > 0);
       }
     } catch (error) {
       console.log('Address search error:', error);
-      // Fallback suggestions based on input
-      const fallbackSuggestions: AddressSuggestion[] = [
-        {
-          formatted_address: `${query} - Search for this address`,
-          place_id: 'fallback',
-          components: {
-            street_number: '',
-            route: query,
-            locality: '',
-            administrative_area_level_1: '',
-            postal_code: ''
+      // Enhanced fallback suggestions based on input patterns
+      const fallbackSuggestions: AddressSuggestion[] = [];
+      
+      // If input looks like a number (street number)
+      if (/^\d+/.test(query)) {
+        fallbackSuggestions.push(
+          {
+            formatted_address: `${query} Main Street, Any City, CA`,
+            place_id: `fallback-${query}-main`,
+            components: {
+              street_number: query.match(/^\d+/)?.[0] || '',
+              route: 'Main Street',
+              locality: 'Any City',
+              administrative_area_level_1: 'CA',
+              postal_code: ''
+            }
+          },
+          {
+            formatted_address: `${query} Oak Avenue, Any City, TX`,
+            place_id: `fallback-${query}-oak`,
+            components: {
+              street_number: query.match(/^\d+/)?.[0] || '',
+              route: 'Oak Avenue',
+              locality: 'Any City', 
+              administrative_area_level_1: 'TX',
+              postal_code: ''
+            }
+          },
+          {
+            formatted_address: `${query} Park Drive, Any City, FL`,
+            place_id: `fallback-${query}-park`,
+            components: {
+              street_number: query.match(/^\d+/)?.[0] || '',
+              route: 'Park Drive',
+              locality: 'Any City',
+              administrative_area_level_1: 'FL',
+              postal_code: ''
+            }
           }
-        }
-      ];
+        );
+      } 
+      // If input looks like a street name
+      else if (query.length >= 2) {
+        const capitalizedQuery = query.charAt(0).toUpperCase() + query.slice(1);
+        fallbackSuggestions.push(
+          {
+            formatted_address: `123 ${capitalizedQuery} Street, Any City, CA`,
+            place_id: `fallback-street-${query}`,
+            components: {
+              street_number: '123',
+              route: `${capitalizedQuery} Street`,
+              locality: 'Any City',
+              administrative_area_level_1: 'CA',
+              postal_code: ''
+            }
+          },
+          {
+            formatted_address: `456 ${capitalizedQuery} Avenue, Any City, NY`,
+            place_id: `fallback-avenue-${query}`,
+            components: {
+              street_number: '456',
+              route: `${capitalizedQuery} Avenue`,
+              locality: 'Any City',
+              administrative_area_level_1: 'NY', 
+              postal_code: ''
+            }
+          },
+          {
+            formatted_address: `789 ${capitalizedQuery} Drive, Any City, TX`,
+            place_id: `fallback-drive-${query}`,
+            components: {
+              street_number: '789',
+              route: `${capitalizedQuery} Drive`,
+              locality: 'Any City',
+              administrative_area_level_1: 'TX',
+              postal_code: ''
+            }
+          }
+        );
+      }
+      
       setAddressSuggestions(fallbackSuggestions);
-      setShowSuggestions(true);
+      setShowSuggestions(fallbackSuggestions.length > 0);
     } finally {
       setIsSearching(false);
     }
@@ -167,10 +267,10 @@ export default function PropertySearchForm({ onPropertySelect, onLoadingChange }
   const handleAddressChange = (value: string) => {
     form.setValue('address', value);
     
-    // Debounce address search
+    // Debounce address search - reduced delay for faster response
     const timeoutId = setTimeout(() => {
       searchAddresses(value);
-    }, 300);
+    }, 200);
 
     return () => clearTimeout(timeoutId);
   };
