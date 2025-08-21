@@ -7,6 +7,7 @@ import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
 import MarketHeatmap from "@/components/market-heatmap";
 import MarketFeeds from "@/components/market-feeds";
+import ZillowMarketFeeds from "@/components/zillow-market-feeds";
 import WorkflowProgress from "@/components/workflow-progress";
 import CollapsibleSection from "@/components/collapsible-section";
 import { 
@@ -237,12 +238,14 @@ export default function MarketIntelligence() {
           icon={Globe}
           defaultExpanded={true}
         >
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-            {/* Market Feeds */}
-            <MarketFeeds />
-            
-            {/* Geographic Targeting - Moved here as second item */}
-            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+          <div className="space-y-6 mb-6">
+            {/* Market Feeds Grid */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              {/* Inman Market Feeds */}
+              <MarketFeeds />
+              
+              {/* Geographic Targeting - Moved here as second item */}
+              <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
                 <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
                   Geographic Targeting
@@ -291,6 +294,10 @@ export default function MarketIntelligence() {
                 </div>
               </CardContent>
             </Card>
+            </div>
+            
+            {/* Zillow Research Feeds - Under the first feeds as requested */}
+            <ZillowMarketFeeds />
           </div>
         </CollapsibleSection>
 
