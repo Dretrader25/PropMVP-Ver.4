@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useMiniWorkflow } from "@/hooks/useMiniWorkflow";
 import { 
   Search, 
   BarChart3, 
@@ -9,7 +10,9 @@ import {
   Users, 
   Menu,
   Home,
-  LogOut
+  LogOut,
+  Zap,
+  ZapOff
 } from "lucide-react";
 
 interface NavigationBarProps {
@@ -19,6 +22,7 @@ interface NavigationBarProps {
 export default function NavigationBar({ onMenuClick }: NavigationBarProps) {
   const [location] = useLocation();
   const { user } = useAuth();
+  const { miniWorkflowEnabled, toggleMiniWorkflow } = useMiniWorkflow();
 
   const handleLogout = () => {
     window.location.href = "/api/logout";
@@ -99,6 +103,19 @@ export default function NavigationBar({ onMenuClick }: NavigationBarProps) {
 
           {/* Right side - Actions */}
           <div className="flex items-center space-x-3">
+            {/* Mini Workflow Toggle */}
+            <Button
+              variant="ghost"
+              onClick={() => toggleMiniWorkflow()}
+              className={cn(
+                "text-slate-400 hover:text-slate-200 hover:bg-slate-700/30 p-2 rounded-xl transition-all duration-300",
+                miniWorkflowEnabled && "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+              )}
+              title={miniWorkflowEnabled ? "Hide Deal Workflow" : "Show Deal Workflow"}
+            >
+              {miniWorkflowEnabled ? <Zap className="h-4 w-4" /> : <ZapOff className="h-4 w-4" />}
+            </Button>
+            
             <div className="hidden sm:block text-sm text-slate-400">
               {(user as any)?.email || "Professional Plan"}
             </div>
