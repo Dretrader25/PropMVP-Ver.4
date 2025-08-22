@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
 import MarketHeatmap from "@/components/market-heatmap";
@@ -10,6 +11,9 @@ import MarketFeeds from "@/components/market-feeds";
 import ZillowMarketFeeds from "@/components/zillow-market-feeds";
 import WorkflowProgress from "@/components/workflow-progress";
 import CollapsibleSection from "@/components/collapsible-section";
+import TargetCriteriaModal from "@/components/target-criteria-modal";
+import FilterMotivationModal from "@/components/filter-motivation-modal";
+import ExportTargetModal from "@/components/export-target-modal";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -147,8 +151,11 @@ const marketIntelligenceData = {
 };
 
 export default function MarketIntelligence() {
+  const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [workflowVisible, setWorkflowVisible] = useState(false);
+  const [lastDataUpdate, setLastDataUpdate] = useState(new Date());
+  const [isUpdatingData, setIsUpdatingData] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -179,6 +186,24 @@ export default function MarketIntelligence() {
     if (hotness >= 80) return "text-orange-400 bg-orange-500/20";
     if (hotness >= 70) return "text-yellow-400 bg-yellow-500/20";
     return "text-blue-400 bg-blue-500/20";
+  };
+
+  const handleUpdateMarketData = async () => {
+    setIsUpdatingData(true);
+    try {
+      // Simulate data update
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      setLastDataUpdate(new Date());
+      
+      toast({
+        title: "Market Data Updated",
+        description: "Successfully refreshed market intelligence data from all sources.",
+      });
+      
+      // In a real app, this would refresh market data from APIs
+    } finally {
+      setIsUpdatingData(false);
+    }
   };
 
   return (
@@ -212,21 +237,35 @@ export default function MarketIntelligence() {
             Step 1 of Wholesaling: Choose your geographic area and property type. Research high-motivation areas with distressed properties, foreclosures, and motivated sellers to maximize deal potential.
           </p>
           <div className="flex justify-center gap-4 mt-6">
-            <Button variant="outline" className="glass-card">
-              <Target className="h-4 w-4 mr-2" />
-              Set Target Criteria
-            </Button>
-            <Button variant="outline" className="glass-card">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter by Motivation
-            </Button>
-            <Button variant="outline" className="glass-card">
-              <Download className="h-4 w-4 mr-2" />
-              Export Target List
-            </Button>
-            <Button variant="outline" className="glass-card">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Update Market Data
+            <TargetCriteriaModal>
+              <Button variant="outline" className="glass-card">
+                <Target className="h-4 w-4 mr-2" />
+                Set Target Criteria
+              </Button>
+            </TargetCriteriaModal>
+            
+            <FilterMotivationModal>
+              <Button variant="outline" className="glass-card">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter by Motivation
+              </Button>
+            </FilterMotivationModal>
+            
+            <ExportTargetModal>
+              <Button variant="outline" className="glass-card">
+                <Download className="h-4 w-4 mr-2" />
+                Export Target List
+              </Button>
+            </ExportTargetModal>
+            
+            <Button 
+              variant="outline" 
+              className="glass-card"
+              onClick={handleUpdateMarketData}
+              disabled={isUpdatingData}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isUpdatingData ? 'animate-spin' : ''}`} />
+              {isUpdatingData ? 'Updating...' : 'Update Market Data'}
             </Button>
           </div>
         </div>
