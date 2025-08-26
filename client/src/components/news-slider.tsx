@@ -50,7 +50,7 @@ export default function NewsSlider({
     if (isPlaying && items.length > 0) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % items.length);
-      }, 4000); // Change every 4 seconds
+      }, 6000); // Change every 6 seconds
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -198,19 +198,19 @@ export default function NewsSlider({
           {/* Content Container with Horizontal Scroll Animation */}
           <div className="flex-1 min-w-0 overflow-hidden relative">
             <div 
-              className="flex transition-transform duration-700 ease-in-out"
+              className="flex transition-transform duration-1000 ease-in-out"
               style={{ 
-                transform: `translateX(-${currentIndex * 100}%)`,
+                transform: `translateX(-${(currentIndex * 100) / items.length}%)`,
                 width: `${items.length * 100}%`
               }}
             >
               {items.map((item, index) => (
                 <div 
                   key={index}
-                  className="w-full flex-shrink-0 px-1"
+                  className="flex-shrink-0"
                   style={{ width: `${100 / items.length}%` }}
                 >
-                  <div className="flex items-start space-x-4">
+                  <div className="flex items-start space-x-4 px-2">
                     {/* Image */}
                     {item.image && (
                       <div className="flex-shrink-0">
