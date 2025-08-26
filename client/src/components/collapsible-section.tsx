@@ -32,7 +32,13 @@ export default function CollapsibleSection({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
-    <Card className={`glass-card border-slate-700/30 rounded-xl ${className}`}>
+    <div className={`relative ${className}`}>
+      {/* Animated Neon Border */}
+      <div className={`absolute inset-0 rounded-xl transition-opacity duration-300 ${
+        isExpanded ? 'neon-border-expanded' : 'neon-border-collapsed'
+      }`}></div>
+      
+      <Card className="glass-card border-slate-700/30 rounded-xl relative z-10 bg-slate-900/95">
       <CardHeader className={`pb-3 ${headerClassName}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -80,5 +86,6 @@ export default function CollapsibleSection({
         </CardContent>
       )}
     </Card>
+    </div>
   );
 }
