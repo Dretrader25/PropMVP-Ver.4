@@ -67,14 +67,18 @@ export default function CollapsibleSection({
           
           <Button
             variant="ghost"
-            size="sm"
+            size="lg"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-slate-400 hover:text-white transition-colors"
+            className={`transition-all duration-300 p-3 rounded-xl ${
+              isExpanded 
+                ? 'text-green-400 hover:text-green-300 shadow-[0_0_15px_rgba(34,197,94,0.6)] hover:shadow-[0_0_25px_rgba(34,197,94,0.8)] border border-green-500/30 bg-green-500/10' 
+                : 'text-red-400 hover:text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.6)] hover:shadow-[0_0_25px_rgba(239,68,68,0.8)] border border-red-500/30 bg-red-500/10'
+            }`}
           >
             {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
+              <ChevronUp className="h-6 w-6 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
             ) : (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="h-6 w-6 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
             )}
           </Button>
         </div>
