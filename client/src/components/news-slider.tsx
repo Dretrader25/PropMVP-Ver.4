@@ -190,66 +190,82 @@ export default function NewsSlider({
             onClick={goToPrevious}
             variant="ghost"
             size="sm"
-            className="text-slate-400 hover:text-slate-200 p-2 flex-shrink-0"
+            className="text-slate-400 hover:text-slate-200 p-2 flex-shrink-0 z-10"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
 
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start space-x-4">
-              {/* Image */}
-              {currentItem.image && (
-                <div className="flex-shrink-0">
-                  <img
-                    src={currentItem.image}
-                    alt={currentItem.title}
-                    className="w-16 h-12 object-cover rounded-lg"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
-              
-              {/* Text Content */}
-              <div className="flex-1 min-w-0">
-                <h4 className="text-slate-200 font-medium text-sm mb-1 line-clamp-2">
-                  {currentItem.title}
-                </h4>
-                <p className="text-slate-400 text-xs mb-2 line-clamp-1">
-                  {currentItem.description}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-slate-500">
-                    <Clock className="h-3 w-3" />
-                    <span>{formatTimeAgo(currentItem.pubDate)}</span>
-                    <span>•</span>
-                    <span>{currentItem.author}</span>
+          {/* Content Container with Horizontal Scroll Animation */}
+          <div className="flex-1 min-w-0 overflow-hidden relative">
+            <div 
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ 
+                transform: `translateX(-${currentIndex * 100}%)`,
+                width: `${items.length * 100}%`
+              }}
+            >
+              {items.map((item, index) => (
+                <div 
+                  key={index}
+                  className="w-full flex-shrink-0 px-1"
+                  style={{ width: `${100 / items.length}%` }}
+                >
+                  <div className="flex items-start space-x-4">
+                    {/* Image */}
+                    {item.image && (
+                      <div className="flex-shrink-0">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-16 h-12 object-cover rounded-lg"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Text Content */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-slate-200 font-medium text-sm mb-1 line-clamp-2">
+                        {item.title}
+                      </h4>
+                      <p className="text-slate-400 text-xs mb-2 line-clamp-1">
+                        {item.description}
+                      </p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2 text-xs text-slate-500">
+                          <Clock className="h-3 w-3" />
+                          <span>{formatTimeAgo(item.pubDate)}</span>
+                          <span>•</span>
+                          <span>{item.author}</span>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          {item.categories.slice(0, 1).map((category, catIndex) => (
+                            <Badge 
+                              key={catIndex}
+                              className={`text-xs px-2 py-0.5 ${getCategoryColor(category)}`}
+                            >
+                              {category}
+                            </Badge>
+                          ))}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-400 hover:text-slate-200 p-1 h-auto"
+                            onClick={() => window.open(item.link, '_blank')}
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    {currentItem.categories.slice(0, 1).map((category, index) => (
-                      <Badge 
-                        key={index}
-                        className={`text-xs px-2 py-0.5 ${getCategoryColor(category)}`}
-                      >
-                        {category}
-                      </Badge>
-                    ))}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-slate-400 hover:text-slate-200 p-1 h-auto"
-                      onClick={() => window.open(currentItem.link, '_blank')}
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                    </Button>
-                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -258,7 +274,7 @@ export default function NewsSlider({
             onClick={goToNext}
             variant="ghost"
             size="sm"
-            className="text-slate-400 hover:text-slate-200 p-2 flex-shrink-0"
+            className="text-slate-400 hover:text-slate-200 p-2 flex-shrink-0 z-10"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
