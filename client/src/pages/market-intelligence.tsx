@@ -9,6 +9,7 @@ import Sidebar from "@/components/sidebar";
 import MarketHeatmap from "@/components/market-heatmap";
 import MarketFeeds from "@/components/market-feeds";
 import ZillowMarketFeeds from "@/components/zillow-market-feeds";
+import NewsSlider from "@/components/news-slider";
 import WorkflowProgress from "@/components/workflow-progress";
 import CollapsibleSection from "@/components/collapsible-section";
 import TargetCriteriaModal from "@/components/target-criteria-modal";
@@ -32,7 +33,8 @@ import {
   Globe,
   Filter,
   Download,
-  RefreshCw
+  RefreshCw,
+  Rss
 } from "lucide-react";
 
 // Market Intelligence data structure
@@ -246,6 +248,76 @@ const generateFilteredProperties = (activeFilters: any[]) => {
   );
 };
 
+// Mock feed data for news sliders
+const marketFeedData = [
+  {
+    title: "Trump tells Federal Reserve governor Lisa Cook to 'resign now'",
+    link: "https://www.inman.com/2025/08/20/trump-tells-federal-reserve-governor-lisa-cook-to-resign-now/",
+    pubDate: "Wed, 20 Aug 2025 17:38:24 +0000",
+    author: "Marian McPherson",
+    description: "The president asked Cook to resign from her post after FHFA Director Bill Pulte accused her of mortgage fraud.",
+    categories: ["Markets & Economy", "Mortgage", "Federal Reserve"],
+    image: "https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  },
+  {
+    title: "How Opendoor's CEO resignation underscores the power of visibility",
+    link: "https://www.inman.com/2025/08/20/how-opendoors-ceo-resignation-underscores-the-power-of-visibility/",
+    pubDate: "Wed, 20 Aug 2025 17:00:10 +0000",
+    author: "Cristin Culver",
+    description: "Leadership changes in PropTech highlight the importance of executive visibility in today's attention economy.",
+    categories: ["PropTech", "Leadership", "Executive Brand"],
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  },
+  {
+    title: "Fannie Mae dials back sales expectations by 220K homes",
+    link: "https://www.inman.com/2025/08/19/fannie-mae-dials-back-sales-expectations-by-220000-homes/",
+    pubDate: "Tue, 19 Aug 2025 22:28:04 +0000",
+    author: "Matt Carter",
+    description: "Government-sponsored enterprise reduces home sales forecast amid market uncertainty and inventory challenges.",
+    categories: ["Markets & Economy", "Home Sales", "Fannie Mae"],
+    image: "https://images.unsplash.com/photo-1586105251261-72a756497a11?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  },
+  {
+    title: "'Construction is in a funk': Homebuilding improves, but inventory issues remain",
+    link: "https://www.inman.com/2025/08/19/single-family-starts-and-permits-inched-higher-in-july-but-not-enough-to-meet-inventory-needs/",
+    pubDate: "Tue, 19 Aug 2025 14:47:27 +0000",
+    author: "Lillian Dickerson",
+    description: "Single-family starts and permits rose in July but not enough to address ongoing inventory shortage.",
+    categories: ["Construction", "Housing Supply", "Market Analysis"],
+    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  }
+];
+
+const zillowFeedData = [
+  {
+    title: "Mortgage Rates Steady as Markets Look Past Outdated Fed Minutes",
+    link: "https://www.zillow.com/research/mortgage-rates-18722/",
+    pubDate: "Wed, 20 Aug 2025 08:00:16 +0000",
+    author: "Kara Ng",
+    description: "Zillow maintains its expectation that mortgage rates will end the year near the mid-6% range",
+    categories: ["Affordability", "Market Trends", "Fed", "Mortgage Rates"],
+    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  },
+  {
+    title: "July 2025 Housing Starts: Starts Increase Again, Permits Point To Slowdown Ahead",
+    link: "https://www.zillow.com/research/july-2025-housing-starts-35492/",
+    pubDate: "Tue, 19 Aug 2025 13:41:34 +0000",
+    author: "Orphe Divounguy",
+    description: "Building permits issued in July fell to 1,354,000 (SAAR). Housing starts increased to 1,428,000 (SAAR) in July.",
+    categories: ["News", "New Construction", "Housing Starts"],
+    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  },
+  {
+    title: "Seven Major Metros Where Rents Are Flat or Falling This Summer",
+    link: "https://www.zillow.com/research/july-2025-rent-report-35469/",
+    pubDate: "Mon, 18 Aug 2025 12:00:33 +0000",
+    author: "Orphe Divounguy",
+    description: "Rent growth continued to cool in July as more housing supply gives renters more bargaining power.",
+    categories: ["Market Reports", "Renting", "Rent Report"],
+    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=200&fit=crop&crop=entropy&auto=format&q=80"
+  }
+];
+
 export default function MarketIntelligence() {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -255,6 +327,7 @@ export default function MarketIntelligence() {
   const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
   const [activeFilters, setActiveFilters] = useState<any[]>([]);
   const [showFilteredResults, setShowFilteredResults] = useState(false);
+  const [newsLoading, setNewsLoading] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -350,6 +423,17 @@ export default function MarketIntelligence() {
     }
   };
 
+  const refreshNewsFeeds = () => {
+    setNewsLoading(true);
+    setTimeout(() => {
+      setNewsLoading(false);
+      toast({
+        title: "News Feeds Refreshed",
+        description: "Latest market news and research data updated.",
+      });
+    }, 1000);
+  };
+
   const getMotivationBadgeColor = (motivation: string) => {
     const colorMap: {[key: string]: string} = {
       "divorce": "bg-red-500/20 text-red-400 border-red-500/30",
@@ -441,21 +525,37 @@ export default function MarketIntelligence() {
           </div>
         </div>
 
-        {/* Real-Time Market Feeds - First Section */}
+        {/* Real-Time Market Intelligence - Compact News Sliders */}
         <CollapsibleSection
           title="Real-Time Market Intelligence"
-          description="Live market feeds, news, and data streams from multiple sources"
+          description="Live market feeds and data streams in compact news format"
           icon={Globe}
           defaultExpanded={true}
         >
-          <div className="space-y-6 mb-6">
-            {/* Market Feeds Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              {/* Inman Market Feeds */}
-              <MarketFeeds />
+          <div className="space-y-4 mb-6">
+            {/* Market News Sliders Grid */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <NewsSlider
+                items={marketFeedData}
+                title="Market News"
+                icon={Rss}
+                loading={newsLoading}
+                onRefresh={refreshNewsFeeds}
+                accentColor="orange"
+              />
               
-              {/* Geographic Targeting - Moved here as second item */}
-              <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
+              <NewsSlider
+                items={zillowFeedData}
+                title="Zillow Research"
+                icon={BarChart3}
+                loading={newsLoading}
+                onRefresh={refreshNewsFeeds}
+                accentColor="blue"
+              />
+            </div>
+            
+            {/* Geographic Targeting - Right under the feeds */}
+            <Card className="glass-card rounded-3xl shadow-lg overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-blue-800/30 to-blue-700/30 pb-6">
                 <CardTitle className="flex items-center justify-between text-slate-100 text-2xl">
                   Geographic Targeting
@@ -504,10 +604,6 @@ export default function MarketIntelligence() {
                 </div>
               </CardContent>
             </Card>
-            </div>
-            
-            {/* Zillow Research Feeds - Under the first feeds as requested */}
-            <ZillowMarketFeeds />
           </div>
         </CollapsibleSection>
 
