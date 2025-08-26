@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import NavigationBar from "@/components/navigation-bar";
 import Sidebar from "@/components/sidebar";
@@ -150,12 +150,111 @@ const marketIntelligenceData = {
   }
 };
 
+// Mock property data for filtered results
+const generateFilteredProperties = (activeFilters: any[]) => {
+  const mockProperties = [
+    {
+      id: "prop_001",
+      address: "1234 Oak Street, Los Angeles, CA 90210",
+      price: 485000,
+      bedrooms: 3,
+      bathrooms: 2,
+      sqft: 1850,
+      yearBuilt: 1995,
+      motivation: ["divorce", "foreclosure"],
+      daysOnMarket: 180,
+      priceReductions: 2,
+      equity: 125000,
+      condition: "Needs Work",
+      distressScore: 85,
+      ownerType: "Absentee"
+    },
+    {
+      id: "prop_002",
+      address: "5678 Pine Avenue, Orange County, CA 92603",
+      price: 395000,
+      bedrooms: 4,
+      bathrooms: 2,
+      sqft: 2100,
+      yearBuilt: 1988,
+      motivation: ["estate-sale", "vacant-properties"],
+      daysOnMarket: 145,
+      priceReductions: 1,
+      equity: 95000,
+      condition: "Fair",
+      distressScore: 72,
+      ownerType: "Estate"
+    },
+    {
+      id: "prop_003",
+      address: "9012 Maple Drive, Riverside, CA 92501",
+      price: 325000,
+      bedrooms: 3,
+      bathrooms: 1,
+      sqft: 1650,
+      yearBuilt: 1982,
+      motivation: ["financial-distress", "tax-liens"],
+      daysOnMarket: 220,
+      priceReductions: 3,
+      equity: 75000,
+      condition: "Poor",
+      distressScore: 92,
+      ownerType: "Owner-Occupied"
+    },
+    {
+      id: "prop_004",
+      address: "3456 Cedar Lane, San Diego, CA 92101",
+      price: 650000,
+      bedrooms: 4,
+      bathrooms: 3,
+      sqft: 2400,
+      yearBuilt: 2005,
+      motivation: ["job-relocation", "market-time"],
+      daysOnMarket: 120,
+      priceReductions: 1,
+      equity: 180000,
+      condition: "Good",
+      distressScore: 68,
+      ownerType: "Owner-Occupied"
+    },
+    {
+      id: "prop_005",
+      address: "7890 Birch Court, Long Beach, CA 90802",
+      price: 425000,
+      bedrooms: 2,
+      bathrooms: 2,
+      sqft: 1450,
+      yearBuilt: 1990,
+      motivation: ["price-reductions", "vacant-properties"],
+      daysOnMarket: 165,
+      priceReductions: 2,
+      equity: 110000,
+      condition: "Fair",
+      distressScore: 78,
+      ownerType: "Investment"
+    }
+  ];
+
+  const enabledFilterIds = activeFilters.filter(f => f.enabled).map(f => f.id);
+  
+  if (enabledFilterIds.length === 0) {
+    return mockProperties; // Show all if no filters
+  }
+  
+  return mockProperties.filter(property => 
+    property.motivation.some(m => enabledFilterIds.includes(m))
+  );
+};
+
 export default function MarketIntelligence() {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [workflowVisible, setWorkflowVisible] = useState(false);
   const [lastDataUpdate, setLastDataUpdate] = useState(new Date());
   const [isUpdatingData, setIsUpdatingData] = useState(false);
+  const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
+  const [activeFilters, setActiveFilters] = useState<any[]>([]);
+  const [showFilteredResults, setShowFilteredResults] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -188,6 +287,51 @@ export default function MarketIntelligence() {
     return "text-blue-400 bg-blue-500/20";
   };
 
+  // Load saved filters on component mount
+  useEffect(() => {
+    const savedFilters = localStorage.getItem("motivationFilters");
+    if (savedFilters) {
+      try {
+        const filters = JSON.parse(savedFilters);
+        setActiveFilters(filters);
+        const hasActiveFilters = filters.some((f: any) => f.enabled);
+        if (hasActiveFilters) {
+          setFilteredProperties(generateFilteredProperties(filters));
+          setShowFilteredResults(true);
+        }
+      } catch (error) {
+        console.error("Error loading saved filters:", error);
+      }
+    }
+  }, []);
+
+  const handleFilterUpdate = (filters: any[]) => {
+    setActiveFilters(filters);
+    const properties = generateFilteredProperties(filters);
+    setFilteredProperties(properties);
+    setShowFilteredResults(true);
+    
+    // Scroll to results section after a brief delay
+    setTimeout(() => {
+      const resultsSection = document.getElementById("filtered-results");
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 500);
+  };
+
+  const clearFilters = () => {
+    setActiveFilters([]);
+    setFilteredProperties([]);
+    setShowFilteredResults(false);
+    localStorage.removeItem("motivationFilters");
+    
+    toast({
+      title: "Filters Cleared",
+      description: "All motivation filters have been removed.",
+    });
+  };
+
   const handleUpdateMarketData = async () => {
     setIsUpdatingData(true);
     try {
@@ -204,6 +348,28 @@ export default function MarketIntelligence() {
     } finally {
       setIsUpdatingData(false);
     }
+  };
+
+  const getMotivationBadgeColor = (motivation: string) => {
+    const colorMap: {[key: string]: string} = {
+      "divorce": "bg-red-500/20 text-red-400 border-red-500/30",
+      "foreclosure": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+      "financial-distress": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+      "estate-sale": "bg-purple-500/20 text-purple-400 border-purple-500/30",
+      "job-relocation": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      "vacant-properties": "bg-slate-500/20 text-slate-400 border-slate-500/30",
+      "tax-liens": "bg-red-600/20 text-red-300 border-red-600/30",
+      "market-time": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+      "price-reductions": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+    };
+    return colorMap[motivation] || "bg-slate-500/20 text-slate-400 border-slate-500/30";
+  };
+
+  const getDistressScoreColor = (score: number) => {
+    if (score >= 85) return "text-red-400";
+    if (score >= 70) return "text-orange-400";
+    if (score >= 55) return "text-yellow-400";
+    return "text-blue-400";
   };
 
   return (
@@ -244,10 +410,15 @@ export default function MarketIntelligence() {
               </Button>
             </TargetCriteriaModal>
             
-            <FilterMotivationModal>
-              <Button variant="outline" className="glass-card">
+            <FilterMotivationModal onFilterUpdate={handleFilterUpdate}>
+              <Button variant="outline" className={`glass-card ${showFilteredResults ? 'ring-2 ring-orange-400/50' : ''}`}>
                 <Filter className="h-4 w-4 mr-2" />
                 Filter by Motivation
+                {showFilteredResults && (
+                  <Badge className="ml-2 bg-orange-500/20 text-orange-400 border-orange-500/30">
+                    {activeFilters.filter(f => f.enabled).length}
+                  </Badge>
+                )}
               </Button>
             </FilterMotivationModal>
             
@@ -580,6 +751,191 @@ export default function MarketIntelligence() {
             </div>
           </div>
         </CollapsibleSection>
+
+        {/* Filtered Property Results */}
+        {showFilteredResults && (
+          <div id="filtered-results" className="fade-in">
+            <CollapsibleSection
+              title={`Filtered Properties (${filteredProperties.length} found)`}
+              description="Properties matching your selected motivation criteria"
+              icon={Filter}
+              defaultExpanded={true}
+            >
+              <div className="space-y-6">
+                {/* Active Filters Summary */}
+                <Card className="glass-card rounded-2xl p-4 bg-gradient-to-r from-orange-900/20 to-red-900/20 border-orange-500/30">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-slate-200 font-semibold mb-2 flex items-center">
+                        <Filter className="h-4 w-4 mr-2 text-orange-400" />
+                        Active Motivation Filters
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {activeFilters.filter(f => f.enabled).map(filter => (
+                          <Badge 
+                            key={filter.id} 
+                            className={`${getMotivationBadgeColor(filter.id)} text-xs px-2 py-1`}
+                          >
+                            {filter.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={clearFilters}
+                      className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                </Card>
+
+                {/* Property Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {filteredProperties.map((property, index) => (
+                    <Card key={property.id} className="glass-card rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                      <CardHeader className="bg-gradient-to-r from-slate-800/30 to-slate-700/30 pb-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-slate-100 text-lg leading-tight mb-2">
+                              {property.address}
+                            </CardTitle>
+                            <div className="flex items-center space-x-4 text-sm">
+                              <span className="text-emerald-400 font-bold text-xl">
+                                {formatCurrency(property.price)}
+                              </span>
+                              <Badge className={`${getDistressScoreColor(property.distressScore)} bg-opacity-20 border-0`}>
+                                {property.distressScore}% Distress
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className={`p-2 rounded-xl ${getDistressScoreColor(property.distressScore)} bg-opacity-20`}>
+                            <Home className="h-5 w-5" />
+                          </div>
+                        </div>
+                      </CardHeader>
+
+                      <CardContent className="p-6 space-y-4">
+                        {/* Property Details */}
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Bedrooms</span>
+                              <span className="text-slate-200 font-medium">{property.bedrooms} BR</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Bathrooms</span>
+                              <span className="text-slate-200 font-medium">{property.bathrooms} BA</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Square Feet</span>
+                              <span className="text-slate-200 font-medium">{formatNumber(property.sqft)} sqft</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Year Built</span>
+                              <span className="text-slate-200 font-medium">{property.yearBuilt}</span>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Days on Market</span>
+                              <span className="text-orange-400 font-medium">{property.daysOnMarket} days</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Price Reductions</span>
+                              <span className="text-red-400 font-medium">{property.priceReductions}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Est. Equity</span>
+                              <span className="text-emerald-400 font-medium">{formatCurrency(property.equity)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Owner Type</span>
+                              <span className="text-blue-400 font-medium">{property.ownerType}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Motivation Tags */}
+                        <div>
+                          <h5 className="text-slate-300 font-medium mb-2 text-sm">Motivation Indicators</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {property.motivation.map(motivation => (
+                              <Badge 
+                                key={motivation} 
+                                className={`${getMotivationBadgeColor(motivation)} text-xs px-2 py-1`}
+                              >
+                                {motivation.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Property Condition */}
+                        <div className="bg-slate-800/30 rounded-lg p-3">
+                          <div className="flex justify-between items-center">
+                            <span className="text-slate-400 text-sm">Property Condition</span>
+                            <span className={`font-medium text-sm ${
+                              property.condition === 'Poor' ? 'text-red-400' :
+                              property.condition === 'Fair' ? 'text-yellow-400' :
+                              property.condition === 'Good' ? 'text-emerald-400' : 'text-blue-400'
+                            }`}>
+                              {property.condition}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 pt-2">
+                          <Button 
+                            size="sm" 
+                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+                          >
+                            <Activity className="h-4 w-4 mr-2" />
+                            Analyze Property
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="flex-1 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                          >
+                            <Users className="h-4 w-4 mr-2" />
+                            Add to Leads
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {filteredProperties.length === 0 && (
+                  <Card className="glass-card rounded-2xl p-8 text-center">
+                    <div className="space-y-4">
+                      <div className="p-4 bg-slate-800/50 rounded-xl w-fit mx-auto">
+                        <Filter className="h-8 w-8 text-slate-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-slate-200 font-semibold mb-2">No Properties Found</h4>
+                        <p className="text-slate-400 text-sm">
+                          No properties match your current filter criteria. Try adjusting your motivation filters to see more results.
+                        </p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        onClick={clearFilters}
+                        className="border-slate-600 text-slate-300 hover:bg-slate-800"
+                      >
+                        Clear All Filters
+                      </Button>
+                    </div>
+                  </Card>
+                )}
+              </div>
+            </CollapsibleSection>
+          </div>
+        )}
 
         {/* Hot Markets Table */}
         <CollapsibleSection
